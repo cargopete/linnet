@@ -1,0 +1,33 @@
+# Linnet — strict analysis. Privacy-first health code earns its keep by being boring
+# and predictable, so we lean on the analyzer hard.
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  errors:
+    # A forgotten await in a crypto/storage flow is a correctness bug, not a nit.
+    unawaited_futures: error
+  exclude:
+    - "**/*.g.dart"
+    - "build/**"
+
+linter:
+  rules:
+    - always_declare_return_types
+    - avoid_dynamic_calls
+    - avoid_print
+    - cancel_subscriptions
+    - close_sinks
+    - directives_ordering
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_final_locals
+    - prefer_single_quotes
+    - require_trailing_commas
+    - throw_in_finally
+    - unawaited_futures
+    - use_build_context_synchronously
+    - use_key_in_widget_constructors

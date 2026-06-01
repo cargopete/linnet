@@ -1,0 +1,45 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../features/calendar/presentation/calendar_screen.dart';
+import '../../features/home/presentation/home_screen.dart';
+import '../../features/settings/presentation/settings_screen.dart';
+import 'root_shell.dart';
+
+final goRouterProvider = Provider<GoRouter>((ref) {
+  return GoRouter(
+    initialLocation: '/home',
+    routes: [
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            RootShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/calendar',
+                builder: (context, state) => const CalendarScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  );
+});
