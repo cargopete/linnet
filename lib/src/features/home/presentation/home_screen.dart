@@ -6,12 +6,23 @@ import '../../../common/providers.dart';
 import '../../../common/util/date_only.dart';
 import '../../cycle_logging/presentation/day_log_screen.dart';
 import '../../predictions/presentation/prediction_card.dart';
+import '../../pregnancy/application/pregnancy_providers.dart';
+import '../../pregnancy/presentation/pregnancy_dashboard.dart';
+import '../../pregnancy/presentation/start_pregnancy_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // In pregnancy mode the home screen becomes the pregnancy dashboard.
+    if (ref.watch(isPregnancyModeProvider)) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Pregnancy')),
+        body: const PregnancyDashboard(),
+      );
+    }
+
     final theme = Theme.of(context);
     final today = DateTime.now();
     final cycles = ref.watch(cyclesProvider);
@@ -47,7 +58,28 @@ class HomeScreen extends ConsumerWidget {
             PredictionCard(prediction: prediction)
           else
             const _EmptyState(),
+          const SizedBox(height: 16),
+          const _StartPregnancyTile(),
         ],
+      ),
+    );
+  }
+}
+
+class _StartPregnancyTile extends StatelessWidget {
+  const _StartPregnancyTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: const Icon(Icons.child_friendly_outlined),
+        title: const Text('Expecting?'),
+        subtitle: const Text('Switch to pregnancy tracking'),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const StartPregnancyScreen()),
+        ),
       ),
     );
   }

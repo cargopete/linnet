@@ -8,7 +8,14 @@ extension DateOnly on DateTime {
   DateTime get dateOnly => DateTime(year, month, day);
 
   /// Whole days from `this` to [other] (other - this), date-only.
-  int daysUntil(DateTime other) => other.dateOnly.difference(dateOnly).inDays;
+  ///
+  /// Computed in UTC so a daylight-saving transition between the two dates
+  /// can't make a "day" 23 or 25 hours long and truncate the count.
+  int daysUntil(DateTime other) {
+    final a = DateTime.utc(year, month, day);
+    final b = DateTime.utc(other.year, other.month, other.day);
+    return b.difference(a).inDays;
+  }
 
   DateTime addDays(int days) => DateTime(year, month, day + days);
 

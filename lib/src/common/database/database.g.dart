@@ -687,16 +687,616 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   }
 }
 
+class $PregnanciesTable extends Pregnancies
+    with TableInfo<$PregnanciesTable, Pregnancy> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PregnanciesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _lmpDateMeta = const VerificationMeta(
+    'lmpDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lmpDate = GeneratedColumn<DateTime>(
+    'lmp_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cycleLengthDaysMeta = const VerificationMeta(
+    'cycleLengthDays',
+  );
+  @override
+  late final GeneratedColumn<int> cycleLengthDays = GeneratedColumn<int>(
+    'cycle_length_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(28),
+  );
+  static const VerificationMeta _ultrasoundDateMeta = const VerificationMeta(
+    'ultrasoundDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> ultrasoundDate =
+      GeneratedColumn<DateTime>(
+        'ultrasound_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _ultrasoundGestationalAgeDaysMeta =
+      const VerificationMeta('ultrasoundGestationalAgeDays');
+  @override
+  late final GeneratedColumn<int> ultrasoundGestationalAgeDays =
+      GeneratedColumn<int>(
+        'ultrasound_gestational_age_days',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _eddOverrideMeta = const VerificationMeta(
+    'eddOverride',
+  );
+  @override
+  late final GeneratedColumn<DateTime> eddOverride = GeneratedColumn<DateTime>(
+    'edd_override',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _outcomeMeta = const VerificationMeta(
+    'outcome',
+  );
+  @override
+  late final GeneratedColumn<int> outcome = GeneratedColumn<int>(
+    'outcome',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _outcomeDateMeta = const VerificationMeta(
+    'outcomeDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> outcomeDate = GeneratedColumn<DateTime>(
+    'outcome_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    lmpDate,
+    cycleLengthDays,
+    ultrasoundDate,
+    ultrasoundGestationalAgeDays,
+    eddOverride,
+    outcome,
+    outcomeDate,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'pregnancies';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Pregnancy> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('lmp_date')) {
+      context.handle(
+        _lmpDateMeta,
+        lmpDate.isAcceptableOrUnknown(data['lmp_date']!, _lmpDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lmpDateMeta);
+    }
+    if (data.containsKey('cycle_length_days')) {
+      context.handle(
+        _cycleLengthDaysMeta,
+        cycleLengthDays.isAcceptableOrUnknown(
+          data['cycle_length_days']!,
+          _cycleLengthDaysMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ultrasound_date')) {
+      context.handle(
+        _ultrasoundDateMeta,
+        ultrasoundDate.isAcceptableOrUnknown(
+          data['ultrasound_date']!,
+          _ultrasoundDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ultrasound_gestational_age_days')) {
+      context.handle(
+        _ultrasoundGestationalAgeDaysMeta,
+        ultrasoundGestationalAgeDays.isAcceptableOrUnknown(
+          data['ultrasound_gestational_age_days']!,
+          _ultrasoundGestationalAgeDaysMeta,
+        ),
+      );
+    }
+    if (data.containsKey('edd_override')) {
+      context.handle(
+        _eddOverrideMeta,
+        eddOverride.isAcceptableOrUnknown(
+          data['edd_override']!,
+          _eddOverrideMeta,
+        ),
+      );
+    }
+    if (data.containsKey('outcome')) {
+      context.handle(
+        _outcomeMeta,
+        outcome.isAcceptableOrUnknown(data['outcome']!, _outcomeMeta),
+      );
+    }
+    if (data.containsKey('outcome_date')) {
+      context.handle(
+        _outcomeDateMeta,
+        outcomeDate.isAcceptableOrUnknown(
+          data['outcome_date']!,
+          _outcomeDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Pregnancy map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Pregnancy(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      lmpDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}lmp_date'],
+      )!,
+      cycleLengthDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cycle_length_days'],
+      )!,
+      ultrasoundDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}ultrasound_date'],
+      ),
+      ultrasoundGestationalAgeDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ultrasound_gestational_age_days'],
+      ),
+      eddOverride: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}edd_override'],
+      ),
+      outcome: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}outcome'],
+      )!,
+      outcomeDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}outcome_date'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $PregnanciesTable createAlias(String alias) {
+    return $PregnanciesTable(attachedDatabase, alias);
+  }
+}
+
+class Pregnancy extends DataClass implements Insertable<Pregnancy> {
+  final int id;
+  final DateTime lmpDate;
+  final int cycleLengthDays;
+  final DateTime? ultrasoundDate;
+  final int? ultrasoundGestationalAgeDays;
+  final DateTime? eddOverride;
+  final int outcome;
+  final DateTime? outcomeDate;
+  final String? notes;
+  const Pregnancy({
+    required this.id,
+    required this.lmpDate,
+    required this.cycleLengthDays,
+    this.ultrasoundDate,
+    this.ultrasoundGestationalAgeDays,
+    this.eddOverride,
+    required this.outcome,
+    this.outcomeDate,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['lmp_date'] = Variable<DateTime>(lmpDate);
+    map['cycle_length_days'] = Variable<int>(cycleLengthDays);
+    if (!nullToAbsent || ultrasoundDate != null) {
+      map['ultrasound_date'] = Variable<DateTime>(ultrasoundDate);
+    }
+    if (!nullToAbsent || ultrasoundGestationalAgeDays != null) {
+      map['ultrasound_gestational_age_days'] = Variable<int>(
+        ultrasoundGestationalAgeDays,
+      );
+    }
+    if (!nullToAbsent || eddOverride != null) {
+      map['edd_override'] = Variable<DateTime>(eddOverride);
+    }
+    map['outcome'] = Variable<int>(outcome);
+    if (!nullToAbsent || outcomeDate != null) {
+      map['outcome_date'] = Variable<DateTime>(outcomeDate);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  PregnanciesCompanion toCompanion(bool nullToAbsent) {
+    return PregnanciesCompanion(
+      id: Value(id),
+      lmpDate: Value(lmpDate),
+      cycleLengthDays: Value(cycleLengthDays),
+      ultrasoundDate: ultrasoundDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ultrasoundDate),
+      ultrasoundGestationalAgeDays:
+          ultrasoundGestationalAgeDays == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ultrasoundGestationalAgeDays),
+      eddOverride: eddOverride == null && nullToAbsent
+          ? const Value.absent()
+          : Value(eddOverride),
+      outcome: Value(outcome),
+      outcomeDate: outcomeDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(outcomeDate),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory Pregnancy.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Pregnancy(
+      id: serializer.fromJson<int>(json['id']),
+      lmpDate: serializer.fromJson<DateTime>(json['lmpDate']),
+      cycleLengthDays: serializer.fromJson<int>(json['cycleLengthDays']),
+      ultrasoundDate: serializer.fromJson<DateTime?>(json['ultrasoundDate']),
+      ultrasoundGestationalAgeDays: serializer.fromJson<int?>(
+        json['ultrasoundGestationalAgeDays'],
+      ),
+      eddOverride: serializer.fromJson<DateTime?>(json['eddOverride']),
+      outcome: serializer.fromJson<int>(json['outcome']),
+      outcomeDate: serializer.fromJson<DateTime?>(json['outcomeDate']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'lmpDate': serializer.toJson<DateTime>(lmpDate),
+      'cycleLengthDays': serializer.toJson<int>(cycleLengthDays),
+      'ultrasoundDate': serializer.toJson<DateTime?>(ultrasoundDate),
+      'ultrasoundGestationalAgeDays': serializer.toJson<int?>(
+        ultrasoundGestationalAgeDays,
+      ),
+      'eddOverride': serializer.toJson<DateTime?>(eddOverride),
+      'outcome': serializer.toJson<int>(outcome),
+      'outcomeDate': serializer.toJson<DateTime?>(outcomeDate),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  Pregnancy copyWith({
+    int? id,
+    DateTime? lmpDate,
+    int? cycleLengthDays,
+    Value<DateTime?> ultrasoundDate = const Value.absent(),
+    Value<int?> ultrasoundGestationalAgeDays = const Value.absent(),
+    Value<DateTime?> eddOverride = const Value.absent(),
+    int? outcome,
+    Value<DateTime?> outcomeDate = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+  }) => Pregnancy(
+    id: id ?? this.id,
+    lmpDate: lmpDate ?? this.lmpDate,
+    cycleLengthDays: cycleLengthDays ?? this.cycleLengthDays,
+    ultrasoundDate: ultrasoundDate.present
+        ? ultrasoundDate.value
+        : this.ultrasoundDate,
+    ultrasoundGestationalAgeDays: ultrasoundGestationalAgeDays.present
+        ? ultrasoundGestationalAgeDays.value
+        : this.ultrasoundGestationalAgeDays,
+    eddOverride: eddOverride.present ? eddOverride.value : this.eddOverride,
+    outcome: outcome ?? this.outcome,
+    outcomeDate: outcomeDate.present ? outcomeDate.value : this.outcomeDate,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  Pregnancy copyWithCompanion(PregnanciesCompanion data) {
+    return Pregnancy(
+      id: data.id.present ? data.id.value : this.id,
+      lmpDate: data.lmpDate.present ? data.lmpDate.value : this.lmpDate,
+      cycleLengthDays: data.cycleLengthDays.present
+          ? data.cycleLengthDays.value
+          : this.cycleLengthDays,
+      ultrasoundDate: data.ultrasoundDate.present
+          ? data.ultrasoundDate.value
+          : this.ultrasoundDate,
+      ultrasoundGestationalAgeDays: data.ultrasoundGestationalAgeDays.present
+          ? data.ultrasoundGestationalAgeDays.value
+          : this.ultrasoundGestationalAgeDays,
+      eddOverride: data.eddOverride.present
+          ? data.eddOverride.value
+          : this.eddOverride,
+      outcome: data.outcome.present ? data.outcome.value : this.outcome,
+      outcomeDate: data.outcomeDate.present
+          ? data.outcomeDate.value
+          : this.outcomeDate,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Pregnancy(')
+          ..write('id: $id, ')
+          ..write('lmpDate: $lmpDate, ')
+          ..write('cycleLengthDays: $cycleLengthDays, ')
+          ..write('ultrasoundDate: $ultrasoundDate, ')
+          ..write(
+            'ultrasoundGestationalAgeDays: $ultrasoundGestationalAgeDays, ',
+          )
+          ..write('eddOverride: $eddOverride, ')
+          ..write('outcome: $outcome, ')
+          ..write('outcomeDate: $outcomeDate, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    lmpDate,
+    cycleLengthDays,
+    ultrasoundDate,
+    ultrasoundGestationalAgeDays,
+    eddOverride,
+    outcome,
+    outcomeDate,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Pregnancy &&
+          other.id == this.id &&
+          other.lmpDate == this.lmpDate &&
+          other.cycleLengthDays == this.cycleLengthDays &&
+          other.ultrasoundDate == this.ultrasoundDate &&
+          other.ultrasoundGestationalAgeDays ==
+              this.ultrasoundGestationalAgeDays &&
+          other.eddOverride == this.eddOverride &&
+          other.outcome == this.outcome &&
+          other.outcomeDate == this.outcomeDate &&
+          other.notes == this.notes);
+}
+
+class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
+  final Value<int> id;
+  final Value<DateTime> lmpDate;
+  final Value<int> cycleLengthDays;
+  final Value<DateTime?> ultrasoundDate;
+  final Value<int?> ultrasoundGestationalAgeDays;
+  final Value<DateTime?> eddOverride;
+  final Value<int> outcome;
+  final Value<DateTime?> outcomeDate;
+  final Value<String?> notes;
+  const PregnanciesCompanion({
+    this.id = const Value.absent(),
+    this.lmpDate = const Value.absent(),
+    this.cycleLengthDays = const Value.absent(),
+    this.ultrasoundDate = const Value.absent(),
+    this.ultrasoundGestationalAgeDays = const Value.absent(),
+    this.eddOverride = const Value.absent(),
+    this.outcome = const Value.absent(),
+    this.outcomeDate = const Value.absent(),
+    this.notes = const Value.absent(),
+  });
+  PregnanciesCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime lmpDate,
+    this.cycleLengthDays = const Value.absent(),
+    this.ultrasoundDate = const Value.absent(),
+    this.ultrasoundGestationalAgeDays = const Value.absent(),
+    this.eddOverride = const Value.absent(),
+    this.outcome = const Value.absent(),
+    this.outcomeDate = const Value.absent(),
+    this.notes = const Value.absent(),
+  }) : lmpDate = Value(lmpDate);
+  static Insertable<Pregnancy> custom({
+    Expression<int>? id,
+    Expression<DateTime>? lmpDate,
+    Expression<int>? cycleLengthDays,
+    Expression<DateTime>? ultrasoundDate,
+    Expression<int>? ultrasoundGestationalAgeDays,
+    Expression<DateTime>? eddOverride,
+    Expression<int>? outcome,
+    Expression<DateTime>? outcomeDate,
+    Expression<String>? notes,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (lmpDate != null) 'lmp_date': lmpDate,
+      if (cycleLengthDays != null) 'cycle_length_days': cycleLengthDays,
+      if (ultrasoundDate != null) 'ultrasound_date': ultrasoundDate,
+      if (ultrasoundGestationalAgeDays != null)
+        'ultrasound_gestational_age_days': ultrasoundGestationalAgeDays,
+      if (eddOverride != null) 'edd_override': eddOverride,
+      if (outcome != null) 'outcome': outcome,
+      if (outcomeDate != null) 'outcome_date': outcomeDate,
+      if (notes != null) 'notes': notes,
+    });
+  }
+
+  PregnanciesCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? lmpDate,
+    Value<int>? cycleLengthDays,
+    Value<DateTime?>? ultrasoundDate,
+    Value<int?>? ultrasoundGestationalAgeDays,
+    Value<DateTime?>? eddOverride,
+    Value<int>? outcome,
+    Value<DateTime?>? outcomeDate,
+    Value<String?>? notes,
+  }) {
+    return PregnanciesCompanion(
+      id: id ?? this.id,
+      lmpDate: lmpDate ?? this.lmpDate,
+      cycleLengthDays: cycleLengthDays ?? this.cycleLengthDays,
+      ultrasoundDate: ultrasoundDate ?? this.ultrasoundDate,
+      ultrasoundGestationalAgeDays:
+          ultrasoundGestationalAgeDays ?? this.ultrasoundGestationalAgeDays,
+      eddOverride: eddOverride ?? this.eddOverride,
+      outcome: outcome ?? this.outcome,
+      outcomeDate: outcomeDate ?? this.outcomeDate,
+      notes: notes ?? this.notes,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (lmpDate.present) {
+      map['lmp_date'] = Variable<DateTime>(lmpDate.value);
+    }
+    if (cycleLengthDays.present) {
+      map['cycle_length_days'] = Variable<int>(cycleLengthDays.value);
+    }
+    if (ultrasoundDate.present) {
+      map['ultrasound_date'] = Variable<DateTime>(ultrasoundDate.value);
+    }
+    if (ultrasoundGestationalAgeDays.present) {
+      map['ultrasound_gestational_age_days'] = Variable<int>(
+        ultrasoundGestationalAgeDays.value,
+      );
+    }
+    if (eddOverride.present) {
+      map['edd_override'] = Variable<DateTime>(eddOverride.value);
+    }
+    if (outcome.present) {
+      map['outcome'] = Variable<int>(outcome.value);
+    }
+    if (outcomeDate.present) {
+      map['outcome_date'] = Variable<DateTime>(outcomeDate.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PregnanciesCompanion(')
+          ..write('id: $id, ')
+          ..write('lmpDate: $lmpDate, ')
+          ..write('cycleLengthDays: $cycleLengthDays, ')
+          ..write('ultrasoundDate: $ultrasoundDate, ')
+          ..write(
+            'ultrasoundGestationalAgeDays: $ultrasoundGestationalAgeDays, ',
+          )
+          ..write('eddOverride: $eddOverride, ')
+          ..write('outcome: $outcome, ')
+          ..write('outcomeDate: $outcomeDate, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $DailyLogsTable dailyLogs = $DailyLogsTable(this);
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
+  late final $PregnanciesTable pregnancies = $PregnanciesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [dailyLogs, appSettings];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    dailyLogs,
+    appSettings,
+    pregnancies,
+  ];
 }
 
 typedef $$DailyLogsTableCreateCompanionBuilder =
@@ -1074,6 +1674,283 @@ typedef $$AppSettingsTableProcessedTableManager =
       AppSetting,
       PrefetchHooks Function()
     >;
+typedef $$PregnanciesTableCreateCompanionBuilder =
+    PregnanciesCompanion Function({
+      Value<int> id,
+      required DateTime lmpDate,
+      Value<int> cycleLengthDays,
+      Value<DateTime?> ultrasoundDate,
+      Value<int?> ultrasoundGestationalAgeDays,
+      Value<DateTime?> eddOverride,
+      Value<int> outcome,
+      Value<DateTime?> outcomeDate,
+      Value<String?> notes,
+    });
+typedef $$PregnanciesTableUpdateCompanionBuilder =
+    PregnanciesCompanion Function({
+      Value<int> id,
+      Value<DateTime> lmpDate,
+      Value<int> cycleLengthDays,
+      Value<DateTime?> ultrasoundDate,
+      Value<int?> ultrasoundGestationalAgeDays,
+      Value<DateTime?> eddOverride,
+      Value<int> outcome,
+      Value<DateTime?> outcomeDate,
+      Value<String?> notes,
+    });
+
+class $$PregnanciesTableFilterComposer
+    extends Composer<_$AppDatabase, $PregnanciesTable> {
+  $$PregnanciesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lmpDate => $composableBuilder(
+    column: $table.lmpDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get cycleLengthDays => $composableBuilder(
+    column: $table.cycleLengthDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get ultrasoundDate => $composableBuilder(
+    column: $table.ultrasoundDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ultrasoundGestationalAgeDays => $composableBuilder(
+    column: $table.ultrasoundGestationalAgeDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get eddOverride => $composableBuilder(
+    column: $table.eddOverride,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get outcome => $composableBuilder(
+    column: $table.outcome,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get outcomeDate => $composableBuilder(
+    column: $table.outcomeDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PregnanciesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PregnanciesTable> {
+  $$PregnanciesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lmpDate => $composableBuilder(
+    column: $table.lmpDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get cycleLengthDays => $composableBuilder(
+    column: $table.cycleLengthDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get ultrasoundDate => $composableBuilder(
+    column: $table.ultrasoundDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ultrasoundGestationalAgeDays => $composableBuilder(
+    column: $table.ultrasoundGestationalAgeDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get eddOverride => $composableBuilder(
+    column: $table.eddOverride,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get outcome => $composableBuilder(
+    column: $table.outcome,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get outcomeDate => $composableBuilder(
+    column: $table.outcomeDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PregnanciesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PregnanciesTable> {
+  $$PregnanciesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lmpDate =>
+      $composableBuilder(column: $table.lmpDate, builder: (column) => column);
+
+  GeneratedColumn<int> get cycleLengthDays => $composableBuilder(
+    column: $table.cycleLengthDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get ultrasoundDate => $composableBuilder(
+    column: $table.ultrasoundDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ultrasoundGestationalAgeDays => $composableBuilder(
+    column: $table.ultrasoundGestationalAgeDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get eddOverride => $composableBuilder(
+    column: $table.eddOverride,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get outcome =>
+      $composableBuilder(column: $table.outcome, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get outcomeDate => $composableBuilder(
+    column: $table.outcomeDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$PregnanciesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PregnanciesTable,
+          Pregnancy,
+          $$PregnanciesTableFilterComposer,
+          $$PregnanciesTableOrderingComposer,
+          $$PregnanciesTableAnnotationComposer,
+          $$PregnanciesTableCreateCompanionBuilder,
+          $$PregnanciesTableUpdateCompanionBuilder,
+          (
+            Pregnancy,
+            BaseReferences<_$AppDatabase, $PregnanciesTable, Pregnancy>,
+          ),
+          Pregnancy,
+          PrefetchHooks Function()
+        > {
+  $$PregnanciesTableTableManager(_$AppDatabase db, $PregnanciesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PregnanciesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PregnanciesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PregnanciesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> lmpDate = const Value.absent(),
+                Value<int> cycleLengthDays = const Value.absent(),
+                Value<DateTime?> ultrasoundDate = const Value.absent(),
+                Value<int?> ultrasoundGestationalAgeDays = const Value.absent(),
+                Value<DateTime?> eddOverride = const Value.absent(),
+                Value<int> outcome = const Value.absent(),
+                Value<DateTime?> outcomeDate = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+              }) => PregnanciesCompanion(
+                id: id,
+                lmpDate: lmpDate,
+                cycleLengthDays: cycleLengthDays,
+                ultrasoundDate: ultrasoundDate,
+                ultrasoundGestationalAgeDays: ultrasoundGestationalAgeDays,
+                eddOverride: eddOverride,
+                outcome: outcome,
+                outcomeDate: outcomeDate,
+                notes: notes,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DateTime lmpDate,
+                Value<int> cycleLengthDays = const Value.absent(),
+                Value<DateTime?> ultrasoundDate = const Value.absent(),
+                Value<int?> ultrasoundGestationalAgeDays = const Value.absent(),
+                Value<DateTime?> eddOverride = const Value.absent(),
+                Value<int> outcome = const Value.absent(),
+                Value<DateTime?> outcomeDate = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+              }) => PregnanciesCompanion.insert(
+                id: id,
+                lmpDate: lmpDate,
+                cycleLengthDays: cycleLengthDays,
+                ultrasoundDate: ultrasoundDate,
+                ultrasoundGestationalAgeDays: ultrasoundGestationalAgeDays,
+                eddOverride: eddOverride,
+                outcome: outcome,
+                outcomeDate: outcomeDate,
+                notes: notes,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PregnanciesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PregnanciesTable,
+      Pregnancy,
+      $$PregnanciesTableFilterComposer,
+      $$PregnanciesTableOrderingComposer,
+      $$PregnanciesTableAnnotationComposer,
+      $$PregnanciesTableCreateCompanionBuilder,
+      $$PregnanciesTableUpdateCompanionBuilder,
+      (Pregnancy, BaseReferences<_$AppDatabase, $PregnanciesTable, Pregnancy>),
+      Pregnancy,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1082,4 +1959,6 @@ class $AppDatabaseManager {
       $$DailyLogsTableTableManager(_db, _db.dailyLogs);
   $$AppSettingsTableTableManager get appSettings =>
       $$AppSettingsTableTableManager(_db, _db.appSettings);
+  $$PregnanciesTableTableManager get pregnancies =>
+      $$PregnanciesTableTableManager(_db, _db.pregnancies);
 }

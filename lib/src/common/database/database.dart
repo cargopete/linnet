@@ -6,7 +6,7 @@ import 'tables.dart';
 part 'database.g.dart';
 
 /// The encrypted application database. All persistent state lives here.
-@DriftDatabase(tables: [DailyLogs, AppSettings])
+@DriftDatabase(tables: [DailyLogs, AppSettings, Pregnancies])
 class AppDatabase extends _$AppDatabase {
   /// Production constructor: opens the on-disk encrypted database with [keyHex]
   /// (the Keychain-held DEK).
@@ -17,7 +17,16 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      // v2 introduced pregnancy tracking.
+      if (from < 2) await m.createTable(pregnancies);
+    },
+  );
 
   // --- Daily logs ---------------------------------------------------------
 
@@ -35,6 +44,36 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteLog(DateTime date) =>
       (delete(dailyLogs)..where((t) => t.date.equals(date))).go();
+
+  // --- Pregnancies --------------------------------------------------------
+
+  /// The most recent ongoing pregnancy (outcome == 0), or null.
+  Future<Pregnancy?> getActivePregnancy() =>
+      (select(pregnancies)
+            ..where((t) => t.outcome.equals(0))
+            ..orderBy([(t) => OrderingTerm.desc(t.lmpDate)])
+            ..limit(1))
+          .getSingleOrNull();
+
+  Stream<Pregnancy?> watchActivePregnancy() =>
+      (select(pregnancies)
+            ..where((t) => t.outcome.equals(0))
+            ..orderBy([(t) => OrderingTerm.desc(t.lmpDate)])
+            ..limit(1))
+          .watchSingleOrNull();
+
+  Future<List<Pregnancy>> getAllPregnancies() => (select(
+    pregnancies,
+  )..orderBy([(t) => OrderingTerm.desc(t.lmpDate)])).get();
+
+  Future<int> insertPregnancy(PregnanciesCompanion entry) =>
+      into(pregnancies).insert(entry);
+
+  Future<void> updatePregnancy(PregnanciesCompanion entry) =>
+      update(pregnancies).replace(entry);
+
+  Future<void> deletePregnancy(int id) =>
+      (delete(pregnancies)..where((t) => t.id.equals(id))).go();
 
   // --- Settings -----------------------------------------------------------
 
@@ -60,6 +99,7 @@ class AppDatabase extends _$AppDatabase {
     await batch((b) {
       b.deleteWhere(dailyLogs, (_) => const Constant(true));
       b.deleteWhere(appSettings, (_) => const Constant(true));
+      b.deleteWhere(pregnancies, (_) => const Constant(true));
     });
   }
 }

@@ -12,12 +12,15 @@
 
 ## Stage 2 — Differentiators
 
+- **Pregnancy mode** ✅ — Naegele's-rule EDD with cycle-length adjustment,
+  first-trimester ultrasound dating (ACOG >7-day precedence) and clinician-EDD
+  override, week-by-week fetal milestones, and explicit "gave birth" / "loss"
+  states. *Follow-ups:* edit dating after start, kick counts, contraction timer,
+  appointment/scan log, pregnancy history view.
 - **HealthKit** read/write for reproductive categories (`menstrualFlow`,
   `ovulationTestResult`, `cervicalMucusQuality`, `basalBodyTemperature`,
   `sexualActivity`, `pregnancy`, …) via the `health` package. Data kept on-device
   and excluded from backup; never used for advertising (Guideline 5.1.3).
-- **Pregnancy mode:** Naegele's-rule EDD with cycle-length adjustment, week-by-week
-  tracking, and explicit "gave birth" / "pregnancy loss" states.
 - **Perimenopause-friendly** symptom-only tracking (no bleeding required).
 - **Inclusive onboarding** that asks the tracking goal and adapts UI/copy.
 - Local notifications (`flutter_local_notifications`) with non-descriptive content

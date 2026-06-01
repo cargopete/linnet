@@ -32,12 +32,12 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | Biometric app-lock (Face ID / passcode) | ✅ |
 | DB excluded from iCloud/iTunes backup | ✅ |
 | Medical disclaimer, no contraception claims | ✅ |
+| **Pregnancy mode** (Naegele's-rule EDD + ultrasound dating, week-by-week, birth/loss states) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
-Planned (Stage 2+): HealthKit reproductive categories, pregnancy mode
-(Naegele's-rule EDD), perimenopause symptom-only tracking, inclusive onboarding,
-and an *opt-in* zero-knowledge encrypted backup. See
-[`docs/ROADMAP.md`](docs/ROADMAP.md).
+Planned (Stage 2+): HealthKit reproductive categories, perimenopause
+symptom-only tracking, inclusive onboarding, and an *opt-in* zero-knowledge
+encrypted backup. See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Architecture
 
