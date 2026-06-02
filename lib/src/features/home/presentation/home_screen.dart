@@ -10,6 +10,7 @@ import '../../baby/presentation/baby_home_screen.dart';
 import '../../cycle_logging/presentation/day_log_screen.dart';
 import '../../insights/presentation/perimenopause_home.dart';
 import '../../onboarding/domain/tracking_goal.dart';
+import '../../predictions/presentation/cycle_phase_card.dart';
 import '../../predictions/presentation/prediction_card.dart';
 import '../../pregnancy/application/pregnancy_providers.dart';
 import '../../pregnancy/presentation/pregnancy_dashboard.dart';
@@ -44,6 +45,7 @@ class HomeScreen extends ConsumerWidget {
     final today = DateTime.now();
     final cycles = ref.watch(cyclesProvider);
     final prediction = ref.watch(predictionProvider);
+    final phase = ref.watch(cyclePhaseProvider);
     final disclaimerAccepted =
         ref.watch(disclaimerAcceptedProvider).value ?? true;
 
@@ -71,6 +73,10 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(cycleStatus, style: theme.textTheme.headlineSmall),
           const SizedBox(height: 16),
+          if (phase != null) ...[
+            CyclePhaseCard(status: phase),
+            const SizedBox(height: 16),
+          ],
           if (prediction != null)
             PredictionCard(prediction: prediction)
           else

@@ -4,12 +4,14 @@ import '../features/cycle_logging/data/daily_log_repository.dart';
 import '../features/cycle_logging/domain/daily_log.dart';
 import '../features/predictions/domain/cycle.dart';
 import '../features/predictions/domain/cycle_analyzer.dart';
+import '../features/predictions/domain/cycle_phase.dart';
 import '../features/predictions/domain/cycle_prediction.dart';
 import '../features/predictions/domain/cycle_predictor.dart';
 import 'crypto/database_key_store.dart';
 // Hide the Drift-generated row class so `DailyLog` unambiguously means the domain
 // entity throughout the app.
 import 'database/database.dart' hide DailyLog;
+import 'util/date_only.dart';
 
 /// The Keychain-backed DEK store. Overridden in `main` with the instance used at
 /// bootstrap so the same handle is shared app-wide.
@@ -52,6 +54,20 @@ final predictionProvider = Provider<CyclePrediction?>((ref) {
   return ref
       .watch(cyclePredictorProvider)
       .predict(cycles, today: DateTime.now());
+});
+
+/// Which menstrual-cycle phase the user is in today, or null with no history.
+final cyclePhaseProvider = Provider<CyclePhaseStatus?>((ref) {
+  final cycles = ref.watch(cyclesProvider);
+  if (cycles.isEmpty) return null;
+  final cycleDay = cycles.last.startDate.daysUntil(DateTime.now()) + 1;
+  if (cycleDay < 1) return null;
+  final prediction = ref.watch(predictionProvider);
+  return CyclePhaseCalculator.forDay(
+    cycleDay: cycleDay,
+    cycleLength: prediction?.meanCycleLength.round() ?? 28,
+    periodLength: prediction?.predictedPeriodLength ?? 5,
+  );
 });
 
 /// Initial value of the app-lock setting, read once at bootstrap and injected.

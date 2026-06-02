@@ -28,6 +28,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | Encrypted local store (Drift + SQLite3MultipleCiphers, key in Keychain) | ✅ |
 | Daily logging (flow, symptoms, mood, BBT, notes) | ✅ |
 | Cycle detection + calendar/statistical prediction with **uncertainty ranges** | ✅ |
+| **Cycle phases** (which phase you're in today + what's happening, on the period home) | ✅ |
 | Calendar with flow/period/fertile markers | ✅ |
 | Biometric app-lock (Face ID / passcode) | ✅ |
 | DB excluded from iCloud/iTunes backup | ✅ |
@@ -90,7 +91,7 @@ installed (`xcodebuild -downloadPlatform iOS` if Xcode reports
 ```bash
 flutter pub get
 dart run build_runner build      # generate Drift code (*.g.dart)
-flutter test                     # 90 tests, all green
+flutter test                     # 95 tests, all green
 flutter run                      # on a simulator or device
 ```
 
