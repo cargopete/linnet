@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../domain/cycle_phase.dart';
 
+/// The accent colour for a cycle phase, shared by the phase card and the
+/// symptom-patterns card.
+Color phaseColor(CyclePhase p) => switch (p) {
+  CyclePhase.menstrual => const Color(0xFFBB5366),
+  CyclePhase.follicular => const Color(0xFF6F9E5E),
+  CyclePhase.ovulatory => const Color(0xFFE0A23A),
+  CyclePhase.luteal => const Color(0xFF8A6FA8),
+};
+
 /// Shows the user's current menstrual-cycle phase with warm, non-diagnostic
 /// information about what's happening and how they might feel.
 class CyclePhaseCard extends StatelessWidget {
@@ -13,7 +22,7 @@ class CyclePhaseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final phase = status.phase;
-    final color = _color(phase);
+    final color = phaseColor(phase);
 
     return Card(
       child: Padding(
@@ -64,13 +73,6 @@ class CyclePhaseCard extends StatelessWidget {
       ),
     );
   }
-
-  static Color _color(CyclePhase p) => switch (p) {
-    CyclePhase.menstrual => const Color(0xFFBB5366),
-    CyclePhase.follicular => const Color(0xFF6F9E5E),
-    CyclePhase.ovulatory => const Color(0xFFE0A23A),
-    CyclePhase.luteal => const Color(0xFF8A6FA8),
-  };
 
   static IconData _icon(CyclePhase p) => switch (p) {
     CyclePhase.menstrual => Icons.water_drop,

@@ -12,6 +12,7 @@ import '../../insights/presentation/perimenopause_home.dart';
 import '../../onboarding/domain/tracking_goal.dart';
 import '../../predictions/presentation/cycle_phase_card.dart';
 import '../../predictions/presentation/prediction_card.dart';
+import '../../predictions/presentation/symptom_patterns_card.dart';
 import '../../pregnancy/application/pregnancy_providers.dart';
 import '../../pregnancy/presentation/pregnancy_dashboard.dart';
 import '../../pregnancy/presentation/reflection_screen.dart';
@@ -81,6 +82,7 @@ class HomeScreen extends ConsumerWidget {
             PredictionCard(prediction: prediction)
           else
             const _EmptyState(),
+          const SymptomPatternsCard(),
           const SizedBox(height: 16),
           const _StartPregnancyTile(),
           const SizedBox(height: 8),

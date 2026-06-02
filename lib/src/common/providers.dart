@@ -7,6 +7,7 @@ import '../features/predictions/domain/cycle_analyzer.dart';
 import '../features/predictions/domain/cycle_phase.dart';
 import '../features/predictions/domain/cycle_prediction.dart';
 import '../features/predictions/domain/cycle_predictor.dart';
+import '../features/predictions/domain/symptom_phase_correlations.dart';
 import 'crypto/database_key_store.dart';
 // Hide the Drift-generated row class so `DailyLog` unambiguously means the domain
 // entity throughout the app.
@@ -54,6 +55,20 @@ final predictionProvider = Provider<CyclePrediction?>((ref) {
   return ref
       .watch(cyclePredictorProvider)
       .predict(cycles, today: DateTime.now());
+});
+
+/// On-device symptom↔phase correlations, recomputed when logs or cycles change.
+final symptomPhaseCorrelationsProvider = Provider<SymptomPhaseCorrelations>((
+  ref,
+) {
+  final cycles = ref.watch(cyclesProvider);
+  final logs = ref.watch(allLogsProvider).value ?? const [];
+  final prediction = ref.watch(predictionProvider);
+  return SymptomPhaseCorrelations.compute(
+    cycles: cycles,
+    logs: logs,
+    meanCycleLength: prediction?.meanCycleLength.round() ?? 28,
+  );
 });
 
 /// Which menstrual-cycle phase the user is in today, or null with no history.
