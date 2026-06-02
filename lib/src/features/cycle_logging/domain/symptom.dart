@@ -11,7 +11,11 @@ enum Symptom {
   backache('Backache'),
   nausea('Nausea'),
   cravings('Cravings'),
-  insomnia('Insomnia');
+  insomnia('Insomnia'),
+  hotFlashes('Hot flashes'),
+  nightSweats('Night sweats'),
+  moodSwings('Mood swings'),
+  jointAche('Joint aches');
 
   const Symptom(this.label);
   final String label;

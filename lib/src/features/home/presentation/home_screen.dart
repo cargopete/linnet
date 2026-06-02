@@ -6,6 +6,8 @@ import '../../../common/preferences.dart';
 import '../../../common/providers.dart';
 import '../../../common/util/date_only.dart';
 import '../../cycle_logging/presentation/day_log_screen.dart';
+import '../../insights/presentation/perimenopause_home.dart';
+import '../../onboarding/domain/tracking_goal.dart';
 import '../../predictions/presentation/prediction_card.dart';
 import '../../pregnancy/application/pregnancy_providers.dart';
 import '../../pregnancy/presentation/pregnancy_dashboard.dart';
@@ -29,6 +31,11 @@ class HomeScreen extends ConsumerWidget {
         appBar: AppBar(title: const Text('Pregnancy')),
         body: const PregnancyDashboard(),
       );
+    }
+
+    // Perimenopause tracking is symptom-focused, not prediction-focused.
+    if (ref.watch(trackingGoalProvider) == TrackingGoal.perimenopause) {
+      return const PerimenopauseHome();
     }
 
     final theme = Theme.of(context);

@@ -32,8 +32,10 @@
   health / perimenopause) reframes the forecast: "best days to try" vs
   "higher-risk days", a stronger not-contraception caution when avoiding, and a
   symptom-focused note in perimenopause. Goal is changeable in Settings.
-- **Perimenopause-friendly** symptom-only tracking (no bleeding required) —
-  copy/notes done; dedicated symptom-only views still to come.
+- ✅ **Perimenopause views** — a symptom-focused home that replaces cycle-day and
+  predictions with "days since last period" and on-device symptom insights
+  (ranked frequencies over 90 days), plus perimenopause symptoms (hot flashes,
+  night sweats, mood swings, joint aches). Pure/tested insights engine.
 - Local notifications (`flutter_local_notifications`) with non-descriptive content
   ("Time to log", never reproductive details).
 - Duress/decoy PIN (à la Euki).
