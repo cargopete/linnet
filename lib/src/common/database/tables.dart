@@ -37,6 +37,32 @@ class Pregnancies extends Table {
   TextColumn get notes => text().nullable()();
 }
 
+/// A kick-counting session (ACOG "count to 10"). [endTime] null while running.
+class KickSessions extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get pregnancyId => integer()();
+  DateTimeColumn get startTime => dateTime()();
+  DateTimeColumn get endTime => dateTime().nullable()();
+  IntColumn get kickCount => integer().withDefault(const Constant(0))();
+}
+
+/// A single timed contraction. Frequency is derived start-to-start in the domain.
+class Contractions extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get pregnancyId => integer()();
+  DateTimeColumn get startTime => dateTime()();
+  DateTimeColumn get endTime => dateTime()();
+}
+
+/// A prenatal appointment or scan.
+class Appointments extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get pregnancyId => integer()();
+  DateTimeColumn get scheduledFor => dateTime()();
+  TextColumn get title => text()();
+  TextColumn get notes => text().nullable()();
+}
+
 /// Generic key/value store for app settings (onboarding goal, app-lock toggle,
 /// disclaimer acceptance, etc.). Kept opaque so adding a setting needs no schema
 /// migration.

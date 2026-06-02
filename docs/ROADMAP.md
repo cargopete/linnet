@@ -14,9 +14,12 @@
 
 - **Pregnancy mode** ✅ — Naegele's-rule EDD with cycle-length adjustment,
   first-trimester ultrasound dating (ACOG >7-day precedence) and clinician-EDD
-  override, week-by-week fetal milestones, and explicit "gave birth" / "loss"
-  states. *Follow-ups:* edit dating after start, kick counts, contraction timer,
-  appointment/scan log, pregnancy history view.
+  override, week-by-week fetal milestones, explicit "gave birth" / "loss" states,
+  and the late-pregnancy tools: **kick counter** (ACOG count-to-10 + personal
+  baseline), **contraction timer** (start-to-start frequency, "511"-style call
+  banner, copyable summary), **appointment/scan log** (standard schedule
+  quick-adds), and **edit dating after start**. *Follow-ups:* see the pregnancy
+  feature map below.
 - **HealthKit** ✅ — manual import/export of **menstrual flow** via the `health`
   package (v13), with a pure tested `FlowIntensity ↔ MenstrualFlow` mapping, the
   HealthKit entitlement and `NSHealth*UsageDescription` strings wired in. Data
@@ -42,6 +45,62 @@
 - A forced, acknowledged **recovery key** ("lost key = lost data").
 - A dumb ciphertext store (custom REST / Supabase as opaque blob storage).
 - Last-write-wins sync. **Off by default, opt-in.**
+
+## Pregnancy experience — feature map (from the "Bairn" research)
+
+What we already have vs. what's worth adding. ✅ shipped · ◐ partial · ⬜ to add.
+
+**Dating & week-by-week core**
+- ✅ LMP→EDD/gestational-age engine (Naegele + cycle adj, ultrasound precedence,
+  clinician override), trimester, days-to-go, editable after start.
+- ◐ Week-by-week milestones — we ship a simple "size of a…" + note table; the
+  research wants a **medically-sourced size dataset** (Perinatology/Hadlock) with
+  real cm/g per week and the **CRL→crown-heel switch disclosed**.
+- ⬜ **User-selectable comparison themes** (classic / toys / sports / sea
+  creatures / a **bird-themed signature set** on-brand for Linnet) computed from
+  real measurements — the single biggest delight/differentiation lever.
+- ⬜ Shareable, locally-rendered weekly/milestone cards (privacy-safe by default).
+
+**Late-pregnancy toolkit**
+- ✅ Kick counter (count-to-10, personal baseline).
+- ✅ Contraction timer (start-to-start, call-pattern banner, copy summary).
+- ✅ Appointments & scans with standard-schedule quick-adds.
+- ⬜ Editable provider "go-to-hospital" rule; per-contraction intensity tags;
+  keep-screen-on + dark "labor mode"; Apple Watch / Live Activity.
+- ⬜ "Questions for next appointment" running list.
+
+**Health tracking**
+- ◐ Symptom logging exists for cycles; pregnancy-aware symptom suggestions +
+  gentle on-device trend insights + soft "consider calling your provider" nudges
+  for red-flag combinations ⬜.
+- ⬜ Weight (non-judgmental range context), **gestational-diabetes glucose log**
+  (flagged as a sleeper hit — meal tagging, targets, OB export), blood pressure,
+  medication/supplement reminders, hydration, mood check-in (EPDS-style).
+
+**Emotional safety & inclusivity (the headline market gap)**
+- ◐ Loss handled as an explicit state with gentle copy; the research wants a full
+  **loss/pause "reflection mode"**: immediately stop all baby notifications, never
+  auto-switch to TTC, offer memorialization (keep name/journal) rather than wiping
+  ⬜. ~1 in 4 pregnancies — a core flow, not an edge case.
+- ⬜ Inclusive language setting (gendered / neutral / custom), optional/non-binary
+  baby-sex framing, neutral partner/support-person role.
+- ⬜ Calm, low-density content that "ends each week on warmth"; avoid anxiety-fuel.
+
+**Bonding & memory-keeping**
+- ⬜ Encrypted ultrasound gallery, "firsts" log, letters-to-baby / weekly one-line
+  prompt compiling into an exportable keepsake PDF, bump-photo journal + timelapse.
+
+**Logistics**
+- ⬜ Birth-plan builder, hospital-bag checklist, **postpartum / "fourth trimester"**
+  section (almost every app abandons the user at birth).
+
+**Platform touches**
+- ⬜ Home-screen widgets ("this week" size, countdown, next appointment), Siri
+  shortcut ("log a kick"), notifications (opt-in, non-descriptive, pausable),
+  Apple Watch companion, encrypted export/import for device moves.
+
+These slot into Stages 2–3; the loss/pause reflection mode, themed size
+comparisons, and the glucose module are the highest-value next picks.
 
 ## Thresholds that change the plan
 

@@ -6,6 +6,10 @@ import '../application/pregnancy_providers.dart';
 import '../domain/fetal_development.dart';
 import '../domain/pregnancy.dart';
 import '../domain/pregnancy_outcome.dart';
+import 'appointments_screen.dart';
+import 'contraction_timer_screen.dart';
+import 'edit_dating_screen.dart';
+import 'kick_counter_screen.dart';
 
 /// The pregnancy-mode home view: gestational age, due date, progress and a
 /// week-by-week milestone, with the explicit "gave birth" / "record a loss"
@@ -72,6 +76,8 @@ class PregnancyDashboard extends ConsumerWidget {
             fontStyle: FontStyle.italic,
           ),
         ),
+        const SizedBox(height: 16),
+        _ToolsGrid(pregnancyId: pregnancy.id!),
         const SizedBox(height: 24),
         Row(
           children: [
@@ -143,5 +149,67 @@ class PregnancyDashboard extends ConsumerWidget {
             pregnancy.copyWith(outcome: outcome, outcomeDate: DateTime.now()),
           );
     }
+  }
+}
+
+/// Quick links to the late-pregnancy tools.
+class _ToolsGrid extends StatelessWidget {
+  const _ToolsGrid({required this.pregnancyId});
+
+  final int pregnancyId;
+
+  @override
+  Widget build(BuildContext context) {
+    void go(Widget screen) => Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => screen));
+
+    final tools = <(IconData, String, Widget)>[
+      (
+        Icons.child_care_outlined,
+        'Kick counter',
+        KickCounterScreen(pregnancyId: pregnancyId),
+      ),
+      (
+        Icons.timer_outlined,
+        'Contractions',
+        ContractionTimerScreen(pregnancyId: pregnancyId),
+      ),
+      (
+        Icons.event_outlined,
+        'Appointments',
+        AppointmentsScreen(pregnancyId: pregnancyId),
+      ),
+      (Icons.edit_calendar_outlined, 'Edit dates', const EditDatingScreen()),
+    ];
+
+    return GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      childAspectRatio: 2.4,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      children: [
+        for (final (icon, label, screen) in tools)
+          Card(
+            margin: EdgeInsets.zero,
+            child: InkWell(
+              onTap: () => go(screen),
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    Icon(icon),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(label)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }

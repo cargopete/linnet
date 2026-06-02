@@ -6,7 +6,16 @@ import 'tables.dart';
 part 'database.g.dart';
 
 /// The encrypted application database. All persistent state lives here.
-@DriftDatabase(tables: [DailyLogs, AppSettings, Pregnancies])
+@DriftDatabase(
+  tables: [
+    DailyLogs,
+    AppSettings,
+    Pregnancies,
+    KickSessions,
+    Contractions,
+    Appointments,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   /// Production constructor: opens the on-disk encrypted database with [keyHex]
   /// (the Keychain-held DEK).
@@ -17,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -25,6 +34,12 @@ class AppDatabase extends _$AppDatabase {
     onUpgrade: (m, from, to) async {
       // v2 introduced pregnancy tracking.
       if (from < 2) await m.createTable(pregnancies);
+      // v3 added pregnancy tools: kick sessions, contractions, appointments.
+      if (from < 3) {
+        await m.createTable(kickSessions);
+        await m.createTable(contractions);
+        await m.createTable(appointments);
+      }
     },
   );
 
@@ -75,6 +90,44 @@ class AppDatabase extends _$AppDatabase {
   Future<void> deletePregnancy(int id) =>
       (delete(pregnancies)..where((t) => t.id.equals(id))).go();
 
+  // --- Pregnancy tools ----------------------------------------------------
+
+  Future<int> insertKickSession(KickSessionsCompanion entry) =>
+      into(kickSessions).insert(entry);
+
+  Future<void> updateKickSession(KickSessionsCompanion entry) =>
+      update(kickSessions).replace(entry);
+
+  Stream<List<KickSession>> watchKickSessions(int pregnancyId) =>
+      (select(kickSessions)
+            ..where((t) => t.pregnancyId.equals(pregnancyId))
+            ..orderBy([(t) => OrderingTerm.desc(t.startTime)]))
+          .watch();
+
+  Future<int> insertContraction(ContractionsCompanion entry) =>
+      into(contractions).insert(entry);
+
+  Future<void> deleteContraction(int id) =>
+      (delete(contractions)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<Contraction>> watchContractions(int pregnancyId) =>
+      (select(contractions)
+            ..where((t) => t.pregnancyId.equals(pregnancyId))
+            ..orderBy([(t) => OrderingTerm.desc(t.startTime)]))
+          .watch();
+
+  Future<int> insertAppointment(AppointmentsCompanion entry) =>
+      into(appointments).insert(entry);
+
+  Future<void> deleteAppointment(int id) =>
+      (delete(appointments)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<Appointment>> watchAppointments(int pregnancyId) =>
+      (select(appointments)
+            ..where((t) => t.pregnancyId.equals(pregnancyId))
+            ..orderBy([(t) => OrderingTerm.asc(t.scheduledFor)]))
+          .watch();
+
   // --- Settings -----------------------------------------------------------
 
   Future<String?> getSetting(String key) async {
@@ -100,6 +153,9 @@ class AppDatabase extends _$AppDatabase {
       b.deleteWhere(dailyLogs, (_) => const Constant(true));
       b.deleteWhere(appSettings, (_) => const Constant(true));
       b.deleteWhere(pregnancies, (_) => const Constant(true));
+      b.deleteWhere(kickSessions, (_) => const Constant(true));
+      b.deleteWhere(contractions, (_) => const Constant(true));
+      b.deleteWhere(appointments, (_) => const Constant(true));
     });
   }
 }

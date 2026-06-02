@@ -35,6 +35,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Pregnancy mode** (Naegele's-rule EDD + ultrasound dating, week-by-week, birth/loss states) | ✅ |
 | **Onboarding + goal-based mode-switching** (avoid / conceive / health / perimenopause) | ✅ |
 | **HealthKit sync** (menstrual flow import/export, manual, on-device) | ✅ |
+| **Pregnancy tools** (kick counter, contraction timer, appointments, edit dating) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
 Planned (Stage 2+): perimenopause-specific views, pregnancy follow-ups (kick
