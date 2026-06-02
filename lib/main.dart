@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'src/app.dart';
 import 'src/common/crypto/database_key_store.dart';
 import 'src/common/database/database.dart';
+import 'src/common/dev_seed.dart';
 import 'src/common/preferences.dart';
 import 'src/common/providers.dart';
 import 'src/features/backup/data/backup_secret_store.dart';
@@ -24,6 +25,12 @@ Future<void> main() async {
   final keyStore = DatabaseKeyStore();
   final keyHex = await keyStore.getOrCreateKeyHex();
   final database = AppDatabase(keyHex);
+
+  // Dev-only: `--dart-define=SEED=cycle|pregnancy|perimenopause` populates demo
+  // data for reviewing screens on a simulator. No-op in normal builds.
+  const seed = String.fromEnvironment('SEED');
+  if (seed.isNotEmpty) await seedDemo(database, seed);
+
   final appLockEnabled =
       (await database.getSetting('appLockEnabled')) == 'true';
   final onboarded =
