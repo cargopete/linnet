@@ -66,13 +66,18 @@ lib/src/
   common/         # crypto, database, routing, theme, util, preferences, providers
   features/
     app_lock/         application + presentation
+    baby/             domain + data + application + presentation (child profiles, logger)
+    backup/           domain (crypto) + data (file + iCloud) + presentation
     calendar/         presentation
     cycle_logging/    domain + data + application + presentation
+    glucose/          domain + data + application + presentation
     health_sync/      domain + data + application + presentation (HealthKit)
     home/             presentation
+    insights/         domain + application + presentation (perimenopause/symptoms)
     onboarding/       domain + presentation
-    predictions/      domain (analyzer + predictor) + presentation
+    predictions/      domain (analyzer, predictor, phases, correlations) + presentation
     pregnancy/        domain + data + application + presentation
+    reminders/        domain + data + application + presentation (local notifications)
     settings/         presentation
 ```
 
@@ -106,11 +111,15 @@ refuse to open the database in cleartext otherwise.
 ## Tests
 
 - Pure-domain unit tests: date utilities (incl. DST-safe day maths), cycle
-  analyzer, cycle predictor, pregnancy dating (Naegele + ultrasound precedence),
-  contraction stats, tracking-goal preferences, HealthKit flow mapping.
+  analyzer, cycle predictor, **cycle phases**, **symptom↔phase correlations**,
+  pregnancy dating (Naegele + ultrasound precedence), contraction stats, glucose
+  units/targets, keepsake builder, **baby age/corrected-age + time-since**,
+  HealthKit flow mapping, reminder scheduling, and the **backup crypto**
+  (Argon2id + AES-GCM, recovery key, stable-key round-trip).
 - Repository round-trips against an in-memory database (daily logs, pregnancy,
-  pregnancy tools).
-- Widget tests for the goal-aware prediction card.
+  pregnancy tools, glucose, memories, photos, children/events, reminders) and the
+  encrypted backup export→import across two databases.
+- Widget tests for the goal-aware prediction card; a theme build/render test.
 
 ```bash
 flutter test
