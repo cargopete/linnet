@@ -94,8 +94,10 @@ What we already have vs. what's worth adding. ✅ shipped · ◐ partial · ⬜ 
 - ⬜ Calm, low-density content that "ends each week on warmth"; avoid anxiety-fuel.
 
 **Bonding & memory-keeping**
-- ⬜ Encrypted ultrasound gallery, "firsts" log, letters-to-baby / weekly one-line
-  prompt compiling into an exportable keepsake PDF, bump-photo journal + timelapse.
+- ✅ **Firsts + letters** — a chronological memories timeline (one-tap "first"
+  suggestions, letters to the baby) with a pure, tested keepsake compiler and a
+  copyable keepsake. *Follow-ups:* exportable keepsake **PDF**, encrypted
+  ultrasound gallery, bump-photo journal + timelapse, weekly one-line prompt.
 
 **Logistics**
 - ⬜ Birth-plan builder, hospital-bag checklist, **postpartum / "fourth trimester"**

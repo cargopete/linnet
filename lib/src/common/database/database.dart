@@ -15,6 +15,7 @@ part 'database.g.dart';
     Contractions,
     Appointments,
     GlucoseReadings,
+    Memories,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -27,7 +28,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -45,6 +46,8 @@ class AppDatabase extends _$AppDatabase {
       if (from < 4) await m.addColumn(pregnancies, pregnancies.babyName);
       // v5 added blood-glucose logging.
       if (from < 5) await m.createTable(glucoseReadings);
+      // v6 added bonding memories (firsts + letters).
+      if (from < 6) await m.createTable(memories);
     },
   );
 
@@ -151,6 +154,20 @@ class AppDatabase extends _$AppDatabase {
     glucoseReadings,
   )..orderBy([(t) => OrderingTerm.desc(t.takenAt)])).watch();
 
+  // --- Memories -----------------------------------------------------------
+
+  Future<int> insertMemory(MemoriesCompanion entry) =>
+      into(memories).insert(entry);
+
+  Future<void> deleteMemory(int id) =>
+      (delete(memories)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<MemoryRow>> watchMemories(int pregnancyId) =>
+      (select(memories)
+            ..where((t) => t.pregnancyId.equals(pregnancyId))
+            ..orderBy([(t) => OrderingTerm.asc(t.occurredOn)]))
+          .watch();
+
   // --- Settings -----------------------------------------------------------
 
   Future<String?> getSetting(String key) async {
@@ -180,6 +197,7 @@ class AppDatabase extends _$AppDatabase {
       b.deleteWhere(contractions, (_) => const Constant(true));
       b.deleteWhere(appointments, (_) => const Constant(true));
       b.deleteWhere(glucoseReadings, (_) => const Constant(true));
+      b.deleteWhere(memories, (_) => const Constant(true));
     });
   }
 }

@@ -67,6 +67,20 @@ class Appointments extends Table {
   TextColumn get notes => text().nullable()();
 }
 
+/// A bonding/memory entry: a "first" milestone or a letter to the baby.
+/// [kind] is the MemoryKind ordinal. Named MemoryRow to avoid clashing with the
+/// domain `Memory` type.
+@DataClassName('MemoryRow')
+class Memories extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get pregnancyId => integer()();
+  IntColumn get kind => integer().withDefault(const Constant(0))();
+  TextColumn get title => text()();
+  DateTimeColumn get occurredOn => dateTime()();
+  TextColumn get body => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
 /// A blood-glucose reading. [valueMgdl] is canonical mg/dL; [context] is the
 /// GlucoseContext ordinal.
 class GlucoseReadings extends Table {

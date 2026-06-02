@@ -39,6 +39,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Loss reflection mode** (no wipe, no auto-switch, memorialise, leave only when ready) | ✅ |
 | **Themed week-by-week sizes** (real cm/g dataset, switchable themes incl. a bird set) | ✅ |
 | **Glucose log** (gestational diabetes: meal-tagged, typical targets, mg/dL ↔ mmol/L, OB export) | ✅ |
+| **Bonding & memories** (firsts + letters timeline, copyable keepsake) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
 Planned next: per-screen design polish, perimenopause-specific views, bonding &
