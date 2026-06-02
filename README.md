@@ -34,11 +34,12 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | Medical disclaimer, no contraception claims | ✅ |
 | **Pregnancy mode** (Naegele's-rule EDD + ultrasound dating, week-by-week, birth/loss states) | ✅ |
 | **Onboarding + goal-based mode-switching** (avoid / conceive / health / perimenopause) | ✅ |
+| **HealthKit sync** (menstrual flow import/export, manual, on-device) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
-Planned (Stage 2+): HealthKit reproductive categories, perimenopause-specific
-views, and an *opt-in* zero-knowledge encrypted backup. See
-[`docs/ROADMAP.md`](docs/ROADMAP.md).
+Planned (Stage 2+): perimenopause-specific views, pregnancy follow-ups (kick
+counter, contraction timer), and an *opt-in* zero-knowledge encrypted backup.
+See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Architecture
 

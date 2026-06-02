@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common/preferences.dart';
 import '../../../common/providers.dart';
 import '../../app_lock/application/app_lock_controller.dart';
+import '../../health_sync/presentation/health_settings_section.dart';
 import '../../onboarding/domain/tracking_goal.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -46,6 +47,9 @@ class SettingsScreen extends ConsumerWidget {
             ),
             isThreeLine: true,
           ),
+          const Divider(),
+          const _Header('Apple Health'),
+          const HealthSettingsSection(),
           const Divider(),
           const _Header('Data'),
           ListTile(

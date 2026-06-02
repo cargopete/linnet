@@ -17,10 +17,13 @@
   override, week-by-week fetal milestones, and explicit "gave birth" / "loss"
   states. *Follow-ups:* edit dating after start, kick counts, contraction timer,
   appointment/scan log, pregnancy history view.
-- **HealthKit** read/write for reproductive categories (`menstrualFlow`,
-  `ovulationTestResult`, `cervicalMucusQuality`, `basalBodyTemperature`,
-  `sexualActivity`, `pregnancy`, …) via the `health` package. Data kept on-device
-  and excluded from backup; never used for advertising (Guideline 5.1.3).
+- **HealthKit** ✅ — manual import/export of **menstrual flow** via the `health`
+  package (v13), with a pure tested `FlowIntensity ↔ MenstrualFlow` mapping, the
+  HealthKit entitlement and `NSHealth*UsageDescription` strings wired in. Data
+  stays on-device and is never used for advertising (Guideline 5.1.3). *Follow-ups:*
+  the `health` plugin exposes no `basalBodyTemperature`/`sexualActivity`/
+  `ovulationTestResult` on iOS, so those categories await a native bridge or a
+  newer plugin; add background observer queries and an auto-sync toggle.
 - **Onboarding + mode-switching** ✅ — first-run flow (privacy welcome, gated
   medical disclaimer, tracking-goal choice). The goal (avoid / conceive / general
   health / perimenopause) reframes the forecast: "best days to try" vs

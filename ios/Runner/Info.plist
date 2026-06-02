@@ -4,6 +4,10 @@
 <dict>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Linnet uses Face ID to lock your health data so only you can open the app.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Linnet can read your menstrual flow from Apple Health to keep your cycle history in sync.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Linnet can save the menstrual flow you log to Apple Health.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
