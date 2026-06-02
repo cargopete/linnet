@@ -41,11 +41,10 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Glucose log** (gestational diabetes: meal-tagged, typical targets, mg/dL ↔ mmol/L, OB export) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
-Planned next: a loss/pause **reflection mode**, themed week-by-week size
-comparisons (incl. a bird set) from a real measurement dataset, a
-gestational-diabetes glucose module, perimenopause-specific views, and an
-*opt-in* zero-knowledge encrypted backup. The full pregnancy feature map and
-stage plan live in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Planned next: per-screen design polish, perimenopause-specific views, bonding &
+memory-keeping (keepsake export), and an *opt-in* zero-knowledge encrypted backup.
+The full pregnancy feature map and stage plan live in
+[`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Architecture
 
@@ -85,7 +84,7 @@ installed (`xcodebuild -downloadPlatform iOS` if Xcode reports
 ```bash
 flutter pub get
 dart run build_runner build      # generate Drift code (*.g.dart)
-flutter test                     # 41 tests, all green
+flutter test                     # 58 tests, all green
 flutter run                      # on a simulator or device
 ```
 
