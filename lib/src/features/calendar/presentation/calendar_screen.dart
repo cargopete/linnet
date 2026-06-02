@@ -210,7 +210,7 @@ class _Legend extends StatelessWidget {
         alignment: WrapAlignment.center,
         children: [
           item(
-            Container(width: 12, height: 12, color: const Color(0xFFD9534F)),
+            Container(width: 12, height: 12, color: const Color(0xFFBB5366)),
             'Flow',
           ),
           item(

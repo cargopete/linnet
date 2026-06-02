@@ -71,6 +71,10 @@ lib/src/
 - **Storage:** Drift over SQLite3MultipleCiphers (AES-256), key in the iOS Keychain
 - **Crypto key:** 256-bit DEK in `flutter_secure_storage`, device-only accessibility
 - **Auth:** `local_auth` (Face ID / Touch ID / passcode)
+- **Design language:** warm & wholesome — a deep-rose accent (the linnet's breast)
+  on warm-stone neutrals, soft rounded shapes and cosy spacing. Typeface is Plus
+  Jakarta Sans, **bundled offline** (no network fonts — the privacy promise extends
+  to the font CDN). Theme lives in `lib/src/common/theme/app_theme.dart`.
 
 ## Getting started
 
