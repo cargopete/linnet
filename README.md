@@ -21,7 +21,7 @@ and easy complete deletion. (Local storage is not a panacea — device seizure a
 forensic extraction remain risks — so we also encrypt at rest and offer a
 biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 
-## Status — Stage 1 MVP
+## Status
 
 | Area | State |
 |------|-------|
@@ -38,9 +38,11 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Pregnancy tools** (kick counter, contraction timer, appointments, edit dating) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
-Planned (Stage 2+): perimenopause-specific views, pregnancy follow-ups (kick
-counter, contraction timer), and an *opt-in* zero-knowledge encrypted backup.
-See [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Planned next: a loss/pause **reflection mode**, themed week-by-week size
+comparisons (incl. a bird set) from a real measurement dataset, a
+gestational-diabetes glucose module, perimenopause-specific views, and an
+*opt-in* zero-knowledge encrypted backup. The full pregnancy feature map and
+stage plan live in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Architecture
 
@@ -49,13 +51,16 @@ Feature-first clean architecture with Riverpod. See
 
 ```
 lib/src/
-  common/         # crypto, database, routing, theme, util, providers
+  common/         # crypto, database, routing, theme, util, preferences, providers
   features/
     app_lock/         application + presentation
     calendar/         presentation
     cycle_logging/    domain + data + application + presentation
+    health_sync/      domain + data + application + presentation (HealthKit)
     home/             presentation
+    onboarding/       domain + presentation
     predictions/      domain (analyzer + predictor) + presentation
+    pregnancy/        domain + data + application + presentation
     settings/         presentation
 ```
 
@@ -73,7 +78,7 @@ installed (`xcodebuild -downloadPlatform iOS` if Xcode reports
 ```bash
 flutter pub get
 dart run build_runner build      # generate Drift code (*.g.dart)
-flutter test                     # 16 tests, all green
+flutter test                     # 41 tests, all green
 flutter run                      # on a simulator or device
 ```
 
@@ -84,9 +89,12 @@ refuse to open the database in cleartext otherwise.
 
 ## Tests
 
-- Pure-domain unit tests: date utilities, cycle analyzer, cycle predictor.
-- Repository round-trip against an in-memory database.
-- Widget test for the prediction card.
+- Pure-domain unit tests: date utilities (incl. DST-safe day maths), cycle
+  analyzer, cycle predictor, pregnancy dating (Naegele + ultrasound precedence),
+  contraction stats, tracking-goal preferences, HealthKit flow mapping.
+- Repository round-trips against an in-memory database (daily logs, pregnancy,
+  pregnancy tools).
+- Widget tests for the goal-aware prediction card.
 
 ```bash
 flutter test
