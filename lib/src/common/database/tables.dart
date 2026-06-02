@@ -67,6 +67,17 @@ class Appointments extends Table {
   TextColumn get notes => text().nullable()();
 }
 
+/// A blood-glucose reading. [valueMgdl] is canonical mg/dL; [context] is the
+/// GlucoseContext ordinal.
+class GlucoseReadings extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  DateTimeColumn get takenAt => dateTime()();
+  RealColumn get valueMgdl => real()();
+  IntColumn get context => integer().withDefault(const Constant(0))();
+  RealColumn get insulinUnits => real().nullable()();
+  TextColumn get note => text().nullable()();
+}
+
 /// Generic key/value store for app settings (onboarding goal, app-lock toggle,
 /// disclaimer acceptance, etc.). Kept opaque so adding a setting needs no schema
 /// migration.

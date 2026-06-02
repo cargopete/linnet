@@ -2355,6 +2355,407 @@ class AppointmentsCompanion extends UpdateCompanion<Appointment> {
   }
 }
 
+class $GlucoseReadingsTable extends GlucoseReadings
+    with TableInfo<$GlucoseReadingsTable, GlucoseReading> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GlucoseReadingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _takenAtMeta = const VerificationMeta(
+    'takenAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> takenAt = GeneratedColumn<DateTime>(
+    'taken_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMgdlMeta = const VerificationMeta(
+    'valueMgdl',
+  );
+  @override
+  late final GeneratedColumn<double> valueMgdl = GeneratedColumn<double>(
+    'value_mgdl',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contextMeta = const VerificationMeta(
+    'context',
+  );
+  @override
+  late final GeneratedColumn<int> context = GeneratedColumn<int>(
+    'context',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _insulinUnitsMeta = const VerificationMeta(
+    'insulinUnits',
+  );
+  @override
+  late final GeneratedColumn<double> insulinUnits = GeneratedColumn<double>(
+    'insulin_units',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    takenAt,
+    valueMgdl,
+    context,
+    insulinUnits,
+    note,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'glucose_readings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GlucoseReading> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('taken_at')) {
+      context.handle(
+        _takenAtMeta,
+        takenAt.isAcceptableOrUnknown(data['taken_at']!, _takenAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_takenAtMeta);
+    }
+    if (data.containsKey('value_mgdl')) {
+      context.handle(
+        _valueMgdlMeta,
+        valueMgdl.isAcceptableOrUnknown(data['value_mgdl']!, _valueMgdlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMgdlMeta);
+    }
+    if (data.containsKey('context')) {
+      context.handle(
+        _contextMeta,
+        this.context.isAcceptableOrUnknown(data['context']!, _contextMeta),
+      );
+    }
+    if (data.containsKey('insulin_units')) {
+      context.handle(
+        _insulinUnitsMeta,
+        insulinUnits.isAcceptableOrUnknown(
+          data['insulin_units']!,
+          _insulinUnitsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GlucoseReading map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GlucoseReading(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      takenAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}taken_at'],
+      )!,
+      valueMgdl: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value_mgdl'],
+      )!,
+      context: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}context'],
+      )!,
+      insulinUnits: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}insulin_units'],
+      ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+    );
+  }
+
+  @override
+  $GlucoseReadingsTable createAlias(String alias) {
+    return $GlucoseReadingsTable(attachedDatabase, alias);
+  }
+}
+
+class GlucoseReading extends DataClass implements Insertable<GlucoseReading> {
+  final int id;
+  final DateTime takenAt;
+  final double valueMgdl;
+  final int context;
+  final double? insulinUnits;
+  final String? note;
+  const GlucoseReading({
+    required this.id,
+    required this.takenAt,
+    required this.valueMgdl,
+    required this.context,
+    this.insulinUnits,
+    this.note,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['taken_at'] = Variable<DateTime>(takenAt);
+    map['value_mgdl'] = Variable<double>(valueMgdl);
+    map['context'] = Variable<int>(context);
+    if (!nullToAbsent || insulinUnits != null) {
+      map['insulin_units'] = Variable<double>(insulinUnits);
+    }
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    return map;
+  }
+
+  GlucoseReadingsCompanion toCompanion(bool nullToAbsent) {
+    return GlucoseReadingsCompanion(
+      id: Value(id),
+      takenAt: Value(takenAt),
+      valueMgdl: Value(valueMgdl),
+      context: Value(context),
+      insulinUnits: insulinUnits == null && nullToAbsent
+          ? const Value.absent()
+          : Value(insulinUnits),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+    );
+  }
+
+  factory GlucoseReading.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GlucoseReading(
+      id: serializer.fromJson<int>(json['id']),
+      takenAt: serializer.fromJson<DateTime>(json['takenAt']),
+      valueMgdl: serializer.fromJson<double>(json['valueMgdl']),
+      context: serializer.fromJson<int>(json['context']),
+      insulinUnits: serializer.fromJson<double?>(json['insulinUnits']),
+      note: serializer.fromJson<String?>(json['note']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'takenAt': serializer.toJson<DateTime>(takenAt),
+      'valueMgdl': serializer.toJson<double>(valueMgdl),
+      'context': serializer.toJson<int>(context),
+      'insulinUnits': serializer.toJson<double?>(insulinUnits),
+      'note': serializer.toJson<String?>(note),
+    };
+  }
+
+  GlucoseReading copyWith({
+    int? id,
+    DateTime? takenAt,
+    double? valueMgdl,
+    int? context,
+    Value<double?> insulinUnits = const Value.absent(),
+    Value<String?> note = const Value.absent(),
+  }) => GlucoseReading(
+    id: id ?? this.id,
+    takenAt: takenAt ?? this.takenAt,
+    valueMgdl: valueMgdl ?? this.valueMgdl,
+    context: context ?? this.context,
+    insulinUnits: insulinUnits.present ? insulinUnits.value : this.insulinUnits,
+    note: note.present ? note.value : this.note,
+  );
+  GlucoseReading copyWithCompanion(GlucoseReadingsCompanion data) {
+    return GlucoseReading(
+      id: data.id.present ? data.id.value : this.id,
+      takenAt: data.takenAt.present ? data.takenAt.value : this.takenAt,
+      valueMgdl: data.valueMgdl.present ? data.valueMgdl.value : this.valueMgdl,
+      context: data.context.present ? data.context.value : this.context,
+      insulinUnits: data.insulinUnits.present
+          ? data.insulinUnits.value
+          : this.insulinUnits,
+      note: data.note.present ? data.note.value : this.note,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GlucoseReading(')
+          ..write('id: $id, ')
+          ..write('takenAt: $takenAt, ')
+          ..write('valueMgdl: $valueMgdl, ')
+          ..write('context: $context, ')
+          ..write('insulinUnits: $insulinUnits, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, takenAt, valueMgdl, context, insulinUnits, note);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GlucoseReading &&
+          other.id == this.id &&
+          other.takenAt == this.takenAt &&
+          other.valueMgdl == this.valueMgdl &&
+          other.context == this.context &&
+          other.insulinUnits == this.insulinUnits &&
+          other.note == this.note);
+}
+
+class GlucoseReadingsCompanion extends UpdateCompanion<GlucoseReading> {
+  final Value<int> id;
+  final Value<DateTime> takenAt;
+  final Value<double> valueMgdl;
+  final Value<int> context;
+  final Value<double?> insulinUnits;
+  final Value<String?> note;
+  const GlucoseReadingsCompanion({
+    this.id = const Value.absent(),
+    this.takenAt = const Value.absent(),
+    this.valueMgdl = const Value.absent(),
+    this.context = const Value.absent(),
+    this.insulinUnits = const Value.absent(),
+    this.note = const Value.absent(),
+  });
+  GlucoseReadingsCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime takenAt,
+    required double valueMgdl,
+    this.context = const Value.absent(),
+    this.insulinUnits = const Value.absent(),
+    this.note = const Value.absent(),
+  }) : takenAt = Value(takenAt),
+       valueMgdl = Value(valueMgdl);
+  static Insertable<GlucoseReading> custom({
+    Expression<int>? id,
+    Expression<DateTime>? takenAt,
+    Expression<double>? valueMgdl,
+    Expression<int>? context,
+    Expression<double>? insulinUnits,
+    Expression<String>? note,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (takenAt != null) 'taken_at': takenAt,
+      if (valueMgdl != null) 'value_mgdl': valueMgdl,
+      if (context != null) 'context': context,
+      if (insulinUnits != null) 'insulin_units': insulinUnits,
+      if (note != null) 'note': note,
+    });
+  }
+
+  GlucoseReadingsCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? takenAt,
+    Value<double>? valueMgdl,
+    Value<int>? context,
+    Value<double?>? insulinUnits,
+    Value<String?>? note,
+  }) {
+    return GlucoseReadingsCompanion(
+      id: id ?? this.id,
+      takenAt: takenAt ?? this.takenAt,
+      valueMgdl: valueMgdl ?? this.valueMgdl,
+      context: context ?? this.context,
+      insulinUnits: insulinUnits ?? this.insulinUnits,
+      note: note ?? this.note,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (takenAt.present) {
+      map['taken_at'] = Variable<DateTime>(takenAt.value);
+    }
+    if (valueMgdl.present) {
+      map['value_mgdl'] = Variable<double>(valueMgdl.value);
+    }
+    if (context.present) {
+      map['context'] = Variable<int>(context.value);
+    }
+    if (insulinUnits.present) {
+      map['insulin_units'] = Variable<double>(insulinUnits.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GlucoseReadingsCompanion(')
+          ..write('id: $id, ')
+          ..write('takenAt: $takenAt, ')
+          ..write('valueMgdl: $valueMgdl, ')
+          ..write('context: $context, ')
+          ..write('insulinUnits: $insulinUnits, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2364,6 +2765,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $KickSessionsTable kickSessions = $KickSessionsTable(this);
   late final $ContractionsTable contractions = $ContractionsTable(this);
   late final $AppointmentsTable appointments = $AppointmentsTable(this);
+  late final $GlucoseReadingsTable glucoseReadings = $GlucoseReadingsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2375,6 +2779,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     kickSessions,
     contractions,
     appointments,
+    glucoseReadings,
   ];
 }
 
@@ -3620,6 +4025,227 @@ typedef $$AppointmentsTableProcessedTableManager =
       Appointment,
       PrefetchHooks Function()
     >;
+typedef $$GlucoseReadingsTableCreateCompanionBuilder =
+    GlucoseReadingsCompanion Function({
+      Value<int> id,
+      required DateTime takenAt,
+      required double valueMgdl,
+      Value<int> context,
+      Value<double?> insulinUnits,
+      Value<String?> note,
+    });
+typedef $$GlucoseReadingsTableUpdateCompanionBuilder =
+    GlucoseReadingsCompanion Function({
+      Value<int> id,
+      Value<DateTime> takenAt,
+      Value<double> valueMgdl,
+      Value<int> context,
+      Value<double?> insulinUnits,
+      Value<String?> note,
+    });
+
+class $$GlucoseReadingsTableFilterComposer
+    extends Composer<_$AppDatabase, $GlucoseReadingsTable> {
+  $$GlucoseReadingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get takenAt => $composableBuilder(
+    column: $table.takenAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get valueMgdl => $composableBuilder(
+    column: $table.valueMgdl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get context => $composableBuilder(
+    column: $table.context,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get insulinUnits => $composableBuilder(
+    column: $table.insulinUnits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$GlucoseReadingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $GlucoseReadingsTable> {
+  $$GlucoseReadingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get takenAt => $composableBuilder(
+    column: $table.takenAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get valueMgdl => $composableBuilder(
+    column: $table.valueMgdl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get context => $composableBuilder(
+    column: $table.context,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get insulinUnits => $composableBuilder(
+    column: $table.insulinUnits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$GlucoseReadingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $GlucoseReadingsTable> {
+  $$GlucoseReadingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get takenAt =>
+      $composableBuilder(column: $table.takenAt, builder: (column) => column);
+
+  GeneratedColumn<double> get valueMgdl =>
+      $composableBuilder(column: $table.valueMgdl, builder: (column) => column);
+
+  GeneratedColumn<int> get context =>
+      $composableBuilder(column: $table.context, builder: (column) => column);
+
+  GeneratedColumn<double> get insulinUnits => $composableBuilder(
+    column: $table.insulinUnits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+}
+
+class $$GlucoseReadingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $GlucoseReadingsTable,
+          GlucoseReading,
+          $$GlucoseReadingsTableFilterComposer,
+          $$GlucoseReadingsTableOrderingComposer,
+          $$GlucoseReadingsTableAnnotationComposer,
+          $$GlucoseReadingsTableCreateCompanionBuilder,
+          $$GlucoseReadingsTableUpdateCompanionBuilder,
+          (
+            GlucoseReading,
+            BaseReferences<
+              _$AppDatabase,
+              $GlucoseReadingsTable,
+              GlucoseReading
+            >,
+          ),
+          GlucoseReading,
+          PrefetchHooks Function()
+        > {
+  $$GlucoseReadingsTableTableManager(
+    _$AppDatabase db,
+    $GlucoseReadingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GlucoseReadingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GlucoseReadingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GlucoseReadingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> takenAt = const Value.absent(),
+                Value<double> valueMgdl = const Value.absent(),
+                Value<int> context = const Value.absent(),
+                Value<double?> insulinUnits = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+              }) => GlucoseReadingsCompanion(
+                id: id,
+                takenAt: takenAt,
+                valueMgdl: valueMgdl,
+                context: context,
+                insulinUnits: insulinUnits,
+                note: note,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DateTime takenAt,
+                required double valueMgdl,
+                Value<int> context = const Value.absent(),
+                Value<double?> insulinUnits = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+              }) => GlucoseReadingsCompanion.insert(
+                id: id,
+                takenAt: takenAt,
+                valueMgdl: valueMgdl,
+                context: context,
+                insulinUnits: insulinUnits,
+                note: note,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$GlucoseReadingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $GlucoseReadingsTable,
+      GlucoseReading,
+      $$GlucoseReadingsTableFilterComposer,
+      $$GlucoseReadingsTableOrderingComposer,
+      $$GlucoseReadingsTableAnnotationComposer,
+      $$GlucoseReadingsTableCreateCompanionBuilder,
+      $$GlucoseReadingsTableUpdateCompanionBuilder,
+      (
+        GlucoseReading,
+        BaseReferences<_$AppDatabase, $GlucoseReadingsTable, GlucoseReading>,
+      ),
+      GlucoseReading,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3636,4 +4262,6 @@ class $AppDatabaseManager {
       $$ContractionsTableTableManager(_db, _db.contractions);
   $$AppointmentsTableTableManager get appointments =>
       $$AppointmentsTableTableManager(_db, _db.appointments);
+  $$GlucoseReadingsTableTableManager get glucoseReadings =>
+      $$GlucoseReadingsTableTableManager(_db, _db.glucoseReadings);
 }

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../common/preferences.dart';
-
+import '../../glucose/presentation/glucose_screen.dart';
 import '../application/pregnancy_providers.dart';
 import '../domain/fetal_development.dart';
 import '../domain/pregnancy.dart';
@@ -186,6 +186,7 @@ class _ToolsGrid extends StatelessWidget {
         AppointmentsScreen(pregnancyId: pregnancyId),
       ),
       (Icons.edit_calendar_outlined, 'Edit dates', const EditDatingScreen()),
+      (Icons.bloodtype_outlined, 'Glucose', const GlucoseScreen()),
     ];
 
     return GridView.count(

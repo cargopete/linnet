@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../features/glucose/domain/glucose.dart';
 import '../features/onboarding/domain/tracking_goal.dart';
 import '../features/pregnancy/domain/size_comparison.dart';
 import 'database/database.dart' hide DailyLog;
@@ -17,6 +18,7 @@ class Preferences {
   static const _disclaimerKey = 'disclaimerAccepted';
   static const _reflectionKey = 'reflectionPregnancyId';
   static const _sizeThemeKey = 'sizeTheme';
+  static const _glucoseUnitKey = 'glucoseUnit';
 
   /// Atomically marks onboarding done: records disclaimer acceptance, the chosen
   /// goal, and the completion flag.
@@ -56,6 +58,15 @@ class Preferences {
   Stream<SizeTheme> watchSizeTheme() => _db
       .watchSetting(_sizeThemeKey)
       .map((v) => SizeTheme.byName(v) ?? SizeTheme.classic);
+
+  // --- Glucose unit ---
+
+  Future<void> setGlucoseUnit(GlucoseUnit unit) =>
+      _db.setSetting(_glucoseUnitKey, unit.name);
+
+  Stream<GlucoseUnit> watchGlucoseUnit() => _db
+      .watchSetting(_glucoseUnitKey)
+      .map((v) => GlucoseUnit.byName(v) ?? GlucoseUnit.mgPerDl);
 }
 
 final preferencesProvider = Provider<Preferences>(
@@ -109,4 +120,13 @@ final sizeThemeProvider = Provider<SizeTheme>((ref) {
 
 final _sizeThemeStreamProvider = StreamProvider<SizeTheme>(
   (ref) => ref.watch(preferencesProvider).watchSizeTheme(),
+);
+
+/// The chosen glucose unit, defaulting to mg/dL.
+final glucoseUnitProvider = Provider<GlucoseUnit>((ref) {
+  return ref.watch(_glucoseUnitStreamProvider).value ?? GlucoseUnit.mgPerDl;
+});
+
+final _glucoseUnitStreamProvider = StreamProvider<GlucoseUnit>(
+  (ref) => ref.watch(preferencesProvider).watchGlucoseUnit(),
 );

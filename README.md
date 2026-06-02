@@ -38,6 +38,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Pregnancy tools** (kick counter, contraction timer, appointments, edit dating) | ✅ |
 | **Loss reflection mode** (no wipe, no auto-switch, memorialise, leave only when ready) | ✅ |
 | **Themed week-by-week sizes** (real cm/g dataset, switchable themes incl. a bird set) | ✅ |
+| **Glucose log** (gestational diabetes: meal-tagged, typical targets, mg/dL ↔ mmol/L, OB export) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
 Planned next: a loss/pause **reflection mode**, themed week-by-week size

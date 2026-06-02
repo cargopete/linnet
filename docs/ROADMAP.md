@@ -74,8 +74,11 @@ What we already have vs. what's worth adding. ✅ shipped · ◐ partial · ⬜ 
 - ◐ Symptom logging exists for cycles; pregnancy-aware symptom suggestions +
   gentle on-device trend insights + soft "consider calling your provider" nudges
   for red-flag combinations ⬜.
-- ⬜ Weight (non-judgmental range context), **gestational-diabetes glucose log**
-  (flagged as a sleeper hit — meal tagging, targets, OB export), blood pressure,
+- ✅ **Gestational-diabetes glucose log** — meal-tagged readings, typical
+  provider-set targets with soft in/out-of-range flags, mg/dL ↔ mmol/L, 7-day
+  average + % in range, copyable OB export. Pure/tested unit conversion + stats.
+  *Follow-ups:* charts, insulin-dose trends, surface outside pregnancy mode.
+- ⬜ Weight (non-judgmental range context), blood pressure,
   medication/supplement reminders, hydration, mood check-in (EPDS-style).
 
 **Emotional safety & inclusivity (the headline market gap)**
