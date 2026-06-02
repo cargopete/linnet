@@ -60,9 +60,15 @@ void main() {
       'child + events round-trip, and deleting a child cascades its events',
       () async {
         final childId = await children.add(
-          Child(name: 'Wren', birthDate: DateTime(2025, 1, 1)),
+          Child(
+            name: 'Wren',
+            birthDate: DateTime(2025, 1, 1),
+            sex: ChildSex.girl,
+          ),
         );
-        expect((await children.getAll()).single.name, 'Wren');
+        final saved = (await children.getAll()).single;
+        expect(saved.name, 'Wren');
+        expect(saved.sex, ChildSex.girl); // sex persists
 
         await events.add(
           BabyEvent(

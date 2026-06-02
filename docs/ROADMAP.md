@@ -132,9 +132,10 @@ One continuous family journey: pregnancy → baby (0–~18mo intensive logging) 
 child (memories + health record). Shared spine: child profile, keepsake timeline,
 health record.
 
-- ✅ **Stage 1 foundation** — inclusive **child profiles** (multiple children,
-  corrected age for preemies via due date, "joined our family" date for
-  adoption/fostering, gender-neutral) and a **frictionless daily logger**: feeds
+- ✅ **Stage 1 foundation** — **child profiles** (multiple children, **boy/girl
+  with blue/pink theming applied across the whole app**, corrected age for
+  preemies via due date, "joined our family" date for adoption/fostering) and a
+  **frictionless daily logger**: feeds
   (breast timer with side memory + bottle ml), diapers (wet/dirty/mixed), sleep,
   with ongoing feed/nap timers and a "time since last" home. Pure/tested age +
   time-since logic.

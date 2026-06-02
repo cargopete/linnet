@@ -19,6 +19,7 @@ class AddChildScreen extends ConsumerStatefulWidget {
 class _AddChildScreenState extends ConsumerState<AddChildScreen> {
   final _name = TextEditingController();
   DateTime _birthDate = DateTime.now();
+  ChildSex _sex = ChildSex.boy;
   bool _bornEarly = false;
   DateTime? _dueDate;
   DateTime? _joinedFamilyDate;
@@ -49,6 +50,7 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
           Child(
             name: _name.text.trim(),
             birthDate: _birthDate,
+            sex: _sex,
             dueDate: _bornEarly ? _dueDate : null,
             joinedFamilyDate: _joinedFamilyDate,
           ),
@@ -73,6 +75,24 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: SegmentedButton<ChildSex>(
+              segments: [
+                for (final s in ChildSex.values)
+                  ButtonSegment(
+                    value: s,
+                    label: Text(s.label),
+                    icon: Icon(
+                      s == ChildSex.boy ? Icons.male : Icons.female,
+                      color: Color(s.colorValue),
+                    ),
+                  ),
+              ],
+              selected: {_sex},
+              onSelectionChanged: (v) => setState(() => _sex = v.first),
+            ),
+          ),
           TextField(
             controller: _name,
             onChanged: (_) => setState(() {}),

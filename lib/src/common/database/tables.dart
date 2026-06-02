@@ -112,6 +112,9 @@ class Children extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
   DateTimeColumn get birthDate => dateTime()();
+
+  /// ChildSex ordinal (0 = boy, 1 = girl). Drives blue/pink theming.
+  IntColumn get sex => integer().withDefault(const Constant(0))();
   DateTimeColumn get dueDate => dateTime().nullable()();
   DateTimeColumn get joinedFamilyDate => dateTime().nullable()();
   DateTimeColumn get createdAt => dateTime()();

@@ -38,6 +38,13 @@ final selectedChildProvider = Provider<Child?>((ref) {
   return children.firstWhere((c) => c.id == id, orElse: () => children.first);
 });
 
+/// The app's accent colour (ARGB int) for the selected child's sex, or null when
+/// no child is selected (then the app keeps its default rose). Drives blue/pink
+/// theming across the whole app.
+final babyAccentColorValueProvider = Provider<int?>(
+  (ref) => ref.watch(selectedChildProvider)?.sex.colorValue,
+);
+
 final babyEventRepositoryProvider = Provider<BabyEventRepository>(
   (ref) => BabyEventRepository(ref.watch(appDatabaseProvider)),
 );

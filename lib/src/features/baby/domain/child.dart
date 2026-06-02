@@ -2,6 +2,21 @@ import 'package:meta/meta.dart';
 
 import '../../../common/util/date_only.dart';
 
+/// A child's sex, with its accent colour (ARGB int — kept Flutter-free here; the
+/// UI wraps it in a Color). Drives blue/pink theming across the app.
+enum ChildSex {
+  boy('Boy', 0xFF4F86E0), // blue
+  girl('Girl', 0xFFE56AA0); // pink
+
+  const ChildSex(this.label, this.colorValue);
+  final String label;
+  final int colorValue;
+
+  static ChildSex fromIndex(int i) => (i >= 0 && i < ChildSex.values.length)
+      ? ChildSex.values[i]
+      : ChildSex.boy;
+}
+
 /// A child profile. Birth date drives chronological age; an optional [dueDate]
 /// (when the baby arrived early) drives *corrected* age, used for milestones and
 /// growth until ~2 years. [joinedFamilyDate] supports adoption/fostering.
@@ -11,6 +26,7 @@ class Child {
     this.id,
     required this.name,
     required DateTime birthDate,
+    this.sex = ChildSex.boy,
     DateTime? dueDate,
     DateTime? joinedFamilyDate,
     DateTime? createdAt,
@@ -22,6 +38,7 @@ class Child {
   final int? id;
   final String name;
   final DateTime birthDate;
+  final ChildSex sex;
   final DateTime? dueDate;
   final DateTime? joinedFamilyDate;
   final DateTime createdAt;
@@ -47,12 +64,14 @@ class Child {
   Child copyWith({
     String? name,
     DateTime? birthDate,
+    ChildSex? sex,
     DateTime? dueDate,
     DateTime? joinedFamilyDate,
   }) => Child(
     id: id,
     name: name ?? this.name,
     birthDate: birthDate ?? this.birthDate,
+    sex: sex ?? this.sex,
     dueDate: dueDate ?? this.dueDate,
     joinedFamilyDate: joinedFamilyDate ?? this.joinedFamilyDate,
     createdAt: createdAt,

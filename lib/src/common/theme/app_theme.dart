@@ -11,22 +11,31 @@ import 'package:flutter/material.dart';
 /// — no network fonts, in keeping with the app's privacy promise.
 abstract final class AppTheme {
   static const _fontFamily = 'PlusJakartaSans';
-  static const _seed = Color(0xFFB0506A); // deep rose
+  static const _seed = Color(0xFFB0506A); // deep rose (default)
 
-  static ThemeData light() => _build(Brightness.light);
-  static ThemeData dark() => _build(Brightness.dark);
+  /// [seed] overrides the accent (e.g. a child's blue/pink in baby mode); when
+  /// null the default rose is used.
+  static ThemeData light({Color? seed}) =>
+      _build(Brightness.light, seed ?? _seed);
+  static ThemeData dark({Color? seed}) =>
+      _build(Brightness.dark, seed ?? _seed);
 
-  static ThemeData _build(Brightness brightness) {
+  static ThemeData _build(Brightness brightness, Color seed) {
     final isLight = brightness == Brightness.light;
     final base = ColorScheme.fromSeed(
-      seedColor: _seed,
+      seedColor: seed,
       brightness: brightness,
       // A soft sage for "growth/fertile" semantics — the only secondary hue.
       tertiary: const Color(0xFF6F7E5E),
     );
 
-    // Warm the neutrals so surfaces read like soft stone/porcelain, not grey.
-    final scheme = isLight
+    // Warm the neutrals (soft stone/porcelain) for the default rose brand. For a
+    // child's blue/pink seed, let Material derive matching neutrals so the whole
+    // app reads coherently in that colour.
+    final useWarmNeutrals = seed == _seed;
+    final scheme = !useWarmNeutrals
+        ? base
+        : isLight
         ? base.copyWith(
             surface: const Color(0xFFFBF4F1),
             onSurface: const Color(0xFF2B2421),

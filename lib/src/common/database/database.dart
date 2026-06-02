@@ -32,7 +32,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -61,6 +61,8 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(children);
         await m.createTable(babyEvents);
       }
+      // v10 added child sex (blue/pink theming).
+      if (from < 10) await m.addColumn(children, children.sex);
     },
   );
 

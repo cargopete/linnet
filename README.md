@@ -43,7 +43,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Encrypted backup** (opt-in, zero-knowledge: Argon2id + AES-GCM, forced recovery key, file you own) | ✅ |
 | **Perimenopause views** (symptom-focused home + on-device symptom insights) | ✅ |
 | **Reminders** (opt-in daily local notifications, non-descriptive text, pausable) | ✅ |
-| **Baby mode** (Stage 1: inclusive child profiles + corrected age; frictionless feed/diaper/sleep logger; "time since last" home) | ✅ |
+| **Baby mode** (Stage 1: child profiles — boy/girl with blue/pink theming across the whole app — + corrected age; frictionless feed/diaper/sleep logger; "time since last" home) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
 The planned roadmap (Stages 1–3) is fully shipped. Remaining ideas — logistics

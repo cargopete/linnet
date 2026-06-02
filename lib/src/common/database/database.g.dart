@@ -3892,6 +3892,16 @@ class $ChildrenTable extends Children with TableInfo<$ChildrenTable, ChildRow> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _sexMeta = const VerificationMeta('sex');
+  @override
+  late final GeneratedColumn<int> sex = GeneratedColumn<int>(
+    'sex',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _dueDateMeta = const VerificationMeta(
     'dueDate',
   );
@@ -3931,6 +3941,7 @@ class $ChildrenTable extends Children with TableInfo<$ChildrenTable, ChildRow> {
     id,
     name,
     birthDate,
+    sex,
     dueDate,
     joinedFamilyDate,
     createdAt,
@@ -3965,6 +3976,12 @@ class $ChildrenTable extends Children with TableInfo<$ChildrenTable, ChildRow> {
       );
     } else if (isInserting) {
       context.missing(_birthDateMeta);
+    }
+    if (data.containsKey('sex')) {
+      context.handle(
+        _sexMeta,
+        sex.isAcceptableOrUnknown(data['sex']!, _sexMeta),
+      );
     }
     if (data.containsKey('due_date')) {
       context.handle(
@@ -4010,6 +4027,10 @@ class $ChildrenTable extends Children with TableInfo<$ChildrenTable, ChildRow> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}birth_date'],
       )!,
+      sex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sex'],
+      )!,
       dueDate: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}due_date'],
@@ -4035,6 +4056,9 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
   final int id;
   final String name;
   final DateTime birthDate;
+
+  /// ChildSex ordinal (0 = boy, 1 = girl). Drives blue/pink theming.
+  final int sex;
   final DateTime? dueDate;
   final DateTime? joinedFamilyDate;
   final DateTime createdAt;
@@ -4042,6 +4066,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
     required this.id,
     required this.name,
     required this.birthDate,
+    required this.sex,
     this.dueDate,
     this.joinedFamilyDate,
     required this.createdAt,
@@ -4052,6 +4077,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['birth_date'] = Variable<DateTime>(birthDate);
+    map['sex'] = Variable<int>(sex);
     if (!nullToAbsent || dueDate != null) {
       map['due_date'] = Variable<DateTime>(dueDate);
     }
@@ -4067,6 +4093,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
       id: Value(id),
       name: Value(name),
       birthDate: Value(birthDate),
+      sex: Value(sex),
       dueDate: dueDate == null && nullToAbsent
           ? const Value.absent()
           : Value(dueDate),
@@ -4086,6 +4113,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       birthDate: serializer.fromJson<DateTime>(json['birthDate']),
+      sex: serializer.fromJson<int>(json['sex']),
       dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
       joinedFamilyDate: serializer.fromJson<DateTime?>(
         json['joinedFamilyDate'],
@@ -4100,6 +4128,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'birthDate': serializer.toJson<DateTime>(birthDate),
+      'sex': serializer.toJson<int>(sex),
       'dueDate': serializer.toJson<DateTime?>(dueDate),
       'joinedFamilyDate': serializer.toJson<DateTime?>(joinedFamilyDate),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -4110,6 +4139,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
     int? id,
     String? name,
     DateTime? birthDate,
+    int? sex,
     Value<DateTime?> dueDate = const Value.absent(),
     Value<DateTime?> joinedFamilyDate = const Value.absent(),
     DateTime? createdAt,
@@ -4117,6 +4147,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
     id: id ?? this.id,
     name: name ?? this.name,
     birthDate: birthDate ?? this.birthDate,
+    sex: sex ?? this.sex,
     dueDate: dueDate.present ? dueDate.value : this.dueDate,
     joinedFamilyDate: joinedFamilyDate.present
         ? joinedFamilyDate.value
@@ -4128,6 +4159,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       birthDate: data.birthDate.present ? data.birthDate.value : this.birthDate,
+      sex: data.sex.present ? data.sex.value : this.sex,
       dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
       joinedFamilyDate: data.joinedFamilyDate.present
           ? data.joinedFamilyDate.value
@@ -4142,6 +4174,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('birthDate: $birthDate, ')
+          ..write('sex: $sex, ')
           ..write('dueDate: $dueDate, ')
           ..write('joinedFamilyDate: $joinedFamilyDate, ')
           ..write('createdAt: $createdAt')
@@ -4150,8 +4183,15 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, birthDate, dueDate, joinedFamilyDate, createdAt);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    birthDate,
+    sex,
+    dueDate,
+    joinedFamilyDate,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4159,6 +4199,7 @@ class ChildRow extends DataClass implements Insertable<ChildRow> {
           other.id == this.id &&
           other.name == this.name &&
           other.birthDate == this.birthDate &&
+          other.sex == this.sex &&
           other.dueDate == this.dueDate &&
           other.joinedFamilyDate == this.joinedFamilyDate &&
           other.createdAt == this.createdAt);
@@ -4168,6 +4209,7 @@ class ChildrenCompanion extends UpdateCompanion<ChildRow> {
   final Value<int> id;
   final Value<String> name;
   final Value<DateTime> birthDate;
+  final Value<int> sex;
   final Value<DateTime?> dueDate;
   final Value<DateTime?> joinedFamilyDate;
   final Value<DateTime> createdAt;
@@ -4175,6 +4217,7 @@ class ChildrenCompanion extends UpdateCompanion<ChildRow> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.birthDate = const Value.absent(),
+    this.sex = const Value.absent(),
     this.dueDate = const Value.absent(),
     this.joinedFamilyDate = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -4183,6 +4226,7 @@ class ChildrenCompanion extends UpdateCompanion<ChildRow> {
     this.id = const Value.absent(),
     required String name,
     required DateTime birthDate,
+    this.sex = const Value.absent(),
     this.dueDate = const Value.absent(),
     this.joinedFamilyDate = const Value.absent(),
     required DateTime createdAt,
@@ -4193,6 +4237,7 @@ class ChildrenCompanion extends UpdateCompanion<ChildRow> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<DateTime>? birthDate,
+    Expression<int>? sex,
     Expression<DateTime>? dueDate,
     Expression<DateTime>? joinedFamilyDate,
     Expression<DateTime>? createdAt,
@@ -4201,6 +4246,7 @@ class ChildrenCompanion extends UpdateCompanion<ChildRow> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (birthDate != null) 'birth_date': birthDate,
+      if (sex != null) 'sex': sex,
       if (dueDate != null) 'due_date': dueDate,
       if (joinedFamilyDate != null) 'joined_family_date': joinedFamilyDate,
       if (createdAt != null) 'created_at': createdAt,
@@ -4211,6 +4257,7 @@ class ChildrenCompanion extends UpdateCompanion<ChildRow> {
     Value<int>? id,
     Value<String>? name,
     Value<DateTime>? birthDate,
+    Value<int>? sex,
     Value<DateTime?>? dueDate,
     Value<DateTime?>? joinedFamilyDate,
     Value<DateTime>? createdAt,
@@ -4219,6 +4266,7 @@ class ChildrenCompanion extends UpdateCompanion<ChildRow> {
       id: id ?? this.id,
       name: name ?? this.name,
       birthDate: birthDate ?? this.birthDate,
+      sex: sex ?? this.sex,
       dueDate: dueDate ?? this.dueDate,
       joinedFamilyDate: joinedFamilyDate ?? this.joinedFamilyDate,
       createdAt: createdAt ?? this.createdAt,
@@ -4236,6 +4284,9 @@ class ChildrenCompanion extends UpdateCompanion<ChildRow> {
     }
     if (birthDate.present) {
       map['birth_date'] = Variable<DateTime>(birthDate.value);
+    }
+    if (sex.present) {
+      map['sex'] = Variable<int>(sex.value);
     }
     if (dueDate.present) {
       map['due_date'] = Variable<DateTime>(dueDate.value);
@@ -4255,6 +4306,7 @@ class ChildrenCompanion extends UpdateCompanion<ChildRow> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('birthDate: $birthDate, ')
+          ..write('sex: $sex, ')
           ..write('dueDate: $dueDate, ')
           ..write('joinedFamilyDate: $joinedFamilyDate, ')
           ..write('createdAt: $createdAt')
@@ -6851,6 +6903,7 @@ typedef $$ChildrenTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       required DateTime birthDate,
+      Value<int> sex,
       Value<DateTime?> dueDate,
       Value<DateTime?> joinedFamilyDate,
       required DateTime createdAt,
@@ -6860,6 +6913,7 @@ typedef $$ChildrenTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> name,
       Value<DateTime> birthDate,
+      Value<int> sex,
       Value<DateTime?> dueDate,
       Value<DateTime?> joinedFamilyDate,
       Value<DateTime> createdAt,
@@ -6886,6 +6940,11 @@ class $$ChildrenTableFilterComposer
 
   ColumnFilters<DateTime> get birthDate => $composableBuilder(
     column: $table.birthDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sex => $composableBuilder(
+    column: $table.sex,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6929,6 +6988,11 @@ class $$ChildrenTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get sex => $composableBuilder(
+    column: $table.sex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get dueDate => $composableBuilder(
     column: $table.dueDate,
     builder: (column) => ColumnOrderings(column),
@@ -6962,6 +7026,9 @@ class $$ChildrenTableAnnotationComposer
 
   GeneratedColumn<DateTime> get birthDate =>
       $composableBuilder(column: $table.birthDate, builder: (column) => column);
+
+  GeneratedColumn<int> get sex =>
+      $composableBuilder(column: $table.sex, builder: (column) => column);
 
   GeneratedColumn<DateTime> get dueDate =>
       $composableBuilder(column: $table.dueDate, builder: (column) => column);
@@ -7006,6 +7073,7 @@ class $$ChildrenTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<DateTime> birthDate = const Value.absent(),
+                Value<int> sex = const Value.absent(),
                 Value<DateTime?> dueDate = const Value.absent(),
                 Value<DateTime?> joinedFamilyDate = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -7013,6 +7081,7 @@ class $$ChildrenTableTableManager
                 id: id,
                 name: name,
                 birthDate: birthDate,
+                sex: sex,
                 dueDate: dueDate,
                 joinedFamilyDate: joinedFamilyDate,
                 createdAt: createdAt,
@@ -7022,6 +7091,7 @@ class $$ChildrenTableTableManager
                 Value<int> id = const Value.absent(),
                 required String name,
                 required DateTime birthDate,
+                Value<int> sex = const Value.absent(),
                 Value<DateTime?> dueDate = const Value.absent(),
                 Value<DateTime?> joinedFamilyDate = const Value.absent(),
                 required DateTime createdAt,
@@ -7029,6 +7099,7 @@ class $$ChildrenTableTableManager
                 id: id,
                 name: name,
                 birthDate: birthDate,
+                sex: sex,
                 dueDate: dueDate,
                 joinedFamilyDate: joinedFamilyDate,
                 createdAt: createdAt,

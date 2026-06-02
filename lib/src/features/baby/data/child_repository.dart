@@ -18,6 +18,7 @@ class ChildRepository {
     ChildrenCompanion.insert(
       name: child.name,
       birthDate: child.birthDate,
+      sex: Value(child.sex.index),
       dueDate: Value(child.dueDate),
       joinedFamilyDate: Value(child.joinedFamilyDate),
       createdAt: DateTime.now(),
@@ -30,6 +31,7 @@ class ChildRepository {
     id: r.id,
     name: r.name,
     birthDate: r.birthDate,
+    sex: ChildSex.fromIndex(r.sex),
     dueDate: r.dueDate,
     joinedFamilyDate: r.joinedFamilyDate,
     createdAt: r.createdAt,
