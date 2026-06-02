@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../data/backup_service.dart';
+import '../data/cloud_backup_service.dart';
 
 /// Opt-in, zero-knowledge encrypted backup. Off by default — nothing happens
 /// until the user explicitly creates or restores a backup. The encrypted file is
@@ -48,6 +49,9 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             ),
           ),
           const SizedBox(height: 8),
+          _iCloudSection(),
+          const Divider(height: 32),
+          Text('Manual file backup', style: theme.textTheme.titleMedium),
           ListTile(
             leading: const Icon(Icons.lock_outline),
             title: const Text('Create encrypted backup'),
@@ -68,6 +72,117 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
         ],
       ),
     );
+  }
+
+  // --- iCloud ---
+
+  Widget _iCloudSection() {
+    final service = ref.read(cloudBackupServiceProvider);
+    if (!service.isSupported) {
+      return const ListTile(
+        leading: Icon(Icons.cloud_outlined),
+        title: Text('iCloud backup'),
+        subtitle: Text('Available on iPhone'),
+        enabled: false,
+      );
+    }
+    final enabled = ref.watch(cloudBackupEnabledProvider).value ?? false;
+    return Column(
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.cloud_outlined),
+          title: const Text('Back up to iCloud'),
+          subtitle: Text(
+            enabled
+                ? 'On — recover on a new phone with your Apple ID'
+                : 'Auto-backup an encrypted copy to your iCloud',
+          ),
+          value: enabled,
+          onChanged: _busy
+              ? null
+              : (v) => v ? _enableICloud() : _disableICloud(),
+        ),
+        if (enabled)
+          ListTile(
+            leading: const Icon(Icons.cloud_upload_outlined),
+            title: const Text('Back up now'),
+            onTap: _busy ? null : _icloudBackupNow,
+          ),
+        ListTile(
+          leading: const Icon(Icons.cloud_download_outlined),
+          title: const Text('Restore from iCloud'),
+          subtitle: const Text('On a new phone — replaces current data'),
+          onTap: _busy ? null : _restoreFromICloud,
+        ),
+      ],
+    );
+  }
+
+  Future<void> _restoreFromICloud() async {
+    final secret = await _askRestoreSecret();
+    if (secret == null) return;
+    setState(() => _busy = true);
+    try {
+      final service = ref.read(cloudBackupServiceProvider);
+      if (secret.useRecoveryKey) {
+        await service.restoreWithRecoveryKey(secret.value);
+      } else {
+        await service.restoreWithPassphrase(secret.value);
+      }
+      _snack('Restored from iCloud.');
+    } catch (e) {
+      _snack('Could not restore from iCloud: $e');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<({bool useRecoveryKey, String value})?> _askRestoreSecret() {
+    return showModalBottomSheet<({bool useRecoveryKey, String value})>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => const _SecretPrompt(),
+    );
+  }
+
+  Future<void> _enableICloud() async {
+    final passphrase = await _askPassphrase(confirm: true);
+    if (passphrase == null) return;
+    setState(() => _busy = true);
+    try {
+      final recoveryKey = await ref
+          .read(cloudBackupServiceProvider)
+          .enable(passphrase);
+      ref.invalidate(cloudBackupEnabledProvider);
+      if (mounted) {
+        await _showRecoveryKey(
+          ExportResult('', recoveryKey),
+          'iCloud (your Apple ID)',
+        );
+      }
+    } catch (e) {
+      _snack('Could not turn on iCloud backup: $e');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _icloudBackupNow() async {
+    setState(() => _busy = true);
+    try {
+      await ref.read(cloudBackupServiceProvider).backupNow();
+      _snack('Backed up to iCloud.');
+    } catch (e) {
+      _snack('iCloud backup failed: $e');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _disableICloud() async {
+    await ref.read(cloudBackupServiceProvider).disable();
+    ref.invalidate(cloudBackupEnabledProvider);
+    _snack('iCloud backup turned off.');
   }
 
   // --- Create ---
@@ -386,6 +501,76 @@ class _RestoreSheetState extends State<_RestoreSheet> {
               );
             },
             child: const Text('Continue'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Prompts for a passphrase or recovery key (used for iCloud restore).
+class _SecretPrompt extends StatefulWidget {
+  const _SecretPrompt();
+
+  @override
+  State<_SecretPrompt> createState() => _SecretPromptState();
+}
+
+class _SecretPromptState extends State<_SecretPrompt> {
+  final _secret = TextEditingController();
+  bool _useRecoveryKey = false;
+
+  @override
+  void dispose() {
+    _secret.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 8,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Unlock your iCloud backup',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 12),
+          SegmentedButton<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text('Passphrase')),
+              ButtonSegment(value: true, label: Text('Recovery key')),
+            ],
+            selected: {_useRecoveryKey},
+            onSelectionChanged: (s) =>
+                setState(() => _useRecoveryKey = s.first),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _secret,
+            obscureText: !_useRecoveryKey,
+            decoration: InputDecoration(
+              labelText: _useRecoveryKey ? 'Recovery key' : 'Passphrase',
+            ),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: () {
+              final value = _secret.text.trim();
+              if (value.isEmpty) return;
+              Navigator.of(
+                context,
+              ).pop((useRecoveryKey: _useRecoveryKey, value: value));
+            },
+            child: const Text('Restore'),
           ),
         ],
       ),

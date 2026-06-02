@@ -2,9 +2,11 @@
 
 A **privacy-first, local-first** period & pregnancy tracker for iOS, built with Flutter.
 
-Your data is encrypted on your device with AES-256 and never leaves it. There is
-no account, no server, no analytics, and no third-party SDKs. The privacy design
-*is* the product.
+Your data is encrypted on your device with AES-256. There is no account, no
+server of ours, no analytics, and no third-party SDKs. Nothing leaves the device
+unless *you* turn on an optional backup — and those are **end-to-end encrypted**,
+so even iCloud only ever holds ciphertext it cannot read. The privacy design *is*
+the product.
 
 > **Not a medical device.** Linnet is a wellness tracker. It does not diagnose
 > anything and **must not be used as contraception or to prevent pregnancy**.
@@ -42,7 +44,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Themed week-by-week sizes** (real cm/g dataset, switchable themes incl. a bird set) | ✅ |
 | **Glucose log** (gestational diabetes: meal-tagged, typical targets, mg/dL ↔ mmol/L, OB export) | ✅ |
 | **Bonding & memories** (firsts + letters timeline, copyable keepsake, **PDF export**, **encrypted photo gallery**) | ✅ |
-| **Encrypted backup** (opt-in, zero-knowledge: Argon2id + AES-GCM, forced recovery key, file you own) | ✅ |
+| **Encrypted backup** (opt-in, zero-knowledge: Argon2id + AES-GCM, forced recovery key — a file you own **or** auto-backup to your own iCloud, recover on a new phone via Apple ID) | ✅ |
 | **Perimenopause views** (symptom-focused home + on-device symptom insights) | ✅ |
 | **Reminders** (opt-in daily local notifications, non-descriptive text, pausable) | ✅ |
 | **Baby mode** (Stage 1: child profiles — boy/girl with blue/pink theming across the whole app — + corrected age; frictionless feed/diaper/sleep logger; "time since last" home) | ✅ |
@@ -92,7 +94,7 @@ installed (`xcodebuild -downloadPlatform iOS` if Xcode reports
 ```bash
 flutter pub get
 dart run build_runner build      # generate Drift code (*.g.dart)
-flutter test                     # 99 tests, all green
+flutter test                     # 100 tests, all green
 flutter run                      # on a simulator or device
 ```
 

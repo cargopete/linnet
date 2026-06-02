@@ -51,6 +51,20 @@ void main() {
     expect(opened, plaintext);
   });
 
+  test('a fixed backup key gives a stable recovery key across seals', () async {
+    final bk = BackupCrypto.generateKey();
+    final a = await crypto.seal(plaintext, 'pw', backupKey: bk);
+    final b = await crypto.seal(plaintext, 'pw', backupKey: bk);
+    // Same key in → same recovery key out (so auto-backups don't churn it).
+    expect(a.recoveryKey, b.recoveryKey);
+    // And it still opens by passphrase and by that recovery key.
+    expect(await crypto.openWithPassphrase(b.envelope, 'pw'), plaintext);
+    expect(
+      await crypto.openWithRecoveryKey(a.envelope, b.recoveryKey),
+      plaintext,
+    );
+  });
+
   test('tampering with the ciphertext is detected', () async {
     final sealed = await crypto.seal(plaintext, 'pw');
     final env = sealed.envelope;

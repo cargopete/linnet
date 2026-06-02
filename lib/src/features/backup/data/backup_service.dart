@@ -26,12 +26,12 @@ class BackupService {
 
   static const _formatVersion = 1;
 
-  Future<ExportResult> export(String passphrase) async {
+  Future<ExportResult> export(String passphrase, {List<int>? backupKey}) async {
     final data = await _db.exportAll();
     final bytes = utf8.encode(
       jsonEncode({'linnet': _formatVersion, 'data': data}),
     );
-    final sealed = await _crypto.seal(bytes, passphrase);
+    final sealed = await _crypto.seal(bytes, passphrase, backupKey: backupKey);
     return ExportResult(sealed.envelope.toJsonString(), sealed.recoveryKey);
   }
 

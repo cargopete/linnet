@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/preferences.dart';
 import '../../../common/routing/app_router.dart';
+import '../../backup/presentation/backup_screen.dart';
 import '../../pregnancy/presentation/start_pregnancy_screen.dart';
 import '../domain/tracking_goal.dart';
 
@@ -119,6 +120,12 @@ class _WelcomePage extends StatelessWidget {
           const _Bullet('Forecasts are honest estimates with ranges.'),
           const Spacer(),
           FilledButton(onPressed: onNext, child: const Text('Get started')),
+          TextButton(
+            onPressed: () => rootNavigatorKey.currentState?.push(
+              MaterialPageRoute<void>(builder: (_) => const BackupScreen()),
+            ),
+            child: const Text('Returning? Restore from a backup'),
+          ),
         ],
       ),
     );

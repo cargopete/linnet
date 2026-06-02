@@ -119,10 +119,22 @@ class BackupCrypto {
   List<int> _randomBytes(int n) =>
       List<int>.generate(n, (_) => _random.nextInt(256));
 
-  /// Encrypts [plaintext] under a fresh backup key, wraps that key with a
+  /// 32 random bytes for use as a stable backup key (so the recovery key can
+  /// stay constant across auto-backups).
+  static List<int> generateKey() {
+    final rng = Random.secure();
+    return List<int>.generate(32, (_) => rng.nextInt(256));
+  }
+
+  /// Encrypts [plaintext] under a backup key (a fresh one, or the supplied
+  /// [backupKey] so the recovery key stays stable), wraps that key with a
   /// passphrase-derived KEK, and returns the envelope plus a recovery key.
-  Future<SealedBackup> seal(List<int> plaintext, String passphrase) async {
-    final bk = _randomBytes(32);
+  Future<SealedBackup> seal(
+    List<int> plaintext,
+    String passphrase, {
+    List<int>? backupKey,
+  }) async {
+    final bk = backupKey ?? _randomBytes(32);
     final bkKey = SecretKey(bk);
 
     final dataNonce = _randomBytes(12);

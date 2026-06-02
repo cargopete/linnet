@@ -50,11 +50,14 @@
   with a blunt "lose both = unrecoverable" warning.
 - ✅ Whole-database export/import in a single transaction; the encrypted file is
   written to the app's Documents folder (visible in Files) and can be copied out.
-- ✅ **Off by default, opt-in**, no account, **no server** — true to the no-network
-  promise. We deliberately did *not* build a cloud ciphertext store / LWW sync;
-  the user owns the file. *Follow-ups (only if users ask):* a real file
-  picker/share sheet, and — if cloud sync is ever genuinely wanted — an opt-in
-  dumb ciphertext store with the same client-side crypto.
+- ✅ **Off by default, opt-in**, no account, **no server of ours**.
+- ✅ **Auto-backup to the user's own iCloud Drive** (opt-in) — the encrypted blob
+  syncs to their Apple ID with a **stable recovery key**; on a new phone, install
+  → "Restore from iCloud" → enter passphrase or recovery key. Apple only ever
+  holds ciphertext. Keychain holds the passphrase+key on-device for silent
+  re-backup; a new device uses the human-known secret. *Follow-ups (only if asked):*
+  a share-sheet/file-picker, and — if true multi-device live sync is wanted — an
+  opt-in dumb ciphertext relay with the same client-side crypto.
 
 ## Pregnancy experience — feature map (from the "Bairn" research)
 

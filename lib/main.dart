@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,6 +8,10 @@ import 'src/common/crypto/database_key_store.dart';
 import 'src/common/database/database.dart';
 import 'src/common/preferences.dart';
 import 'src/common/providers.dart';
+import 'src/features/backup/data/backup_secret_store.dart';
+import 'src/features/backup/data/backup_service.dart';
+import 'src/features/backup/data/cloud_backup_service.dart';
+import 'src/features/backup/domain/backup_crypto.dart';
 import 'src/features/reminders/application/reminder_providers.dart';
 import 'src/features/reminders/data/notification_service.dart';
 import 'src/features/reminders/data/reminder_repository.dart';
@@ -31,6 +37,22 @@ Future<void> main() async {
   final notifications = NotificationService();
   await notifications.init();
   await notifications.sync(await ReminderRepository(database).getAll());
+
+  // If iCloud backup is on, refresh it in the background (best-effort).
+  final backupSecrets = BackupSecretStore();
+  if (await backupSecrets.isConfigured) {
+    final cloud = CloudBackupService(
+      BackupService(database, BackupCrypto()),
+      backupSecrets,
+    );
+    unawaited(() async {
+      try {
+        await cloud.backupNow();
+      } on Object {
+        // Best-effort; never block or crash startup on a backup hiccup.
+      }
+    }());
+  }
 
   runApp(
     ProviderScope(
