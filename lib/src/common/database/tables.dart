@@ -67,6 +67,18 @@ class Appointments extends Table {
   TextColumn get notes => text().nullable()();
 }
 
+/// An ultrasound/keepsake photo. The image bytes live in the encrypted database
+/// itself, so they are encrypted at rest with everything else (no separate file
+/// handling). Named PhotoRow to avoid clashing with the domain `Photo`.
+@DataClassName('PhotoRow')
+class Photos extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get pregnancyId => integer()();
+  TextColumn get caption => text().nullable()();
+  DateTimeColumn get addedAt => dateTime()();
+  BlobColumn get bytes => blob()();
+}
+
 /// A bonding/memory entry: a "first" milestone or a letter to the baby.
 /// [kind] is the MemoryKind ordinal. Named MemoryRow to avoid clashing with the
 /// domain `Memory` type.

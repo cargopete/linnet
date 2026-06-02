@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../common/util/date_only.dart';
 import '../application/memories_providers.dart';
 import '../application/pregnancy_providers.dart';
+import '../data/keepsake_pdf.dart';
 import '../domain/memory.dart';
 
 /// A gentle, chronological timeline of "firsts" and letters to the baby, with a
@@ -23,6 +27,13 @@ class MemoriesScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Memories'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            tooltip: 'Save keepsake PDF',
+            onPressed: memories.isEmpty
+                ? null
+                : () => _savePdf(context, ref, memories),
+          ),
           IconButton(
             icon: const Icon(Icons.ios_share),
             tooltip: 'Copy keepsake',
@@ -62,6 +73,38 @@ class MemoriesScreen extends ConsumerWidget {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Keepsake copied')));
+    }
+  }
+
+  Future<void> _savePdf(
+    BuildContext context,
+    WidgetRef ref,
+    List<Memory> memories,
+  ) async {
+    final babyName = ref.read(activePregnancyProvider).value?.babyName;
+    try {
+      final fontData = await rootBundle.load(
+        'assets/fonts/PlusJakartaSans.ttf',
+      );
+      final bytes = await KeepsakePdf.build(
+        memories,
+        babyName: babyName,
+        fontData: fontData,
+      );
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/linnet-keepsake.pdf');
+      await file.writeAsBytes(bytes);
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Saved to ${file.path}')));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Could not save PDF: $e')));
+      }
     }
   }
 

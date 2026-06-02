@@ -105,8 +105,13 @@ What we already have vs. what's worth adding. ✅ shipped · ◐ partial · ⬜ 
 **Bonding & memory-keeping**
 - ✅ **Firsts + letters** — a chronological memories timeline (one-tap "first"
   suggestions, letters to the baby) with a pure, tested keepsake compiler and a
-  copyable keepsake. *Follow-ups:* exportable keepsake **PDF**, encrypted
-  ultrasound gallery, bump-photo journal + timelapse, weekly one-line prompt.
+  copyable keepsake.
+- ✅ **Keepsake PDF** — a warm, on-device PDF of the journey (the bundled font is
+  embedded for full Unicode), saved to Documents.
+- ✅ **Encrypted photo gallery** — ultrasound/keepsake photos stored as BLOBs in
+  the encrypted database (encrypted at rest, never uploaded), added from the photo
+  library. *Note:* photos are deliberately excluded from the JSON backup (size).
+  *Follow-ups:* bump-photo journal + timelapse, weekly one-line prompt.
 
 **Logistics**
 - ⬜ Birth-plan builder, hospital-bag checklist, **postpartum / "fourth trimester"**

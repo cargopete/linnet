@@ -13,6 +13,7 @@ import 'contraction_timer_screen.dart';
 import 'edit_dating_screen.dart';
 import 'kick_counter_screen.dart';
 import 'memories_screen.dart';
+import 'photo_gallery_screen.dart';
 import 'size_comparison_card.dart';
 
 /// The pregnancy-mode home view: gestational age, due date, progress and a
@@ -192,6 +193,11 @@ class _ToolsGrid extends StatelessWidget {
         Icons.favorite_border,
         'Memories',
         MemoriesScreen(pregnancyId: pregnancyId),
+      ),
+      (
+        Icons.photo_library_outlined,
+        'Photos',
+        PhotoGalleryScreen(pregnancyId: pregnancyId),
       ),
     ];
 

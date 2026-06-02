@@ -16,6 +16,7 @@ part 'database.g.dart';
     Appointments,
     GlucoseReadings,
     Memories,
+    Photos,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -28,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -48,6 +49,8 @@ class AppDatabase extends _$AppDatabase {
       if (from < 5) await m.createTable(glucoseReadings);
       // v6 added bonding memories (firsts + letters).
       if (from < 6) await m.createTable(memories);
+      // v7 added the encrypted photo gallery.
+      if (from < 7) await m.createTable(photos);
     },
   );
 
@@ -186,6 +189,19 @@ class AppDatabase extends _$AppDatabase {
           .watchSingleOrNull()
           .map((row) => row?.value);
 
+  // --- Photos -------------------------------------------------------------
+
+  Future<int> insertPhoto(PhotosCompanion entry) => into(photos).insert(entry);
+
+  Future<void> deletePhoto(int id) =>
+      (delete(photos)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<PhotoRow>> watchPhotos(int pregnancyId) =>
+      (select(photos)
+            ..where((t) => t.pregnancyId.equals(pregnancyId))
+            ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
+          .watch();
+
   // --- Backup (export / import) -------------------------------------------
 
   /// Serialises every table to JSON-able maps (drift `toJson`). Used by the
@@ -268,6 +284,7 @@ class AppDatabase extends _$AppDatabase {
       b.deleteWhere(appointments, (_) => const Constant(true));
       b.deleteWhere(glucoseReadings, (_) => const Constant(true));
       b.deleteWhere(memories, (_) => const Constant(true));
+      b.deleteWhere(photos, (_) => const Constant(true));
     });
   }
 }
