@@ -126,6 +126,38 @@ What we already have vs. what's worth adding. ✅ shipped · ◐ partial · ⬜ 
 These slot into Stages 2–3; the loss/pause reflection mode, themed size
 comparisons, and the glucose module are the highest-value next picks.
 
+## Baby & child mode (post-birth) — the next continent
+
+One continuous family journey: pregnancy → baby (0–~18mo intensive logging) →
+child (memories + health record). Shared spine: child profile, keepsake timeline,
+health record.
+
+- ✅ **Stage 1 foundation** — inclusive **child profiles** (multiple children,
+  corrected age for preemies via due date, "joined our family" date for
+  adoption/fostering, gender-neutral) and a **frictionless daily logger**: feeds
+  (breast timer with side memory + bottle ml), diapers (wet/dirty/mixed), sleep,
+  with ongoing feed/nap timers and a "time since last" home. Pure/tested age +
+  time-since logic.
+- ⬜ **On-device nap predictor** (SweetSpot-equivalent: age-based wake windows +
+  the child's own pattern) — offered free.
+- ⬜ **Health hub** — AAP well-visit timeline, CDC immunization schedule (with the
+  2025–26 regulatory-flux caveat: cite + link live), WHO(0–2)/CDC(2+) growth
+  percentiles, weight-banded med dosing with **double-dose protection** — all
+  non-diagnostic, "ask your pediatrician".
+- ⬜ **CDC milestones, reframed for warmth** — ranges not deadlines, three-state
+  answers, responsible escalation at 9/18/30mo, corrected-age aware,
+  email-to-pediatrician export. (The 75th-percentile framing is an anxiety risk.)
+- ⬜ **Keepsakes for the child** — monthly milestone photo cards, firsts, letters,
+  audio, year-in-review (reuse the pregnancy memories + PDF + photo gallery work).
+- ⬜ **Loss-aware Bairn→Baby transition** — gently prompt "has your baby arrived?"
+  (never auto-flip), carry forward profile/letters; the loss branch already never
+  auto-pushes baby content (reflection mode).
+- ⬜ **Opt-in E2E family sharing** (partner/grandparents/nanny) via CRDT sync —
+  the hard part is photo/blob sync; ship share-sheet/PDF first.
+- ⬜ **Calm mode** — dial high-frequency logging down as the child grows (answers
+  the over-tracking backlash). Optional EPDS postpartum self-screen (any parent,
+  private, resource routing).
+
 ## Thresholds that change the plan
 
 - Contraception/pregnancy-prevention claims → FDA clearance + EU MDR Class IIb +

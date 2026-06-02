@@ -18,6 +18,8 @@ part 'database.g.dart';
     Memories,
     Photos,
     Reminders,
+    Children,
+    BabyEvents,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -30,7 +32,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -54,6 +56,11 @@ class AppDatabase extends _$AppDatabase {
       if (from < 7) await m.createTable(photos);
       // v8 added daily reminders.
       if (from < 8) await m.createTable(reminders);
+      // v9 added baby mode: child profiles and daily events.
+      if (from < 9) {
+        await m.createTable(children);
+        await m.createTable(babyEvents);
+      }
     },
   );
 
@@ -214,6 +221,38 @@ class AppDatabase extends _$AppDatabase {
   Future<void> upsertReminder(RemindersCompanion entry) =>
       into(reminders).insertOnConflictUpdate(entry);
 
+  // --- Baby mode ----------------------------------------------------------
+
+  Stream<List<ChildRow>> watchChildren() => (select(
+    children,
+  )..orderBy([(t) => OrderingTerm.asc(t.birthDate)])).watch();
+
+  Future<List<ChildRow>> getChildren() =>
+      (select(children)..orderBy([(t) => OrderingTerm.asc(t.birthDate)])).get();
+
+  Future<int> insertChild(ChildrenCompanion entry) =>
+      into(children).insert(entry);
+
+  Future<void> deleteChild(int id) async {
+    await (delete(babyEvents)..where((t) => t.childId.equals(id))).go();
+    await (delete(children)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<int> insertBabyEvent(BabyEventsCompanion entry) =>
+      into(babyEvents).insert(entry);
+
+  Future<void> updateBabyEvent(BabyEventsCompanion entry) =>
+      update(babyEvents).replace(entry);
+
+  Future<void> deleteBabyEvent(int id) =>
+      (delete(babyEvents)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<BabyEventRow>> watchBabyEvents(int childId) =>
+      (select(babyEvents)
+            ..where((t) => t.childId.equals(childId))
+            ..orderBy([(t) => OrderingTerm.desc(t.startTime)]))
+          .watch();
+
   // --- Backup (export / import) -------------------------------------------
 
   /// Serialises every table to JSON-able maps (drift `toJson`). Used by the
@@ -298,6 +337,8 @@ class AppDatabase extends _$AppDatabase {
       b.deleteWhere(memories, (_) => const Constant(true));
       b.deleteWhere(photos, (_) => const Constant(true));
       b.deleteWhere(reminders, (_) => const Constant(true));
+      b.deleteWhere(children, (_) => const Constant(true));
+      b.deleteWhere(babyEvents, (_) => const Constant(true));
     });
   }
 }

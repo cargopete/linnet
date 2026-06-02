@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../../../common/preferences.dart';
 import '../../../common/providers.dart';
 import '../../../common/util/date_only.dart';
+import '../../baby/application/baby_providers.dart';
+import '../../baby/presentation/baby_home_screen.dart';
 import '../../cycle_logging/presentation/day_log_screen.dart';
 import '../../insights/presentation/perimenopause_home.dart';
 import '../../onboarding/domain/tracking_goal.dart';
@@ -75,7 +77,33 @@ class HomeScreen extends ConsumerWidget {
             const _EmptyState(),
           const SizedBox(height: 16),
           const _StartPregnancyTile(),
+          const SizedBox(height: 8),
+          const _BabyTile(),
         ],
+      ),
+    );
+  }
+}
+
+class _BabyTile extends ConsumerWidget {
+  const _BabyTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasChildren = ref.watch(hasChildrenProvider);
+    return Card(
+      child: ListTile(
+        leading: const Icon(Icons.child_friendly_outlined),
+        title: Text(hasChildren ? 'Baby' : 'Track your baby'),
+        subtitle: Text(
+          hasChildren
+              ? 'Feeds, diapers and sleep'
+              : 'Feeds, diapers and sleep — for when they arrive',
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => const BabyHomeScreen())),
       ),
     );
   }

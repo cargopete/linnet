@@ -43,6 +43,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Encrypted backup** (opt-in, zero-knowledge: Argon2id + AES-GCM, forced recovery key, file you own) | ✅ |
 | **Perimenopause views** (symptom-focused home + on-device symptom insights) | ✅ |
 | **Reminders** (opt-in daily local notifications, non-descriptive text, pausable) | ✅ |
+| **Baby mode** (Stage 1: inclusive child profiles + corrected age; frictionless feed/diaper/sleep logger; "time since last" home) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
 The planned roadmap (Stages 1–3) is fully shipped. Remaining ideas — logistics
@@ -89,7 +90,7 @@ installed (`xcodebuild -downloadPlatform iOS` if Xcode reports
 ```bash
 flutter pub get
 dart run build_runner build      # generate Drift code (*.g.dart)
-flutter test                     # 83 tests, all green
+flutter test                     # 90 tests, all green
 flutter run                      # on a simulator or device
 ```
 

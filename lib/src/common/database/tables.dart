@@ -104,6 +104,34 @@ class GlucoseReadings extends Table {
   TextColumn get note => text().nullable()();
 }
 
+/// A child profile (baby mode). [dueDate] (if the baby was early) drives
+/// corrected-age; [joinedFamilyDate] supports adoption/fostering. Named ChildRow
+/// to avoid clashing with the domain `Child`.
+@DataClassName('ChildRow')
+class Children extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  DateTimeColumn get birthDate => dateTime()();
+  DateTimeColumn get dueDate => dateTime().nullable()();
+  DateTimeColumn get joinedFamilyDate => dateTime().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// A high-frequency baby event (feed/diaper/sleep). [type] is the BabyEventType
+/// ordinal; [endTime] is null while an event (a feed timer, a nap) is ongoing.
+/// Named BabyEventRow to avoid clashing with the domain `BabyEvent`.
+@DataClassName('BabyEventRow')
+class BabyEvents extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get childId => integer()();
+  IntColumn get type => integer()();
+  DateTimeColumn get startTime => dateTime()();
+  DateTimeColumn get endTime => dateTime().nullable()();
+  RealColumn get amountMl => real().nullable()();
+  TextColumn get side => text().nullable()();
+  TextColumn get note => text().nullable()();
+}
+
 /// A daily reminder. One row per [kind] (the ReminderKind ordinal is the key),
 /// firing at [hour]:[minute] when [enabled]. Notification text is deliberately
 /// non-descriptive (no reproductive details).

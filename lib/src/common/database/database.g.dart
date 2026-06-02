@@ -3854,6 +3854,903 @@ class RemindersCompanion extends UpdateCompanion<ReminderRow> {
   }
 }
 
+class $ChildrenTable extends Children with TableInfo<$ChildrenTable, ChildRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ChildrenTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _birthDateMeta = const VerificationMeta(
+    'birthDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> birthDate = GeneratedColumn<DateTime>(
+    'birth_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dueDateMeta = const VerificationMeta(
+    'dueDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
+    'due_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _joinedFamilyDateMeta = const VerificationMeta(
+    'joinedFamilyDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> joinedFamilyDate =
+      GeneratedColumn<DateTime>(
+        'joined_family_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    birthDate,
+    dueDate,
+    joinedFamilyDate,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'children';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ChildRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('birth_date')) {
+      context.handle(
+        _birthDateMeta,
+        birthDate.isAcceptableOrUnknown(data['birth_date']!, _birthDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_birthDateMeta);
+    }
+    if (data.containsKey('due_date')) {
+      context.handle(
+        _dueDateMeta,
+        dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta),
+      );
+    }
+    if (data.containsKey('joined_family_date')) {
+      context.handle(
+        _joinedFamilyDateMeta,
+        joinedFamilyDate.isAcceptableOrUnknown(
+          data['joined_family_date']!,
+          _joinedFamilyDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ChildRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ChildRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      birthDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}birth_date'],
+      )!,
+      dueDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}due_date'],
+      ),
+      joinedFamilyDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}joined_family_date'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ChildrenTable createAlias(String alias) {
+    return $ChildrenTable(attachedDatabase, alias);
+  }
+}
+
+class ChildRow extends DataClass implements Insertable<ChildRow> {
+  final int id;
+  final String name;
+  final DateTime birthDate;
+  final DateTime? dueDate;
+  final DateTime? joinedFamilyDate;
+  final DateTime createdAt;
+  const ChildRow({
+    required this.id,
+    required this.name,
+    required this.birthDate,
+    this.dueDate,
+    this.joinedFamilyDate,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['birth_date'] = Variable<DateTime>(birthDate);
+    if (!nullToAbsent || dueDate != null) {
+      map['due_date'] = Variable<DateTime>(dueDate);
+    }
+    if (!nullToAbsent || joinedFamilyDate != null) {
+      map['joined_family_date'] = Variable<DateTime>(joinedFamilyDate);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  ChildrenCompanion toCompanion(bool nullToAbsent) {
+    return ChildrenCompanion(
+      id: Value(id),
+      name: Value(name),
+      birthDate: Value(birthDate),
+      dueDate: dueDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDate),
+      joinedFamilyDate: joinedFamilyDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(joinedFamilyDate),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory ChildRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ChildRow(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      birthDate: serializer.fromJson<DateTime>(json['birthDate']),
+      dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
+      joinedFamilyDate: serializer.fromJson<DateTime?>(
+        json['joinedFamilyDate'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'birthDate': serializer.toJson<DateTime>(birthDate),
+      'dueDate': serializer.toJson<DateTime?>(dueDate),
+      'joinedFamilyDate': serializer.toJson<DateTime?>(joinedFamilyDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  ChildRow copyWith({
+    int? id,
+    String? name,
+    DateTime? birthDate,
+    Value<DateTime?> dueDate = const Value.absent(),
+    Value<DateTime?> joinedFamilyDate = const Value.absent(),
+    DateTime? createdAt,
+  }) => ChildRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    birthDate: birthDate ?? this.birthDate,
+    dueDate: dueDate.present ? dueDate.value : this.dueDate,
+    joinedFamilyDate: joinedFamilyDate.present
+        ? joinedFamilyDate.value
+        : this.joinedFamilyDate,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  ChildRow copyWithCompanion(ChildrenCompanion data) {
+    return ChildRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      birthDate: data.birthDate.present ? data.birthDate.value : this.birthDate,
+      dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
+      joinedFamilyDate: data.joinedFamilyDate.present
+          ? data.joinedFamilyDate.value
+          : this.joinedFamilyDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChildRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('birthDate: $birthDate, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('joinedFamilyDate: $joinedFamilyDate, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, birthDate, dueDate, joinedFamilyDate, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ChildRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.birthDate == this.birthDate &&
+          other.dueDate == this.dueDate &&
+          other.joinedFamilyDate == this.joinedFamilyDate &&
+          other.createdAt == this.createdAt);
+}
+
+class ChildrenCompanion extends UpdateCompanion<ChildRow> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<DateTime> birthDate;
+  final Value<DateTime?> dueDate;
+  final Value<DateTime?> joinedFamilyDate;
+  final Value<DateTime> createdAt;
+  const ChildrenCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.birthDate = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.joinedFamilyDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  ChildrenCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required DateTime birthDate,
+    this.dueDate = const Value.absent(),
+    this.joinedFamilyDate = const Value.absent(),
+    required DateTime createdAt,
+  }) : name = Value(name),
+       birthDate = Value(birthDate),
+       createdAt = Value(createdAt);
+  static Insertable<ChildRow> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<DateTime>? birthDate,
+    Expression<DateTime>? dueDate,
+    Expression<DateTime>? joinedFamilyDate,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (birthDate != null) 'birth_date': birthDate,
+      if (dueDate != null) 'due_date': dueDate,
+      if (joinedFamilyDate != null) 'joined_family_date': joinedFamilyDate,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  ChildrenCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<DateTime>? birthDate,
+    Value<DateTime?>? dueDate,
+    Value<DateTime?>? joinedFamilyDate,
+    Value<DateTime>? createdAt,
+  }) {
+    return ChildrenCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      birthDate: birthDate ?? this.birthDate,
+      dueDate: dueDate ?? this.dueDate,
+      joinedFamilyDate: joinedFamilyDate ?? this.joinedFamilyDate,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (birthDate.present) {
+      map['birth_date'] = Variable<DateTime>(birthDate.value);
+    }
+    if (dueDate.present) {
+      map['due_date'] = Variable<DateTime>(dueDate.value);
+    }
+    if (joinedFamilyDate.present) {
+      map['joined_family_date'] = Variable<DateTime>(joinedFamilyDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChildrenCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('birthDate: $birthDate, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('joinedFamilyDate: $joinedFamilyDate, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BabyEventsTable extends BabyEvents
+    with TableInfo<$BabyEventsTable, BabyEventRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BabyEventsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _childIdMeta = const VerificationMeta(
+    'childId',
+  );
+  @override
+  late final GeneratedColumn<int> childId = GeneratedColumn<int>(
+    'child_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<int> type = GeneratedColumn<int>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startTimeMeta = const VerificationMeta(
+    'startTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startTime = GeneratedColumn<DateTime>(
+    'start_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endTimeMeta = const VerificationMeta(
+    'endTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endTime = GeneratedColumn<DateTime>(
+    'end_time',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _amountMlMeta = const VerificationMeta(
+    'amountMl',
+  );
+  @override
+  late final GeneratedColumn<double> amountMl = GeneratedColumn<double>(
+    'amount_ml',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sideMeta = const VerificationMeta('side');
+  @override
+  late final GeneratedColumn<String> side = GeneratedColumn<String>(
+    'side',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    childId,
+    type,
+    startTime,
+    endTime,
+    amountMl,
+    side,
+    note,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'baby_events';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BabyEventRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('child_id')) {
+      context.handle(
+        _childIdMeta,
+        childId.isAcceptableOrUnknown(data['child_id']!, _childIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_childIdMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('start_time')) {
+      context.handle(
+        _startTimeMeta,
+        startTime.isAcceptableOrUnknown(data['start_time']!, _startTimeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startTimeMeta);
+    }
+    if (data.containsKey('end_time')) {
+      context.handle(
+        _endTimeMeta,
+        endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta),
+      );
+    }
+    if (data.containsKey('amount_ml')) {
+      context.handle(
+        _amountMlMeta,
+        amountMl.isAcceptableOrUnknown(data['amount_ml']!, _amountMlMeta),
+      );
+    }
+    if (data.containsKey('side')) {
+      context.handle(
+        _sideMeta,
+        side.isAcceptableOrUnknown(data['side']!, _sideMeta),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BabyEventRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BabyEventRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      childId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}child_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}type'],
+      )!,
+      startTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_time'],
+      )!,
+      endTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_time'],
+      ),
+      amountMl: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}amount_ml'],
+      ),
+      side: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}side'],
+      ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+    );
+  }
+
+  @override
+  $BabyEventsTable createAlias(String alias) {
+    return $BabyEventsTable(attachedDatabase, alias);
+  }
+}
+
+class BabyEventRow extends DataClass implements Insertable<BabyEventRow> {
+  final int id;
+  final int childId;
+  final int type;
+  final DateTime startTime;
+  final DateTime? endTime;
+  final double? amountMl;
+  final String? side;
+  final String? note;
+  const BabyEventRow({
+    required this.id,
+    required this.childId,
+    required this.type,
+    required this.startTime,
+    this.endTime,
+    this.amountMl,
+    this.side,
+    this.note,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['child_id'] = Variable<int>(childId);
+    map['type'] = Variable<int>(type);
+    map['start_time'] = Variable<DateTime>(startTime);
+    if (!nullToAbsent || endTime != null) {
+      map['end_time'] = Variable<DateTime>(endTime);
+    }
+    if (!nullToAbsent || amountMl != null) {
+      map['amount_ml'] = Variable<double>(amountMl);
+    }
+    if (!nullToAbsent || side != null) {
+      map['side'] = Variable<String>(side);
+    }
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    return map;
+  }
+
+  BabyEventsCompanion toCompanion(bool nullToAbsent) {
+    return BabyEventsCompanion(
+      id: Value(id),
+      childId: Value(childId),
+      type: Value(type),
+      startTime: Value(startTime),
+      endTime: endTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endTime),
+      amountMl: amountMl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(amountMl),
+      side: side == null && nullToAbsent ? const Value.absent() : Value(side),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+    );
+  }
+
+  factory BabyEventRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BabyEventRow(
+      id: serializer.fromJson<int>(json['id']),
+      childId: serializer.fromJson<int>(json['childId']),
+      type: serializer.fromJson<int>(json['type']),
+      startTime: serializer.fromJson<DateTime>(json['startTime']),
+      endTime: serializer.fromJson<DateTime?>(json['endTime']),
+      amountMl: serializer.fromJson<double?>(json['amountMl']),
+      side: serializer.fromJson<String?>(json['side']),
+      note: serializer.fromJson<String?>(json['note']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'childId': serializer.toJson<int>(childId),
+      'type': serializer.toJson<int>(type),
+      'startTime': serializer.toJson<DateTime>(startTime),
+      'endTime': serializer.toJson<DateTime?>(endTime),
+      'amountMl': serializer.toJson<double?>(amountMl),
+      'side': serializer.toJson<String?>(side),
+      'note': serializer.toJson<String?>(note),
+    };
+  }
+
+  BabyEventRow copyWith({
+    int? id,
+    int? childId,
+    int? type,
+    DateTime? startTime,
+    Value<DateTime?> endTime = const Value.absent(),
+    Value<double?> amountMl = const Value.absent(),
+    Value<String?> side = const Value.absent(),
+    Value<String?> note = const Value.absent(),
+  }) => BabyEventRow(
+    id: id ?? this.id,
+    childId: childId ?? this.childId,
+    type: type ?? this.type,
+    startTime: startTime ?? this.startTime,
+    endTime: endTime.present ? endTime.value : this.endTime,
+    amountMl: amountMl.present ? amountMl.value : this.amountMl,
+    side: side.present ? side.value : this.side,
+    note: note.present ? note.value : this.note,
+  );
+  BabyEventRow copyWithCompanion(BabyEventsCompanion data) {
+    return BabyEventRow(
+      id: data.id.present ? data.id.value : this.id,
+      childId: data.childId.present ? data.childId.value : this.childId,
+      type: data.type.present ? data.type.value : this.type,
+      startTime: data.startTime.present ? data.startTime.value : this.startTime,
+      endTime: data.endTime.present ? data.endTime.value : this.endTime,
+      amountMl: data.amountMl.present ? data.amountMl.value : this.amountMl,
+      side: data.side.present ? data.side.value : this.side,
+      note: data.note.present ? data.note.value : this.note,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BabyEventRow(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('type: $type, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('amountMl: $amountMl, ')
+          ..write('side: $side, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, childId, type, startTime, endTime, amountMl, side, note);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BabyEventRow &&
+          other.id == this.id &&
+          other.childId == this.childId &&
+          other.type == this.type &&
+          other.startTime == this.startTime &&
+          other.endTime == this.endTime &&
+          other.amountMl == this.amountMl &&
+          other.side == this.side &&
+          other.note == this.note);
+}
+
+class BabyEventsCompanion extends UpdateCompanion<BabyEventRow> {
+  final Value<int> id;
+  final Value<int> childId;
+  final Value<int> type;
+  final Value<DateTime> startTime;
+  final Value<DateTime?> endTime;
+  final Value<double?> amountMl;
+  final Value<String?> side;
+  final Value<String?> note;
+  const BabyEventsCompanion({
+    this.id = const Value.absent(),
+    this.childId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.startTime = const Value.absent(),
+    this.endTime = const Value.absent(),
+    this.amountMl = const Value.absent(),
+    this.side = const Value.absent(),
+    this.note = const Value.absent(),
+  });
+  BabyEventsCompanion.insert({
+    this.id = const Value.absent(),
+    required int childId,
+    required int type,
+    required DateTime startTime,
+    this.endTime = const Value.absent(),
+    this.amountMl = const Value.absent(),
+    this.side = const Value.absent(),
+    this.note = const Value.absent(),
+  }) : childId = Value(childId),
+       type = Value(type),
+       startTime = Value(startTime);
+  static Insertable<BabyEventRow> custom({
+    Expression<int>? id,
+    Expression<int>? childId,
+    Expression<int>? type,
+    Expression<DateTime>? startTime,
+    Expression<DateTime>? endTime,
+    Expression<double>? amountMl,
+    Expression<String>? side,
+    Expression<String>? note,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (childId != null) 'child_id': childId,
+      if (type != null) 'type': type,
+      if (startTime != null) 'start_time': startTime,
+      if (endTime != null) 'end_time': endTime,
+      if (amountMl != null) 'amount_ml': amountMl,
+      if (side != null) 'side': side,
+      if (note != null) 'note': note,
+    });
+  }
+
+  BabyEventsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? childId,
+    Value<int>? type,
+    Value<DateTime>? startTime,
+    Value<DateTime?>? endTime,
+    Value<double?>? amountMl,
+    Value<String?>? side,
+    Value<String?>? note,
+  }) {
+    return BabyEventsCompanion(
+      id: id ?? this.id,
+      childId: childId ?? this.childId,
+      type: type ?? this.type,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      amountMl: amountMl ?? this.amountMl,
+      side: side ?? this.side,
+      note: note ?? this.note,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (childId.present) {
+      map['child_id'] = Variable<int>(childId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<int>(type.value);
+    }
+    if (startTime.present) {
+      map['start_time'] = Variable<DateTime>(startTime.value);
+    }
+    if (endTime.present) {
+      map['end_time'] = Variable<DateTime>(endTime.value);
+    }
+    if (amountMl.present) {
+      map['amount_ml'] = Variable<double>(amountMl.value);
+    }
+    if (side.present) {
+      map['side'] = Variable<String>(side.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BabyEventsCompanion(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('type: $type, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('amountMl: $amountMl, ')
+          ..write('side: $side, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3869,6 +4766,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MemoriesTable memories = $MemoriesTable(this);
   late final $PhotosTable photos = $PhotosTable(this);
   late final $RemindersTable reminders = $RemindersTable(this);
+  late final $ChildrenTable children = $ChildrenTable(this);
+  late final $BabyEventsTable babyEvents = $BabyEventsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3884,6 +4783,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     memories,
     photos,
     reminders,
+    children,
+    babyEvents,
   ];
 }
 
@@ -5945,6 +6846,466 @@ typedef $$RemindersTableProcessedTableManager =
       ReminderRow,
       PrefetchHooks Function()
     >;
+typedef $$ChildrenTableCreateCompanionBuilder =
+    ChildrenCompanion Function({
+      Value<int> id,
+      required String name,
+      required DateTime birthDate,
+      Value<DateTime?> dueDate,
+      Value<DateTime?> joinedFamilyDate,
+      required DateTime createdAt,
+    });
+typedef $$ChildrenTableUpdateCompanionBuilder =
+    ChildrenCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<DateTime> birthDate,
+      Value<DateTime?> dueDate,
+      Value<DateTime?> joinedFamilyDate,
+      Value<DateTime> createdAt,
+    });
+
+class $$ChildrenTableFilterComposer
+    extends Composer<_$AppDatabase, $ChildrenTable> {
+  $$ChildrenTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get birthDate => $composableBuilder(
+    column: $table.birthDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dueDate => $composableBuilder(
+    column: $table.dueDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get joinedFamilyDate => $composableBuilder(
+    column: $table.joinedFamilyDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ChildrenTableOrderingComposer
+    extends Composer<_$AppDatabase, $ChildrenTable> {
+  $$ChildrenTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get birthDate => $composableBuilder(
+    column: $table.birthDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dueDate => $composableBuilder(
+    column: $table.dueDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get joinedFamilyDate => $composableBuilder(
+    column: $table.joinedFamilyDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ChildrenTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ChildrenTable> {
+  $$ChildrenTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get birthDate =>
+      $composableBuilder(column: $table.birthDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dueDate =>
+      $composableBuilder(column: $table.dueDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get joinedFamilyDate => $composableBuilder(
+    column: $table.joinedFamilyDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$ChildrenTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ChildrenTable,
+          ChildRow,
+          $$ChildrenTableFilterComposer,
+          $$ChildrenTableOrderingComposer,
+          $$ChildrenTableAnnotationComposer,
+          $$ChildrenTableCreateCompanionBuilder,
+          $$ChildrenTableUpdateCompanionBuilder,
+          (ChildRow, BaseReferences<_$AppDatabase, $ChildrenTable, ChildRow>),
+          ChildRow,
+          PrefetchHooks Function()
+        > {
+  $$ChildrenTableTableManager(_$AppDatabase db, $ChildrenTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ChildrenTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ChildrenTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ChildrenTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<DateTime> birthDate = const Value.absent(),
+                Value<DateTime?> dueDate = const Value.absent(),
+                Value<DateTime?> joinedFamilyDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => ChildrenCompanion(
+                id: id,
+                name: name,
+                birthDate: birthDate,
+                dueDate: dueDate,
+                joinedFamilyDate: joinedFamilyDate,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required DateTime birthDate,
+                Value<DateTime?> dueDate = const Value.absent(),
+                Value<DateTime?> joinedFamilyDate = const Value.absent(),
+                required DateTime createdAt,
+              }) => ChildrenCompanion.insert(
+                id: id,
+                name: name,
+                birthDate: birthDate,
+                dueDate: dueDate,
+                joinedFamilyDate: joinedFamilyDate,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ChildrenTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ChildrenTable,
+      ChildRow,
+      $$ChildrenTableFilterComposer,
+      $$ChildrenTableOrderingComposer,
+      $$ChildrenTableAnnotationComposer,
+      $$ChildrenTableCreateCompanionBuilder,
+      $$ChildrenTableUpdateCompanionBuilder,
+      (ChildRow, BaseReferences<_$AppDatabase, $ChildrenTable, ChildRow>),
+      ChildRow,
+      PrefetchHooks Function()
+    >;
+typedef $$BabyEventsTableCreateCompanionBuilder =
+    BabyEventsCompanion Function({
+      Value<int> id,
+      required int childId,
+      required int type,
+      required DateTime startTime,
+      Value<DateTime?> endTime,
+      Value<double?> amountMl,
+      Value<String?> side,
+      Value<String?> note,
+    });
+typedef $$BabyEventsTableUpdateCompanionBuilder =
+    BabyEventsCompanion Function({
+      Value<int> id,
+      Value<int> childId,
+      Value<int> type,
+      Value<DateTime> startTime,
+      Value<DateTime?> endTime,
+      Value<double?> amountMl,
+      Value<String?> side,
+      Value<String?> note,
+    });
+
+class $$BabyEventsTableFilterComposer
+    extends Composer<_$AppDatabase, $BabyEventsTable> {
+  $$BabyEventsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get childId => $composableBuilder(
+    column: $table.childId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startTime => $composableBuilder(
+    column: $table.startTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endTime => $composableBuilder(
+    column: $table.endTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get amountMl => $composableBuilder(
+    column: $table.amountMl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get side => $composableBuilder(
+    column: $table.side,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BabyEventsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BabyEventsTable> {
+  $$BabyEventsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get childId => $composableBuilder(
+    column: $table.childId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startTime => $composableBuilder(
+    column: $table.startTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endTime => $composableBuilder(
+    column: $table.endTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get amountMl => $composableBuilder(
+    column: $table.amountMl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get side => $composableBuilder(
+    column: $table.side,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BabyEventsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BabyEventsTable> {
+  $$BabyEventsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get childId =>
+      $composableBuilder(column: $table.childId, builder: (column) => column);
+
+  GeneratedColumn<int> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startTime =>
+      $composableBuilder(column: $table.startTime, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endTime =>
+      $composableBuilder(column: $table.endTime, builder: (column) => column);
+
+  GeneratedColumn<double> get amountMl =>
+      $composableBuilder(column: $table.amountMl, builder: (column) => column);
+
+  GeneratedColumn<String> get side =>
+      $composableBuilder(column: $table.side, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+}
+
+class $$BabyEventsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BabyEventsTable,
+          BabyEventRow,
+          $$BabyEventsTableFilterComposer,
+          $$BabyEventsTableOrderingComposer,
+          $$BabyEventsTableAnnotationComposer,
+          $$BabyEventsTableCreateCompanionBuilder,
+          $$BabyEventsTableUpdateCompanionBuilder,
+          (
+            BabyEventRow,
+            BaseReferences<_$AppDatabase, $BabyEventsTable, BabyEventRow>,
+          ),
+          BabyEventRow,
+          PrefetchHooks Function()
+        > {
+  $$BabyEventsTableTableManager(_$AppDatabase db, $BabyEventsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BabyEventsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BabyEventsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BabyEventsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> childId = const Value.absent(),
+                Value<int> type = const Value.absent(),
+                Value<DateTime> startTime = const Value.absent(),
+                Value<DateTime?> endTime = const Value.absent(),
+                Value<double?> amountMl = const Value.absent(),
+                Value<String?> side = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+              }) => BabyEventsCompanion(
+                id: id,
+                childId: childId,
+                type: type,
+                startTime: startTime,
+                endTime: endTime,
+                amountMl: amountMl,
+                side: side,
+                note: note,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int childId,
+                required int type,
+                required DateTime startTime,
+                Value<DateTime?> endTime = const Value.absent(),
+                Value<double?> amountMl = const Value.absent(),
+                Value<String?> side = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+              }) => BabyEventsCompanion.insert(
+                id: id,
+                childId: childId,
+                type: type,
+                startTime: startTime,
+                endTime: endTime,
+                amountMl: amountMl,
+                side: side,
+                note: note,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BabyEventsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BabyEventsTable,
+      BabyEventRow,
+      $$BabyEventsTableFilterComposer,
+      $$BabyEventsTableOrderingComposer,
+      $$BabyEventsTableAnnotationComposer,
+      $$BabyEventsTableCreateCompanionBuilder,
+      $$BabyEventsTableUpdateCompanionBuilder,
+      (
+        BabyEventRow,
+        BaseReferences<_$AppDatabase, $BabyEventsTable, BabyEventRow>,
+      ),
+      BabyEventRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5969,4 +7330,8 @@ class $AppDatabaseManager {
       $$PhotosTableTableManager(_db, _db.photos);
   $$RemindersTableTableManager get reminders =>
       $$RemindersTableTableManager(_db, _db.reminders);
+  $$ChildrenTableTableManager get children =>
+      $$ChildrenTableTableManager(_db, _db.children);
+  $$BabyEventsTableTableManager get babyEvents =>
+      $$BabyEventsTableTableManager(_db, _db.babyEvents);
 }
