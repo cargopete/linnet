@@ -21,8 +21,13 @@
   `ovulationTestResult`, `cervicalMucusQuality`, `basalBodyTemperature`,
   `sexualActivity`, `pregnancy`, …) via the `health` package. Data kept on-device
   and excluded from backup; never used for advertising (Guideline 5.1.3).
-- **Perimenopause-friendly** symptom-only tracking (no bleeding required).
-- **Inclusive onboarding** that asks the tracking goal and adapts UI/copy.
+- **Onboarding + mode-switching** ✅ — first-run flow (privacy welcome, gated
+  medical disclaimer, tracking-goal choice). The goal (avoid / conceive / general
+  health / perimenopause) reframes the forecast: "best days to try" vs
+  "higher-risk days", a stronger not-contraception caution when avoiding, and a
+  symptom-focused note in perimenopause. Goal is changeable in Settings.
+- **Perimenopause-friendly** symptom-only tracking (no bleeding required) —
+  copy/notes done; dedicated symptom-only views still to come.
 - Local notifications (`flutter_local_notifications`) with non-descriptive content
   ("Time to log", never reproductive details).
 - Duress/decoy PIN (à la Euki).

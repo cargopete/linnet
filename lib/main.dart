@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'src/app.dart';
 import 'src/common/crypto/database_key_store.dart';
 import 'src/common/database/database.dart';
+import 'src/common/preferences.dart';
 import 'src/common/providers.dart';
 
 Future<void> main() async {
@@ -16,6 +17,8 @@ Future<void> main() async {
   final database = AppDatabase(keyHex);
   final appLockEnabled =
       (await database.getSetting('appLockEnabled')) == 'true';
+  final onboarded =
+      (await database.getSetting('hasCompletedOnboarding')) == 'true';
 
   runApp(
     ProviderScope(
@@ -23,6 +26,7 @@ Future<void> main() async {
         databaseKeyStoreProvider.overrideWithValue(keyStore),
         appDatabaseProvider.overrideWithValue(database),
         appLockEnabledInitialProvider.overrideWithValue(appLockEnabled),
+        onboardingCompleteInitialProvider.overrideWithValue(onboarded),
       ],
       child: const LinnetApp(),
     ),

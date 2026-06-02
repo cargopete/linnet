@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../common/preferences.dart';
 import '../../../common/providers.dart';
 import '../../app_lock/application/app_lock_controller.dart';
+import '../../onboarding/domain/tracking_goal.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -10,11 +12,21 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final lock = ref.watch(appLockControllerProvider);
+    final goal = ref.watch(trackingGoalProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
+          const _Header('Tracking goal'),
+          ListTile(
+            leading: const Icon(Icons.flag_outlined),
+            title: const Text('What you are tracking'),
+            subtitle: Text(goal.label),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _changeGoal(context, ref, goal),
+          ),
+          const Divider(),
           const _Header('Privacy & security'),
           SwitchListTile(
             secondary: const Icon(Icons.fingerprint),
@@ -58,6 +70,33 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _changeGoal(
+    BuildContext context,
+    WidgetRef ref,
+    TrackingGoal current,
+  ) async {
+    final picked = await showModalBottomSheet<TrackingGoal>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final g in TrackingGoal.values)
+              ListTile(
+                title: Text(g.label),
+                subtitle: Text(g.description),
+                trailing: g == current ? const Icon(Icons.check) : null,
+                onTap: () => Navigator.of(ctx).pop(g),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (picked != null && picked != current) {
+      await ref.read(preferencesProvider).setGoal(picked);
+    }
   }
 
   Future<void> _confirmWipe(BuildContext context, WidgetRef ref) async {

@@ -1,0 +1,62 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../features/onboarding/domain/tracking_goal.dart';
+import 'database/database.dart' hide DailyLog;
+import 'providers.dart';
+
+/// Thin typed wrapper over the [AppSettings] key/value table for user
+/// preferences. Keeps enum (de)serialisation and setting keys in one place.
+class Preferences {
+  Preferences(this._db);
+
+  final AppDatabase _db;
+
+  static const _goalKey = 'trackingGoal';
+  static const _onboardedKey = 'hasCompletedOnboarding';
+  static const _disclaimerKey = 'disclaimerAccepted';
+
+  /// Atomically marks onboarding done: records disclaimer acceptance, the chosen
+  /// goal, and the completion flag.
+  Future<void> completeOnboarding({required TrackingGoal goal}) async {
+    await _db.setSetting(_disclaimerKey, 'true');
+    await _db.setSetting(_goalKey, goal.name);
+    await _db.setSetting(_onboardedKey, 'true');
+  }
+
+  Future<void> setGoal(TrackingGoal goal) =>
+      _db.setSetting(_goalKey, goal.name);
+
+  Stream<TrackingGoal?> watchGoal() =>
+      _db.watchSetting(_goalKey).map(TrackingGoal.byName);
+
+  Stream<bool> watchOnboarded() =>
+      _db.watchSetting(_onboardedKey).map((v) => v == 'true');
+}
+
+final preferencesProvider = Provider<Preferences>(
+  (ref) => Preferences(ref.watch(appDatabaseProvider)),
+);
+
+/// The active tracking goal, defaulting to [TrackingGoal.generalHealth] until set.
+final trackingGoalProvider = Provider<TrackingGoal>((ref) {
+  final goal = ref.watch(_trackingGoalStreamProvider).value;
+  return goal ?? TrackingGoal.generalHealth;
+});
+
+final _trackingGoalStreamProvider = StreamProvider<TrackingGoal?>(
+  (ref) => ref.watch(preferencesProvider).watchGoal(),
+);
+
+/// Initial onboarding-complete flag, read once at bootstrap and injected.
+final onboardingCompleteInitialProvider = Provider<bool>((ref) => false);
+
+/// Whether onboarding is complete — reactive, falling back to the bootstrap
+/// value before the first stream event arrives.
+final onboardingCompleteProvider = Provider<bool>((ref) {
+  final live = ref.watch(_onboardedStreamProvider).value;
+  return live ?? ref.watch(onboardingCompleteInitialProvider);
+});
+
+final _onboardedStreamProvider = StreamProvider<bool>(
+  (ref) => ref.watch(preferencesProvider).watchOnboarded(),
+);

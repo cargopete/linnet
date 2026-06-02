@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../common/preferences.dart';
 import '../../../common/util/date_only.dart';
+import '../../onboarding/domain/tracking_goal.dart';
 import '../domain/cycle_prediction.dart';
 
 /// Presents a [CyclePrediction] as ranges with an explicit confidence — never a
-/// single guaranteed day. When confidence is [PredictionConfidence.insufficient]
-/// it says so plainly.
-class PredictionCard extends StatelessWidget {
+/// single guaranteed day. The framing adapts to the user's [TrackingGoal]
+/// (mode-switching): the fertile window reads as "best days to try" when trying
+/// to conceive, or "higher-risk days" when avoiding pregnancy.
+class PredictionCard extends ConsumerWidget {
   const PredictionCard({required this.prediction, super.key});
 
   final CyclePrediction prediction;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final goal = ref.watch(trackingGoalProvider);
     final fmt = DateFormat.MMMd();
 
     String range(DateRange r) =>
         '${fmt.format(r.start)} – ${fmt.format(r.end)}';
+
+    final fertileLabel = switch (goal) {
+      TrackingGoal.conceive => 'Fertile window — best days to try',
+      TrackingGoal.avoidPregnancy => 'Fertile window — higher-risk days',
+      _ => 'Fertile window (est.)',
+    };
 
     return Card(
       child: Padding(
@@ -44,9 +55,17 @@ class PredictionCard extends StatelessWidget {
             const SizedBox(height: 8),
             _Row(
               icon: Icons.eco_outlined,
-              label: 'Fertile window (est.)',
+              label: fertileLabel,
               value: range(prediction.fertileWindow),
             ),
+            if (goal == TrackingGoal.conceive) ...[
+              const SizedBox(height: 8),
+              _Row(
+                icon: Icons.brightness_high_outlined,
+                label: 'Estimated ovulation',
+                value: fmt.format(prediction.ovulationDay),
+              ),
+            ],
             const SizedBox(height: 8),
             _Row(
               icon: Icons.straighten,
@@ -65,10 +84,21 @@ class PredictionCard extends StatelessWidget {
                 style: theme.textTheme.bodySmall,
               ),
             ],
+            if (goal == TrackingGoal.perimenopause) ...[
+              const SizedBox(height: 12),
+              Text(
+                'In perimenopause cycles are often irregular, so these estimates '
+                'may be unreliable — your symptom log is the more useful record.',
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
             const SizedBox(height: 12),
             Text(
-              'These are estimates with real uncertainty — not a guarantee, '
-              'and not a form of contraception.',
+              goal == TrackingGoal.avoidPregnancy
+                  ? 'Estimates with real uncertainty — Linnet is not '
+                        'contraception, and pregnancy is possible on any day.'
+                  : 'These are estimates with real uncertainty — not a '
+                        'guarantee, and not a form of contraception.',
               style: theme.textTheme.bodySmall?.copyWith(
                 fontStyle: FontStyle.italic,
               ),
