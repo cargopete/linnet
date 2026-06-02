@@ -40,6 +40,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Themed week-by-week sizes** (real cm/g dataset, switchable themes incl. a bird set) | ✅ |
 | **Glucose log** (gestational diabetes: meal-tagged, typical targets, mg/dL ↔ mmol/L, OB export) | ✅ |
 | **Bonding & memories** (firsts + letters timeline, copyable keepsake) | ✅ |
+| **Encrypted backup** (opt-in, zero-knowledge: Argon2id + AES-GCM, forced recovery key, file you own) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
 Planned next: per-screen design polish, perimenopause-specific views, bonding &

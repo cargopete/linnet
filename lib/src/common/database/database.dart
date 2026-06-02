@@ -186,6 +186,76 @@ class AppDatabase extends _$AppDatabase {
           .watchSingleOrNull()
           .map((row) => row?.value);
 
+  // --- Backup (export / import) -------------------------------------------
+
+  /// Serialises every table to JSON-able maps (drift `toJson`). Used by the
+  /// encrypted-backup feature; the result is encrypted before it ever leaves.
+  Future<Map<String, List<Map<String, dynamic>>>> exportAll() async {
+    return {
+      'dailyLogs': (await select(
+        dailyLogs,
+      ).get()).map((r) => r.toJson()).toList(),
+      'pregnancies': (await select(
+        pregnancies,
+      ).get()).map((r) => r.toJson()).toList(),
+      'kickSessions': (await select(
+        kickSessions,
+      ).get()).map((r) => r.toJson()).toList(),
+      'contractions': (await select(
+        contractions,
+      ).get()).map((r) => r.toJson()).toList(),
+      'appointments': (await select(
+        appointments,
+      ).get()).map((r) => r.toJson()).toList(),
+      'glucoseReadings': (await select(
+        glucoseReadings,
+      ).get()).map((r) => r.toJson()).toList(),
+      'memories': (await select(
+        memories,
+      ).get()).map((r) => r.toJson()).toList(),
+      'appSettings': (await select(
+        appSettings,
+      ).get()).map((r) => r.toJson()).toList(),
+    };
+  }
+
+  /// Replaces all data with the contents of an [exportAll] map. Runs in a single
+  /// transaction so a failed import cannot leave a half-restored database.
+  Future<void> importAll(Map<String, dynamic> data) async {
+    List<Map<String, dynamic>> rows(String key) =>
+        ((data[key] as List?) ?? const [])
+            .map((e) => (e as Map).cast<String, dynamic>())
+            .toList();
+
+    await transaction(() async {
+      await wipeAll();
+      for (final j in rows('dailyLogs')) {
+        await into(dailyLogs).insert(DailyLog.fromJson(j));
+      }
+      for (final j in rows('pregnancies')) {
+        await into(pregnancies).insert(Pregnancy.fromJson(j));
+      }
+      for (final j in rows('kickSessions')) {
+        await into(kickSessions).insert(KickSession.fromJson(j));
+      }
+      for (final j in rows('contractions')) {
+        await into(contractions).insert(Contraction.fromJson(j));
+      }
+      for (final j in rows('appointments')) {
+        await into(appointments).insert(Appointment.fromJson(j));
+      }
+      for (final j in rows('glucoseReadings')) {
+        await into(glucoseReadings).insert(GlucoseReading.fromJson(j));
+      }
+      for (final j in rows('memories')) {
+        await into(memories).insert(MemoryRow.fromJson(j));
+      }
+      for (final j in rows('appSettings')) {
+        await into(appSettings).insert(AppSetting.fromJson(j));
+      }
+    });
+  }
+
   /// Wipes every table. The caller is responsible for also destroying the DEK
   /// if a full cryptographic erase is wanted.
   Future<void> wipeAll() async {

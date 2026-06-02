@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common/preferences.dart';
 import '../../../common/providers.dart';
 import '../../app_lock/application/app_lock_controller.dart';
+import '../../backup/presentation/backup_screen.dart';
 import '../../health_sync/presentation/health_settings_section.dart';
 import '../../onboarding/domain/tracking_goal.dart';
 
@@ -52,6 +53,14 @@ class SettingsScreen extends ConsumerWidget {
           const HealthSettingsSection(),
           const Divider(),
           const _Header('Data'),
+          ListTile(
+            leading: const Icon(Icons.lock_outline),
+            title: const Text('Encrypted backup'),
+            subtitle: const Text('Export or restore an encrypted backup file'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const BackupScreen()),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.delete_outline),
             title: const Text('Delete all data'),

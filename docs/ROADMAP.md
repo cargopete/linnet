@@ -39,12 +39,19 @@
 - Duress/decoy PIN (à la Euki).
 - Golden tests (Alchemist) and broader widget coverage.
 
-## Stage 3 — Optional zero-knowledge backup (only if users ask)
+## Stage 3 — Optional zero-knowledge backup ✅ (file-based)
 
-- Client-side E2EE (XChaCha20-Poly1305), Argon2id-derived keys.
-- A forced, acknowledged **recovery key** ("lost key = lost data").
-- A dumb ciphertext store (custom REST / Supabase as opaque blob storage).
-- Last-write-wins sync. **Off by default, opt-in.**
+- ✅ Client-side encryption: a random backup key encrypts the payload (AES-GCM-256),
+  wrapped by an **Argon2id**-derived KEK from the user's passphrase.
+- ✅ A **recovery key** that opens the backup without the passphrase, shown once
+  with a blunt "lose both = unrecoverable" warning.
+- ✅ Whole-database export/import in a single transaction; the encrypted file is
+  written to the app's Documents folder (visible in Files) and can be copied out.
+- ✅ **Off by default, opt-in**, no account, **no server** — true to the no-network
+  promise. We deliberately did *not* build a cloud ciphertext store / LWW sync;
+  the user owns the file. *Follow-ups (only if users ask):* a real file
+  picker/share sheet, and — if cloud sync is ever genuinely wanted — an opt-in
+  dumb ciphertext store with the same client-side crypto.
 
 ## Pregnancy experience — feature map (from the "Bairn" research)
 
