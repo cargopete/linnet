@@ -104,6 +104,20 @@ class GlucoseReadings extends Table {
   TextColumn get note => text().nullable()();
 }
 
+/// A daily reminder. One row per [kind] (the ReminderKind ordinal is the key),
+/// firing at [hour]:[minute] when [enabled]. Notification text is deliberately
+/// non-descriptive (no reproductive details).
+@DataClassName('ReminderRow')
+class Reminders extends Table {
+  IntColumn get kind => integer()();
+  IntColumn get hour => integer()();
+  IntColumn get minute => integer()();
+  BoolColumn get enabled => boolean().withDefault(const Constant(true))();
+
+  @override
+  Set<Column<Object>> get primaryKey => {kind};
+}
+
 /// Generic key/value store for app settings (onboarding goal, app-lock toggle,
 /// disclaimer acceptance, etc.). Kept opaque so adding a setting needs no schema
 /// migration.

@@ -17,6 +17,7 @@ part 'database.g.dart';
     GlucoseReadings,
     Memories,
     Photos,
+    Reminders,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -29,7 +30,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -51,6 +52,8 @@ class AppDatabase extends _$AppDatabase {
       if (from < 6) await m.createTable(memories);
       // v7 added the encrypted photo gallery.
       if (from < 7) await m.createTable(photos);
+      // v8 added daily reminders.
+      if (from < 8) await m.createTable(reminders);
     },
   );
 
@@ -202,6 +205,15 @@ class AppDatabase extends _$AppDatabase {
             ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
           .watch();
 
+  // --- Reminders ----------------------------------------------------------
+
+  Future<List<ReminderRow>> getReminders() => select(reminders).get();
+
+  Stream<List<ReminderRow>> watchReminders() => select(reminders).watch();
+
+  Future<void> upsertReminder(RemindersCompanion entry) =>
+      into(reminders).insertOnConflictUpdate(entry);
+
   // --- Backup (export / import) -------------------------------------------
 
   /// Serialises every table to JSON-able maps (drift `toJson`). Used by the
@@ -285,6 +297,7 @@ class AppDatabase extends _$AppDatabase {
       b.deleteWhere(glucoseReadings, (_) => const Constant(true));
       b.deleteWhere(memories, (_) => const Constant(true));
       b.deleteWhere(photos, (_) => const Constant(true));
+      b.deleteWhere(reminders, (_) => const Constant(true));
     });
   }
 }

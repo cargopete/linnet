@@ -6,6 +6,9 @@ import 'src/common/crypto/database_key_store.dart';
 import 'src/common/database/database.dart';
 import 'src/common/preferences.dart';
 import 'src/common/providers.dart';
+import 'src/features/reminders/application/reminder_providers.dart';
+import 'src/features/reminders/data/notification_service.dart';
+import 'src/features/reminders/data/reminder_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +27,11 @@ Future<void> main() async {
       ? null
       : int.tryParse(reflectionRaw);
 
+  // Local reminders: initialise and (re)schedule any the user previously enabled.
+  final notifications = NotificationService();
+  await notifications.init();
+  await notifications.sync(await ReminderRepository(database).getAll());
+
   runApp(
     ProviderScope(
       overrides: [
@@ -32,6 +40,7 @@ Future<void> main() async {
         appLockEnabledInitialProvider.overrideWithValue(appLockEnabled),
         onboardingCompleteInitialProvider.overrideWithValue(onboarded),
         reflectionInitialIdProvider.overrideWithValue(reflectionId),
+        notificationServiceProvider.overrideWithValue(notifications),
       ],
       child: const LinnetApp(),
     ),

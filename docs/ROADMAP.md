@@ -36,8 +36,9 @@
   predictions with "days since last period" and on-device symptom insights
   (ranked frequencies over 90 days), plus perimenopause symptoms (hot flashes,
   night sweats, mood swings, joint aches). Pure/tested insights engine.
-- Local notifications (`flutter_local_notifications`) with non-descriptive content
-  ("Time to log", never reproductive details).
+- ✅ **Reminders** — opt-in daily local notifications, off by default, per-kind
+  toggle + time, **non-descriptive text** ("a gentle reminder", never reproductive
+  details), pausable. Pure/tested schedule logic; defensive iOS-gated service.
 - Duress/decoy PIN (à la Euki).
 - Golden tests (Alchemist) and broader widget coverage.
 

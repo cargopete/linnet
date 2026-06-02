@@ -42,12 +42,14 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Bonding & memories** (firsts + letters timeline, copyable keepsake, **PDF export**, **encrypted photo gallery**) | ✅ |
 | **Encrypted backup** (opt-in, zero-knowledge: Argon2id + AES-GCM, forced recovery key, file you own) | ✅ |
 | **Perimenopause views** (symptom-focused home + on-device symptom insights) | ✅ |
+| **Reminders** (opt-in daily local notifications, non-descriptive text, pausable) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
-Planned next: per-screen design polish, perimenopause-specific views, bonding &
-memory-keeping (keepsake export), and an *opt-in* zero-knowledge encrypted backup.
-The full pregnancy feature map and stage plan live in
-[`docs/ROADMAP.md`](docs/ROADMAP.md).
+The planned roadmap (Stages 1–3) is fully shipped. Remaining ideas — logistics
+toolkit (birth plan, hospital bag, postpartum), a duress/decoy PIN, home-screen
+widgets and an Apple Watch companion — are tracked in
+[`docs/ROADMAP.md`](docs/ROADMAP.md). The biggest outstanding task is not a
+feature: running it on a device and a per-screen design pass.
 
 ## Architecture
 
@@ -87,7 +89,7 @@ installed (`xcodebuild -downloadPlatform iOS` if Xcode reports
 ```bash
 flutter pub get
 dart run build_runner build      # generate Drift code (*.g.dart)
-flutter test                     # 78 tests, all green
+flutter test                     # 83 tests, all green
 flutter run                      # on a simulator or device
 ```
 

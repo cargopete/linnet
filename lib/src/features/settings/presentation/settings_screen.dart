@@ -7,6 +7,7 @@ import '../../app_lock/application/app_lock_controller.dart';
 import '../../backup/presentation/backup_screen.dart';
 import '../../health_sync/presentation/health_settings_section.dart';
 import '../../onboarding/domain/tracking_goal.dart';
+import '../../reminders/presentation/reminders_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -27,6 +28,19 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: Text(goal.label),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _changeGoal(context, ref, goal),
+          ),
+          const Divider(),
+          const _Header('Reminders'),
+          ListTile(
+            leading: const Icon(Icons.notifications_none),
+            title: const Text('Daily reminders'),
+            subtitle: const Text(
+              'Gentle, non-descriptive nudges (off by default)',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const RemindersScreen()),
+            ),
           ),
           const Divider(),
           const _Header('Privacy & security'),

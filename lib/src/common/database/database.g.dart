@@ -3562,6 +3562,298 @@ class PhotosCompanion extends UpdateCompanion<PhotoRow> {
   }
 }
 
+class $RemindersTable extends Reminders
+    with TableInfo<$RemindersTable, ReminderRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RemindersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<int> kind = GeneratedColumn<int>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hourMeta = const VerificationMeta('hour');
+  @override
+  late final GeneratedColumn<int> hour = GeneratedColumn<int>(
+    'hour',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _minuteMeta = const VerificationMeta('minute');
+  @override
+  late final GeneratedColumn<int> minute = GeneratedColumn<int>(
+    'minute',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _enabledMeta = const VerificationMeta(
+    'enabled',
+  );
+  @override
+  late final GeneratedColumn<bool> enabled = GeneratedColumn<bool>(
+    'enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [kind, hour, minute, enabled];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'reminders';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReminderRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    }
+    if (data.containsKey('hour')) {
+      context.handle(
+        _hourMeta,
+        hour.isAcceptableOrUnknown(data['hour']!, _hourMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hourMeta);
+    }
+    if (data.containsKey('minute')) {
+      context.handle(
+        _minuteMeta,
+        minute.isAcceptableOrUnknown(data['minute']!, _minuteMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_minuteMeta);
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(
+        _enabledMeta,
+        enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {kind};
+  @override
+  ReminderRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReminderRow(
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}kind'],
+      )!,
+      hour: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hour'],
+      )!,
+      minute: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}minute'],
+      )!,
+      enabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enabled'],
+      )!,
+    );
+  }
+
+  @override
+  $RemindersTable createAlias(String alias) {
+    return $RemindersTable(attachedDatabase, alias);
+  }
+}
+
+class ReminderRow extends DataClass implements Insertable<ReminderRow> {
+  final int kind;
+  final int hour;
+  final int minute;
+  final bool enabled;
+  const ReminderRow({
+    required this.kind,
+    required this.hour,
+    required this.minute,
+    required this.enabled,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['kind'] = Variable<int>(kind);
+    map['hour'] = Variable<int>(hour);
+    map['minute'] = Variable<int>(minute);
+    map['enabled'] = Variable<bool>(enabled);
+    return map;
+  }
+
+  RemindersCompanion toCompanion(bool nullToAbsent) {
+    return RemindersCompanion(
+      kind: Value(kind),
+      hour: Value(hour),
+      minute: Value(minute),
+      enabled: Value(enabled),
+    );
+  }
+
+  factory ReminderRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReminderRow(
+      kind: serializer.fromJson<int>(json['kind']),
+      hour: serializer.fromJson<int>(json['hour']),
+      minute: serializer.fromJson<int>(json['minute']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'kind': serializer.toJson<int>(kind),
+      'hour': serializer.toJson<int>(hour),
+      'minute': serializer.toJson<int>(minute),
+      'enabled': serializer.toJson<bool>(enabled),
+    };
+  }
+
+  ReminderRow copyWith({int? kind, int? hour, int? minute, bool? enabled}) =>
+      ReminderRow(
+        kind: kind ?? this.kind,
+        hour: hour ?? this.hour,
+        minute: minute ?? this.minute,
+        enabled: enabled ?? this.enabled,
+      );
+  ReminderRow copyWithCompanion(RemindersCompanion data) {
+    return ReminderRow(
+      kind: data.kind.present ? data.kind.value : this.kind,
+      hour: data.hour.present ? data.hour.value : this.hour,
+      minute: data.minute.present ? data.minute.value : this.minute,
+      enabled: data.enabled.present ? data.enabled.value : this.enabled,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReminderRow(')
+          ..write('kind: $kind, ')
+          ..write('hour: $hour, ')
+          ..write('minute: $minute, ')
+          ..write('enabled: $enabled')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(kind, hour, minute, enabled);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReminderRow &&
+          other.kind == this.kind &&
+          other.hour == this.hour &&
+          other.minute == this.minute &&
+          other.enabled == this.enabled);
+}
+
+class RemindersCompanion extends UpdateCompanion<ReminderRow> {
+  final Value<int> kind;
+  final Value<int> hour;
+  final Value<int> minute;
+  final Value<bool> enabled;
+  const RemindersCompanion({
+    this.kind = const Value.absent(),
+    this.hour = const Value.absent(),
+    this.minute = const Value.absent(),
+    this.enabled = const Value.absent(),
+  });
+  RemindersCompanion.insert({
+    this.kind = const Value.absent(),
+    required int hour,
+    required int minute,
+    this.enabled = const Value.absent(),
+  }) : hour = Value(hour),
+       minute = Value(minute);
+  static Insertable<ReminderRow> custom({
+    Expression<int>? kind,
+    Expression<int>? hour,
+    Expression<int>? minute,
+    Expression<bool>? enabled,
+  }) {
+    return RawValuesInsertable({
+      if (kind != null) 'kind': kind,
+      if (hour != null) 'hour': hour,
+      if (minute != null) 'minute': minute,
+      if (enabled != null) 'enabled': enabled,
+    });
+  }
+
+  RemindersCompanion copyWith({
+    Value<int>? kind,
+    Value<int>? hour,
+    Value<int>? minute,
+    Value<bool>? enabled,
+  }) {
+    return RemindersCompanion(
+      kind: kind ?? this.kind,
+      hour: hour ?? this.hour,
+      minute: minute ?? this.minute,
+      enabled: enabled ?? this.enabled,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (kind.present) {
+      map['kind'] = Variable<int>(kind.value);
+    }
+    if (hour.present) {
+      map['hour'] = Variable<int>(hour.value);
+    }
+    if (minute.present) {
+      map['minute'] = Variable<int>(minute.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemindersCompanion(')
+          ..write('kind: $kind, ')
+          ..write('hour: $hour, ')
+          ..write('minute: $minute, ')
+          ..write('enabled: $enabled')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3576,6 +3868,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $MemoriesTable memories = $MemoriesTable(this);
   late final $PhotosTable photos = $PhotosTable(this);
+  late final $RemindersTable reminders = $RemindersTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3590,6 +3883,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     glucoseReadings,
     memories,
     photos,
+    reminders,
   ];
 }
 
@@ -5476,6 +5770,181 @@ typedef $$PhotosTableProcessedTableManager =
       PhotoRow,
       PrefetchHooks Function()
     >;
+typedef $$RemindersTableCreateCompanionBuilder =
+    RemindersCompanion Function({
+      Value<int> kind,
+      required int hour,
+      required int minute,
+      Value<bool> enabled,
+    });
+typedef $$RemindersTableUpdateCompanionBuilder =
+    RemindersCompanion Function({
+      Value<int> kind,
+      Value<int> hour,
+      Value<int> minute,
+      Value<bool> enabled,
+    });
+
+class $$RemindersTableFilterComposer
+    extends Composer<_$AppDatabase, $RemindersTable> {
+  $$RemindersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hour => $composableBuilder(
+    column: $table.hour,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get minute => $composableBuilder(
+    column: $table.minute,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RemindersTableOrderingComposer
+    extends Composer<_$AppDatabase, $RemindersTable> {
+  $$RemindersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hour => $composableBuilder(
+    column: $table.hour,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get minute => $composableBuilder(
+    column: $table.minute,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RemindersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RemindersTable> {
+  $$RemindersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<int> get hour =>
+      $composableBuilder(column: $table.hour, builder: (column) => column);
+
+  GeneratedColumn<int> get minute =>
+      $composableBuilder(column: $table.minute, builder: (column) => column);
+
+  GeneratedColumn<bool> get enabled =>
+      $composableBuilder(column: $table.enabled, builder: (column) => column);
+}
+
+class $$RemindersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RemindersTable,
+          ReminderRow,
+          $$RemindersTableFilterComposer,
+          $$RemindersTableOrderingComposer,
+          $$RemindersTableAnnotationComposer,
+          $$RemindersTableCreateCompanionBuilder,
+          $$RemindersTableUpdateCompanionBuilder,
+          (
+            ReminderRow,
+            BaseReferences<_$AppDatabase, $RemindersTable, ReminderRow>,
+          ),
+          ReminderRow,
+          PrefetchHooks Function()
+        > {
+  $$RemindersTableTableManager(_$AppDatabase db, $RemindersTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RemindersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RemindersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RemindersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> kind = const Value.absent(),
+                Value<int> hour = const Value.absent(),
+                Value<int> minute = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+              }) => RemindersCompanion(
+                kind: kind,
+                hour: hour,
+                minute: minute,
+                enabled: enabled,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> kind = const Value.absent(),
+                required int hour,
+                required int minute,
+                Value<bool> enabled = const Value.absent(),
+              }) => RemindersCompanion.insert(
+                kind: kind,
+                hour: hour,
+                minute: minute,
+                enabled: enabled,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RemindersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RemindersTable,
+      ReminderRow,
+      $$RemindersTableFilterComposer,
+      $$RemindersTableOrderingComposer,
+      $$RemindersTableAnnotationComposer,
+      $$RemindersTableCreateCompanionBuilder,
+      $$RemindersTableUpdateCompanionBuilder,
+      (
+        ReminderRow,
+        BaseReferences<_$AppDatabase, $RemindersTable, ReminderRow>,
+      ),
+      ReminderRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5498,4 +5967,6 @@ class $AppDatabaseManager {
       $$MemoriesTableTableManager(_db, _db.memories);
   $$PhotosTableTableManager get photos =>
       $$PhotosTableTableManager(_db, _db.photos);
+  $$RemindersTableTableManager get reminders =>
+      $$RemindersTableTableManager(_db, _db.reminders);
 }
