@@ -87,7 +87,7 @@ installed (`xcodebuild -downloadPlatform iOS` if Xcode reports
 ```bash
 flutter pub get
 dart run build_runner build      # generate Drift code (*.g.dart)
-flutter test                     # 71 tests, all green
+flutter test                     # 78 tests, all green
 flutter run                      # on a simulator or device
 ```
 
