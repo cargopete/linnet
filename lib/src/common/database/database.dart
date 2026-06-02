@@ -26,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -40,6 +40,8 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(contractions);
         await m.createTable(appointments);
       }
+      // v4 added a memorial name for reflection mode.
+      if (from < 4) await m.addColumn(pregnancies, pregnancies.babyName);
     },
   );
 
@@ -80,6 +82,12 @@ class AppDatabase extends _$AppDatabase {
   Future<List<Pregnancy>> getAllPregnancies() => (select(
     pregnancies,
   )..orderBy([(t) => OrderingTerm.desc(t.lmpDate)])).get();
+
+  Future<Pregnancy?> getPregnancyById(int id) =>
+      (select(pregnancies)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+  Stream<Pregnancy?> watchPregnancyById(int id) =>
+      (select(pregnancies)..where((t) => t.id.equals(id))).watchSingleOrNull();
 
   Future<int> insertPregnancy(PregnanciesCompanion entry) =>
       into(pregnancies).insert(entry);

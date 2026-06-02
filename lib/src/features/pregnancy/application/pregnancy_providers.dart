@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../common/preferences.dart';
 import '../../../common/providers.dart';
 import '../data/pregnancy_repository.dart';
 import '../domain/pregnancy.dart';
@@ -22,6 +23,13 @@ final activePregnancyProvider = StreamProvider<Pregnancy?>(
 final isPregnancyModeProvider = Provider<bool>(
   (ref) => ref.watch(activePregnancyProvider).value != null,
 );
+
+/// The pregnancy being reflected on after a loss (kept, not wiped), or null.
+final reflectedPregnancyProvider = StreamProvider<Pregnancy?>((ref) {
+  final id = ref.watch(reflectionPregnancyIdProvider);
+  if (id == null) return Stream.value(null);
+  return ref.watch(pregnancyRepositoryProvider).watchById(id);
+});
 
 /// Derived dating figures for the active pregnancy, recomputed reactively.
 final pregnancyProgressProvider = Provider<PregnancyProgress?>((ref) {

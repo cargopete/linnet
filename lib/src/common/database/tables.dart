@@ -35,6 +35,10 @@ class Pregnancies extends Table {
   IntColumn get outcome => integer().withDefault(const Constant(0))();
   DateTimeColumn get outcomeDate => dateTime().nullable()();
   TextColumn get notes => text().nullable()();
+
+  /// An optional name kept for memorialisation (used by reflection mode after a
+  /// loss). Never required, never imposed.
+  TextColumn get babyName => text().nullable()();
 }
 
 /// A kick-counting session (ACOG "count to 10"). [endTime] null while running.

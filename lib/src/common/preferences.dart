@@ -14,6 +14,7 @@ class Preferences {
   static const _goalKey = 'trackingGoal';
   static const _onboardedKey = 'hasCompletedOnboarding';
   static const _disclaimerKey = 'disclaimerAccepted';
+  static const _reflectionKey = 'reflectionPregnancyId';
 
   /// Atomically marks onboarding done: records disclaimer acceptance, the chosen
   /// goal, and the completion flag.
@@ -31,6 +32,19 @@ class Preferences {
 
   Stream<bool> watchOnboarded() =>
       _db.watchSetting(_onboardedKey).map((v) => v == 'true');
+
+  // --- Reflection mode (after a loss) ---
+
+  /// Enters reflection mode for the given (now-ended) pregnancy.
+  Future<void> enterReflection(int pregnancyId) =>
+      _db.setSetting(_reflectionKey, '$pregnancyId');
+
+  /// Leaves reflection mode (user explicitly chose to return to cycle tracking).
+  Future<void> exitReflection() => _db.setSetting(_reflectionKey, '');
+
+  Stream<int?> watchReflectionId() => _db
+      .watchSetting(_reflectionKey)
+      .map((v) => (v == null || v.isEmpty) ? null : int.tryParse(v));
 }
 
 final preferencesProvider = Provider<Preferences>(
@@ -60,3 +74,19 @@ final onboardingCompleteProvider = Provider<bool>((ref) {
 final _onboardedStreamProvider = StreamProvider<bool>(
   (ref) => ref.watch(preferencesProvider).watchOnboarded(),
 );
+
+/// Initial reflection-mode pregnancy id, read once at bootstrap and injected.
+final reflectionInitialIdProvider = Provider<int?>((ref) => null);
+
+final _reflectionIdStreamProvider = StreamProvider<int?>(
+  (ref) => ref.watch(preferencesProvider).watchReflectionId(),
+);
+
+/// The pregnancy currently being reflected on (after a loss), or null. Uses the
+/// bootstrap seed until the stream loads so we never flash cycle content at a
+/// grieving user. Null is a *meaningful* value (not reflecting), so we branch on
+/// loading rather than coalescing.
+final reflectionPregnancyIdProvider = Provider<int?>((ref) {
+  final async = ref.watch(_reflectionIdStreamProvider);
+  return async.isLoading ? ref.watch(reflectionInitialIdProvider) : async.value;
+});

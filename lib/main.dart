@@ -19,6 +19,10 @@ Future<void> main() async {
       (await database.getSetting('appLockEnabled')) == 'true';
   final onboarded =
       (await database.getSetting('hasCompletedOnboarding')) == 'true';
+  final reflectionRaw = await database.getSetting('reflectionPregnancyId');
+  final reflectionId = (reflectionRaw == null || reflectionRaw.isEmpty)
+      ? null
+      : int.tryParse(reflectionRaw);
 
   runApp(
     ProviderScope(
@@ -27,6 +31,7 @@ Future<void> main() async {
         appDatabaseProvider.overrideWithValue(database),
         appLockEnabledInitialProvider.overrideWithValue(appLockEnabled),
         onboardingCompleteInitialProvider.overrideWithValue(onboarded),
+        reflectionInitialIdProvider.overrideWithValue(reflectionId),
       ],
       child: const LinnetApp(),
     ),

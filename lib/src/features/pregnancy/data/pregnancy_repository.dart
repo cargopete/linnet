@@ -33,6 +33,7 @@ class PregnancyRepository {
       outcome: Value(p.outcome.index),
       outcomeDate: Value(p.outcomeDate),
       notes: Value(p.notes),
+      babyName: Value(p.babyName),
     );
     if (p.id == null) return _db.insertPregnancy(companion);
     await _db.updatePregnancy(companion);
@@ -40,6 +41,14 @@ class PregnancyRepository {
   }
 
   Future<void> delete(int id) => _db.deletePregnancy(id);
+
+  Future<domain.Pregnancy?> getById(int id) async {
+    final row = await _db.getPregnancyById(id);
+    return row == null ? null : _fromRow(row);
+  }
+
+  Stream<domain.Pregnancy?> watchById(int id) =>
+      _db.watchPregnancyById(id).map((r) => r == null ? null : _fromRow(r));
 
   domain.Pregnancy _fromRow(Pregnancy row) => domain.Pregnancy(
     id: row.id,
@@ -51,6 +60,7 @@ class PregnancyRepository {
     outcome: _decodeOutcome(row.outcome),
     outcomeDate: row.outcomeDate,
     notes: row.notes,
+    babyName: row.babyName,
   );
 
   static PregnancyOutcome _decodeOutcome(int index) =>

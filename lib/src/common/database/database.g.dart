@@ -795,6 +795,17 @@ class $PregnanciesTable extends Pregnancies
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _babyNameMeta = const VerificationMeta(
+    'babyName',
+  );
+  @override
+  late final GeneratedColumn<String> babyName = GeneratedColumn<String>(
+    'baby_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -806,6 +817,7 @@ class $PregnanciesTable extends Pregnancies
     outcome,
     outcomeDate,
     notes,
+    babyName,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -887,6 +899,12 @@ class $PregnanciesTable extends Pregnancies
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
       );
     }
+    if (data.containsKey('baby_name')) {
+      context.handle(
+        _babyNameMeta,
+        babyName.isAcceptableOrUnknown(data['baby_name']!, _babyNameMeta),
+      );
+    }
     return context;
   }
 
@@ -932,6 +950,10 @@ class $PregnanciesTable extends Pregnancies
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       ),
+      babyName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}baby_name'],
+      ),
     );
   }
 
@@ -951,6 +973,10 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
   final int outcome;
   final DateTime? outcomeDate;
   final String? notes;
+
+  /// An optional name kept for memorialisation (used by reflection mode after a
+  /// loss). Never required, never imposed.
+  final String? babyName;
   const Pregnancy({
     required this.id,
     required this.lmpDate,
@@ -961,6 +987,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
     required this.outcome,
     this.outcomeDate,
     this.notes,
+    this.babyName,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -985,6 +1012,9 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
     }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || babyName != null) {
+      map['baby_name'] = Variable<String>(babyName);
     }
     return map;
   }
@@ -1011,6 +1041,9 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
+      babyName: babyName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(babyName),
     );
   }
 
@@ -1031,6 +1064,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
       outcome: serializer.fromJson<int>(json['outcome']),
       outcomeDate: serializer.fromJson<DateTime?>(json['outcomeDate']),
       notes: serializer.fromJson<String?>(json['notes']),
+      babyName: serializer.fromJson<String?>(json['babyName']),
     );
   }
   @override
@@ -1048,6 +1082,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
       'outcome': serializer.toJson<int>(outcome),
       'outcomeDate': serializer.toJson<DateTime?>(outcomeDate),
       'notes': serializer.toJson<String?>(notes),
+      'babyName': serializer.toJson<String?>(babyName),
     };
   }
 
@@ -1061,6 +1096,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
     int? outcome,
     Value<DateTime?> outcomeDate = const Value.absent(),
     Value<String?> notes = const Value.absent(),
+    Value<String?> babyName = const Value.absent(),
   }) => Pregnancy(
     id: id ?? this.id,
     lmpDate: lmpDate ?? this.lmpDate,
@@ -1075,6 +1111,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
     outcome: outcome ?? this.outcome,
     outcomeDate: outcomeDate.present ? outcomeDate.value : this.outcomeDate,
     notes: notes.present ? notes.value : this.notes,
+    babyName: babyName.present ? babyName.value : this.babyName,
   );
   Pregnancy copyWithCompanion(PregnanciesCompanion data) {
     return Pregnancy(
@@ -1097,6 +1134,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
           ? data.outcomeDate.value
           : this.outcomeDate,
       notes: data.notes.present ? data.notes.value : this.notes,
+      babyName: data.babyName.present ? data.babyName.value : this.babyName,
     );
   }
 
@@ -1113,7 +1151,8 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
           ..write('eddOverride: $eddOverride, ')
           ..write('outcome: $outcome, ')
           ..write('outcomeDate: $outcomeDate, ')
-          ..write('notes: $notes')
+          ..write('notes: $notes, ')
+          ..write('babyName: $babyName')
           ..write(')'))
         .toString();
   }
@@ -1129,6 +1168,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
     outcome,
     outcomeDate,
     notes,
+    babyName,
   );
   @override
   bool operator ==(Object other) =>
@@ -1143,7 +1183,8 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
           other.eddOverride == this.eddOverride &&
           other.outcome == this.outcome &&
           other.outcomeDate == this.outcomeDate &&
-          other.notes == this.notes);
+          other.notes == this.notes &&
+          other.babyName == this.babyName);
 }
 
 class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
@@ -1156,6 +1197,7 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
   final Value<int> outcome;
   final Value<DateTime?> outcomeDate;
   final Value<String?> notes;
+  final Value<String?> babyName;
   const PregnanciesCompanion({
     this.id = const Value.absent(),
     this.lmpDate = const Value.absent(),
@@ -1166,6 +1208,7 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
     this.outcome = const Value.absent(),
     this.outcomeDate = const Value.absent(),
     this.notes = const Value.absent(),
+    this.babyName = const Value.absent(),
   });
   PregnanciesCompanion.insert({
     this.id = const Value.absent(),
@@ -1177,6 +1220,7 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
     this.outcome = const Value.absent(),
     this.outcomeDate = const Value.absent(),
     this.notes = const Value.absent(),
+    this.babyName = const Value.absent(),
   }) : lmpDate = Value(lmpDate);
   static Insertable<Pregnancy> custom({
     Expression<int>? id,
@@ -1188,6 +1232,7 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
     Expression<int>? outcome,
     Expression<DateTime>? outcomeDate,
     Expression<String>? notes,
+    Expression<String>? babyName,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1200,6 +1245,7 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
       if (outcome != null) 'outcome': outcome,
       if (outcomeDate != null) 'outcome_date': outcomeDate,
       if (notes != null) 'notes': notes,
+      if (babyName != null) 'baby_name': babyName,
     });
   }
 
@@ -1213,6 +1259,7 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
     Value<int>? outcome,
     Value<DateTime?>? outcomeDate,
     Value<String?>? notes,
+    Value<String?>? babyName,
   }) {
     return PregnanciesCompanion(
       id: id ?? this.id,
@@ -1225,6 +1272,7 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
       outcome: outcome ?? this.outcome,
       outcomeDate: outcomeDate ?? this.outcomeDate,
       notes: notes ?? this.notes,
+      babyName: babyName ?? this.babyName,
     );
   }
 
@@ -1260,6 +1308,9 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (babyName.present) {
+      map['baby_name'] = Variable<String>(babyName.value);
+    }
     return map;
   }
 
@@ -1276,7 +1327,8 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
           ..write('eddOverride: $eddOverride, ')
           ..write('outcome: $outcome, ')
           ..write('outcomeDate: $outcomeDate, ')
-          ..write('notes: $notes')
+          ..write('notes: $notes, ')
+          ..write('babyName: $babyName')
           ..write(')'))
         .toString();
   }
@@ -2712,6 +2764,7 @@ typedef $$PregnanciesTableCreateCompanionBuilder =
       Value<int> outcome,
       Value<DateTime?> outcomeDate,
       Value<String?> notes,
+      Value<String?> babyName,
     });
 typedef $$PregnanciesTableUpdateCompanionBuilder =
     PregnanciesCompanion Function({
@@ -2724,6 +2777,7 @@ typedef $$PregnanciesTableUpdateCompanionBuilder =
       Value<int> outcome,
       Value<DateTime?> outcomeDate,
       Value<String?> notes,
+      Value<String?> babyName,
     });
 
 class $$PregnanciesTableFilterComposer
@@ -2777,6 +2831,11 @@ class $$PregnanciesTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get babyName => $composableBuilder(
+    column: $table.babyName,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -2834,6 +2893,11 @@ class $$PregnanciesTableOrderingComposer
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get babyName => $composableBuilder(
+    column: $table.babyName,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PregnanciesTableAnnotationComposer
@@ -2881,6 +2945,9 @@ class $$PregnanciesTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get babyName =>
+      $composableBuilder(column: $table.babyName, builder: (column) => column);
 }
 
 class $$PregnanciesTableTableManager
@@ -2923,6 +2990,7 @@ class $$PregnanciesTableTableManager
                 Value<int> outcome = const Value.absent(),
                 Value<DateTime?> outcomeDate = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<String?> babyName = const Value.absent(),
               }) => PregnanciesCompanion(
                 id: id,
                 lmpDate: lmpDate,
@@ -2933,6 +3001,7 @@ class $$PregnanciesTableTableManager
                 outcome: outcome,
                 outcomeDate: outcomeDate,
                 notes: notes,
+                babyName: babyName,
               ),
           createCompanionCallback:
               ({
@@ -2945,6 +3014,7 @@ class $$PregnanciesTableTableManager
                 Value<int> outcome = const Value.absent(),
                 Value<DateTime?> outcomeDate = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<String?> babyName = const Value.absent(),
               }) => PregnanciesCompanion.insert(
                 id: id,
                 lmpDate: lmpDate,
@@ -2955,6 +3025,7 @@ class $$PregnanciesTableTableManager
                 outcome: outcome,
                 outcomeDate: outcomeDate,
                 notes: notes,
+                babyName: babyName,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

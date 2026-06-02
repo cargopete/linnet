@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../common/preferences.dart';
 import '../../../common/providers.dart';
 import '../../../common/util/date_only.dart';
 import '../../cycle_logging/presentation/day_log_screen.dart';
 import '../../predictions/presentation/prediction_card.dart';
 import '../../pregnancy/application/pregnancy_providers.dart';
 import '../../pregnancy/presentation/pregnancy_dashboard.dart';
+import '../../pregnancy/presentation/reflection_screen.dart';
 import '../../pregnancy/presentation/start_pregnancy_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -15,6 +17,12 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // After a loss, reflection mode takes precedence over everything and never
+    // auto-switches to cycle or conception content.
+    if (ref.watch(reflectionPregnancyIdProvider) != null) {
+      return const ReflectionScreen();
+    }
+
     // In pregnancy mode the home screen becomes the pregnancy dashboard.
     if (ref.watch(isPregnancyModeProvider)) {
       return Scaffold(

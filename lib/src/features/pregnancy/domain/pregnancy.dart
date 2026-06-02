@@ -18,6 +18,7 @@ class Pregnancy {
     this.outcome = PregnancyOutcome.ongoing,
     DateTime? outcomeDate,
     this.notes,
+    this.babyName,
   }) : lmpDate = lmpDate.dateOnly,
        ultrasoundDate = ultrasoundDate?.dateOnly,
        eddOverride = eddOverride?.dateOnly,
@@ -45,6 +46,9 @@ class Pregnancy {
   final DateTime? outcomeDate;
   final String? notes;
 
+  /// Optional memorial name, kept after a loss if the user chooses.
+  final String? babyName;
+
   bool get isOngoing => outcome.isOngoing;
 
   Pregnancy copyWith({
@@ -60,6 +64,7 @@ class Pregnancy {
     DateTime? outcomeDate,
     bool clearOutcomeDate = false,
     String? notes,
+    String? babyName,
   }) {
     return Pregnancy(
       id: id ?? this.id,
@@ -75,6 +80,7 @@ class Pregnancy {
       outcome: outcome ?? this.outcome,
       outcomeDate: clearOutcomeDate ? null : (outcomeDate ?? this.outcomeDate),
       notes: notes ?? this.notes,
+      babyName: babyName ?? this.babyName,
     );
   }
 }

@@ -78,10 +78,13 @@ What we already have vs. what's worth adding. ✅ shipped · ◐ partial · ⬜ 
   medication/supplement reminders, hydration, mood check-in (EPDS-style).
 
 **Emotional safety & inclusivity (the headline market gap)**
-- ◐ Loss handled as an explicit state with gentle copy; the research wants a full
-  **loss/pause "reflection mode"**: immediately stop all baby notifications, never
-  auto-switch to TTC, offer memorialization (keep name/journal) rather than wiping
-  ⬜. ~1 in 4 pregnancies — a core flow, not an edge case.
+- ✅ **Loss reflection mode** — recording a loss opens a calm reflection space
+  instead of dumping back to cycle tracking: nothing is wiped, no baby reminders
+  (there are none to fire), it never auto-switches to TTC/cycle content, the user
+  can keep a memorial name and note, and it is only left when they explicitly
+  choose "I am ready". A bootstrap seed prevents any flash of cycle content on
+  launch. *Follow-ups:* a distinct lighter "pause" (non-loss), grief-resource
+  links per region, and a pregnancy-history/memories view.
 - ⬜ Inclusive language setting (gendered / neutral / custom), optional/non-binary
   baby-sex framing, neutral partner/support-person role.
 - ⬜ Calm, low-density content that "ends each week on warmth"; avoid anxiety-fuel.

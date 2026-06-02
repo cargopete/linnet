@@ -36,6 +36,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Onboarding + goal-based mode-switching** (avoid / conceive / health / perimenopause) | ✅ |
 | **HealthKit sync** (menstrual flow import/export, manual, on-device) | ✅ |
 | **Pregnancy tools** (kick counter, contraction timer, appointments, edit dating) | ✅ |
+| **Loss reflection mode** (no wipe, no auto-switch, memorialise, leave only when ready) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
 Planned next: a loss/pause **reflection mode**, themed week-by-week size

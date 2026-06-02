@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../common/preferences.dart';
+
 import '../application/pregnancy_providers.dart';
 import '../domain/fetal_development.dart';
 import '../domain/pregnancy.dart';
@@ -148,6 +150,10 @@ class PregnancyDashboard extends ConsumerWidget {
           .save(
             pregnancy.copyWith(outcome: outcome, outcomeDate: DateTime.now()),
           );
+      // A loss opens reflection mode rather than dumping back to cycle tracking.
+      if (outcome == PregnancyOutcome.loss) {
+        await ref.read(preferencesProvider).enterReflection(pregnancy.id!);
+      }
     }
   }
 }
