@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/onboarding/domain/tracking_goal.dart';
+import '../features/pregnancy/domain/size_comparison.dart';
 import 'database/database.dart' hide DailyLog;
 import 'providers.dart';
 
@@ -15,6 +16,7 @@ class Preferences {
   static const _onboardedKey = 'hasCompletedOnboarding';
   static const _disclaimerKey = 'disclaimerAccepted';
   static const _reflectionKey = 'reflectionPregnancyId';
+  static const _sizeThemeKey = 'sizeTheme';
 
   /// Atomically marks onboarding done: records disclaimer acceptance, the chosen
   /// goal, and the completion flag.
@@ -45,6 +47,15 @@ class Preferences {
   Stream<int?> watchReflectionId() => _db
       .watchSetting(_reflectionKey)
       .map((v) => (v == null || v.isEmpty) ? null : int.tryParse(v));
+
+  // --- Size-comparison theme ---
+
+  Future<void> setSizeTheme(SizeTheme theme) =>
+      _db.setSetting(_sizeThemeKey, theme.name);
+
+  Stream<SizeTheme> watchSizeTheme() => _db
+      .watchSetting(_sizeThemeKey)
+      .map((v) => SizeTheme.byName(v) ?? SizeTheme.classic);
 }
 
 final preferencesProvider = Provider<Preferences>(
@@ -90,3 +101,12 @@ final reflectionPregnancyIdProvider = Provider<int?>((ref) {
   final async = ref.watch(_reflectionIdStreamProvider);
   return async.isLoading ? ref.watch(reflectionInitialIdProvider) : async.value;
 });
+
+/// The chosen size-comparison theme, defaulting to fruit & veg.
+final sizeThemeProvider = Provider<SizeTheme>((ref) {
+  return ref.watch(_sizeThemeStreamProvider).value ?? SizeTheme.classic;
+});
+
+final _sizeThemeStreamProvider = StreamProvider<SizeTheme>(
+  (ref) => ref.watch(preferencesProvider).watchSizeTheme(),
+);

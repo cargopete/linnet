@@ -12,6 +12,7 @@ import 'appointments_screen.dart';
 import 'contraction_timer_screen.dart';
 import 'edit_dating_screen.dart';
 import 'kick_counter_screen.dart';
+import 'size_comparison_card.dart';
 
 /// The pregnancy-mode home view: gestational age, due date, progress and a
 /// week-by-week milestone, with the explicit "gave birth" / "record a loss"
@@ -60,14 +61,12 @@ class PregnancyDashboard extends ConsumerWidget {
             isThreeLine: true,
           ),
         ),
+        SizeComparisonCard(gestationalWeek: progress.gestationalWeeks),
         Card(
           child: ListTile(
             leading: const Icon(Icons.eco_outlined),
-            title: Text(
-              'This week: about the size of ${milestone.sizeComparison}',
-            ),
+            title: const Text('Development'),
             subtitle: Text(milestone.note),
-            isThreeLine: true,
           ),
         ),
         const SizedBox(height: 8),

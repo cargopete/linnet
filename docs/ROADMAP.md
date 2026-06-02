@@ -53,12 +53,13 @@ What we already have vs. what's worth adding. ✅ shipped · ◐ partial · ⬜ 
 **Dating & week-by-week core**
 - ✅ LMP→EDD/gestational-age engine (Naegele + cycle adj, ultrasound precedence,
   clinician override), trimester, days-to-go, editable after start.
-- ◐ Week-by-week milestones — we ship a simple "size of a…" + note table; the
-  research wants a **medically-sourced size dataset** (Perinatology/Hadlock) with
-  real cm/g per week and the **CRL→crown-heel switch disclosed**.
-- ⬜ **User-selectable comparison themes** (classic / toys / sports / sea
-  creatures / a **bird-themed signature set** on-brand for Linnet) computed from
-  real measurements — the single biggest delight/differentiation lever.
+- ✅ Week-by-week sizes from a real per-week **length (mm) + weight (g) dataset**
+  (Hadlock/Perinatology-style, weeks 5–40) with the **CRL→crown-heel switch
+  disclosed**, plus the development note.
+- ✅ **User-selectable comparison themes** computed from real measurements
+  (classic / toys / sports / a **bird signature set** — week ~13 is literally "a
+  linnet"). Switchable inline any week; choice persisted. *Follow-ups:* more
+  themes (sea creatures, gaming, geeky), per-week illustrations, shareable cards.
 - ⬜ Shareable, locally-rendered weekly/milestone cards (privacy-safe by default).
 
 **Late-pregnancy toolkit**

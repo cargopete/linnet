@@ -37,6 +37,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **HealthKit sync** (menstrual flow import/export, manual, on-device) | ✅ |
 | **Pregnancy tools** (kick counter, contraction timer, appointments, edit dating) | ✅ |
 | **Loss reflection mode** (no wipe, no auto-switch, memorialise, leave only when ready) | ✅ |
+| **Themed week-by-week sizes** (real cm/g dataset, switchable themes incl. a bird set) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
 
 Planned next: a loss/pause **reflection mode**, themed week-by-week size
