@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../common/preferences.dart';
+import '../../baby/application/baby_providers.dart';
+import '../../baby/presentation/baby_home_screen.dart';
 import '../../glucose/presentation/glucose_screen.dart';
 import '../application/pregnancy_providers.dart';
 import '../domain/pregnancy.dart';
@@ -72,6 +74,8 @@ class PregnancyDashboard extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         _ToolsGrid(pregnancyId: pregnancy.id!),
+        const SizedBox(height: 12),
+        const _ChildrenTile(),
         const SizedBox(height: 24),
         Row(
           children: [
@@ -147,6 +151,33 @@ class PregnancyDashboard extends ConsumerWidget {
         await ref.read(preferencesProvider).enterReflection(pregnancy.id!);
       }
     }
+  }
+}
+
+/// Lets a pregnant parent also reach baby mode — to track an older child, or to
+/// set up a profile ready for the one on the way. Pregnancy and baby tracking
+/// aren't mutually exclusive; plenty of families are doing both at once.
+class _ChildrenTile extends ConsumerWidget {
+  const _ChildrenTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasChildren = ref.watch(hasChildrenProvider);
+    return Card(
+      child: ListTile(
+        leading: const Icon(Icons.child_care_outlined),
+        title: Text(hasChildren ? 'Your children' : 'Already have children?'),
+        subtitle: Text(
+          hasChildren
+              ? 'Feeds, diapers and sleep'
+              : 'Track an older child alongside this pregnancy',
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const BabyHomeScreen()),
+        ),
+      ),
+    );
   }
 }
 
