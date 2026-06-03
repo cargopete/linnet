@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../common/util/date_only.dart';
 import '../application/memories_providers.dart';
@@ -91,13 +92,21 @@ class MemoriesScreen extends ConsumerWidget {
         babyName: babyName,
         fontData: fontData,
       );
-      final dir = await getApplicationDocumentsDirectory();
+      // Write to the (sandboxed) temp dir and hand it straight to the share
+      // sheet — never leave plaintext keepsake data sitting in Documents, which
+      // is browsable over USB/Files. Clean up the temp file afterwards.
+      final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/linnet-keepsake.pdf');
       await file.writeAsBytes(bytes);
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Saved to ${file.path}')));
+      try {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path, mimeType: 'application/pdf')],
+            subject: 'Linnet keepsake',
+          ),
+        );
+      } finally {
+        if (file.existsSync()) await file.delete();
       }
     } catch (e) {
       if (context.mounted) {

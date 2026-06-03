@@ -1,17 +1,21 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../data/backup_service.dart';
 import '../data/cloud_backup_service.dart';
 
 /// Opt-in, zero-knowledge encrypted backup. Off by default — nothing happens
-/// until the user explicitly creates or restores a backup. The encrypted file is
-/// written to the app's Documents folder (visible in the Files app) and can also
-/// be copied out; only the user's passphrase or recovery key can open it.
+/// until the user explicitly creates or restores a backup. Creating one hands
+/// the encrypted file straight to the iOS share sheet (so it never lingers in a
+/// USB/Files-browsable folder); restoring lets the user pick that file back. Only
+/// the user's passphrase or recovery key can open it.
 class BackupScreen extends ConsumerStatefulWidget {
   const BackupScreen({super.key});
 
@@ -23,8 +27,8 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
   static const _fileName = 'linnet-backup.json';
   bool _busy = false;
 
-  Future<File> _backupFile() async {
-    final dir = await getApplicationDocumentsDirectory();
+  Future<File> _tempBackupFile() async {
+    final dir = await getTemporaryDirectory();
     return File('${dir.path}/$_fileName');
   }
 
@@ -157,7 +161,9 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
       if (mounted) {
         await _showRecoveryKey(
           ExportResult('', recoveryKey),
-          'iCloud (your Apple ID)',
+          sourceNote:
+              'Your encrypted backup now lives in your iCloud — recover it on a '
+              'new phone with your Apple ID.',
         );
       }
     } catch (e) {
@@ -193,9 +199,21 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     setState(() => _busy = true);
     try {
       final result = await ref.read(backupServiceProvider).export(passphrase);
-      final file = await _backupFile();
+      // Write to a temp file and hand it to the share sheet so the user saves
+      // the encrypted backup wherever they like; then delete the temp copy.
+      final file = await _tempBackupFile();
       await file.writeAsString(result.fileContents);
-      if (mounted) await _showRecoveryKey(result, file.path);
+      try {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path, mimeType: 'application/json')],
+            subject: 'Linnet encrypted backup',
+          ),
+        );
+      } finally {
+        if (file.existsSync()) await file.delete();
+      }
+      if (mounted) await _showRecoveryKey(result);
     } catch (e) {
       _snack('Backup failed: $e');
     } finally {
@@ -203,7 +221,12 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     }
   }
 
-  Future<void> _showRecoveryKey(ExportResult result, String path) async {
+  Future<void> _showRecoveryKey(
+    ExportResult result, {
+    String sourceNote =
+        'Keep the encrypted file you just shared somewhere safe — that file is '
+        'your backup.',
+  }) async {
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -227,10 +250,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              Text(
-                'The encrypted file is saved as:\n$path',
-                style: Theme.of(ctx).textTheme.bodySmall,
-              ),
+              Text(sourceNote, style: Theme.of(ctx).textTheme.bodySmall),
             ],
           ),
         ),
@@ -239,11 +259,6 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             onPressed: () =>
                 Clipboard.setData(ClipboardData(text: result.recoveryKey)),
             child: const Text('Copy key'),
-          ),
-          TextButton(
-            onPressed: () =>
-                Clipboard.setData(ClipboardData(text: result.fileContents)),
-            child: const Text('Copy backup'),
           ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(),
@@ -260,7 +275,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     final input = await showModalBottomSheet<_RestoreInput>(
       context: context,
       isScrollControlled: true,
-      builder: (_) => _RestoreSheet(loadFile: _readBackupFile),
+      builder: (_) => const _RestoreSheet(),
     );
     if (input == null || !mounted) return;
 
@@ -300,11 +315,6 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
-  }
-
-  Future<String?> _readBackupFile() async {
-    final file = await _backupFile();
-    return file.existsSync() ? file.readAsString() : null;
   }
 
   // --- Helpers ---
@@ -413,8 +423,7 @@ class _RestoreInput {
 }
 
 class _RestoreSheet extends StatefulWidget {
-  const _RestoreSheet({required this.loadFile});
-  final Future<String?> Function() loadFile;
+  const _RestoreSheet();
 
   @override
   State<_RestoreSheet> createState() => _RestoreSheetState();
@@ -424,21 +433,25 @@ class _RestoreSheetState extends State<_RestoreSheet> {
   final _backup = TextEditingController();
   final _secret = TextEditingController();
   bool _useRecoveryKey = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Pre-fill from the saved backup file if present.
-    widget.loadFile().then((contents) {
-      if (contents != null && mounted) _backup.text = contents;
-    });
-  }
+  String? _pickedName;
 
   @override
   void dispose() {
     _backup.dispose();
     _secret.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickFile() async {
+    final result = await FilePicker.pickFiles(withData: true);
+    final bytes = result?.files.single.bytes;
+    if (bytes == null) return;
+    if (mounted) {
+      setState(() {
+        _backup.text = utf8.decode(bytes);
+        _pickedName = result!.files.single.name;
+      });
+    }
   }
 
   @override
@@ -459,13 +472,19 @@ class _RestoreSheetState extends State<_RestoreSheet> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: _pickFile,
+            icon: const Icon(Icons.folder_open_outlined),
+            label: Text(_pickedName ?? 'Choose backup file'),
+          ),
+          const SizedBox(height: 8),
           TextField(
             controller: _backup,
             minLines: 2,
             maxLines: 4,
             decoration: const InputDecoration(
               labelText: 'Backup contents',
-              helperText: 'Loaded from your saved file, or paste it here',
+              helperText: 'Choose your backup file above, or paste it here',
             ),
           ),
           const SizedBox(height: 12),

@@ -10,10 +10,6 @@
 	<string>Linnet can save the menstrual flow you log to Apple Health.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Linnet can add photos from your library to your private, encrypted keepsake gallery on this device.</string>
-	<key>UIFileSharingEnabled</key>
-	<true/>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

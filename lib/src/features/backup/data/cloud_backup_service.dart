@@ -96,22 +96,35 @@ class CloudBackupService {
       _restore((c) => _backup.importWithRecoveryKey(c, recoveryKey));
 
   Future<void> _restore(Future<void> Function(String contents) import) async {
+    // Download into the sandboxed temp dir (not Documents, which is browsable
+    // via Files/USB) and delete it once we've imported — the ciphertext should
+    // never linger on disk.
     final dest = File(
-      '${(await getApplicationDocumentsDirectory()).path}/icloud-restore.json',
+      '${(await getTemporaryDirectory()).path}/icloud-restore.json',
     );
-    await ICloudStorage.download(
-      containerId: _containerId,
-      relativePath: _remoteName,
-      destinationFilePath: dest.path,
-    );
-    // Download materialises asynchronously; wait briefly for the file.
-    for (var i = 0; i < 40 && !dest.existsSync(); i++) {
-      await Future<void>.delayed(const Duration(milliseconds: 250));
+    try {
+      await ICloudStorage.download(
+        containerId: _containerId,
+        relativePath: _remoteName,
+        destinationFilePath: dest.path,
+      );
+      // Download materialises asynchronously; wait briefly for the file.
+      for (var i = 0; i < 40 && !dest.existsSync(); i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 250));
+      }
+      if (!dest.existsSync()) {
+        throw const BackupAuthException();
+      }
+      await import(await dest.readAsString());
+    } finally {
+      if (dest.existsSync()) {
+        try {
+          await dest.delete();
+        } on Object {
+          // Best-effort cleanup.
+        }
+      }
     }
-    if (!dest.existsSync()) {
-      throw const BackupAuthException();
-    }
-    await import(await dest.readAsString());
   }
 }
 
