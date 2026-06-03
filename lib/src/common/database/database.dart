@@ -282,9 +282,22 @@ class AppDatabase extends _$AppDatabase {
       'memories': (await select(
         memories,
       ).get()).map((r) => r.toJson()).toList(),
+      'reminders': (await select(
+        reminders,
+      ).get()).map((r) => r.toJson()).toList(),
+      'children': (await select(
+        children,
+      ).get()).map((r) => r.toJson()).toList(),
+      'babyEvents': (await select(
+        babyEvents,
+      ).get()).map((r) => r.toJson()).toList(),
       'appSettings': (await select(
         appSettings,
       ).get()).map((r) => r.toJson()).toList(),
+      // NOTE: `photos` are deliberately omitted — they are large BLOBs that
+      // would bloat the (encrypted) backup. Because they are not carried in the
+      // backup, importAll must NOT wipe them either, or a restore would destroy
+      // keepsake photos that live only on this device.
     };
   }
 
@@ -297,7 +310,29 @@ class AppDatabase extends _$AppDatabase {
             .toList();
 
     await transaction(() async {
-      await wipeAll();
+      // Clear only the tables this backup actually carries — every table except
+      // `photos`, which is intentionally not backed up (see exportAll). Wiping
+      // photos here would delete keepsakes we cannot restore. Child rows go
+      // before their parents.
+      await batch((b) {
+        b.deleteWhere(babyEvents, (_) => const Constant(true));
+        b.deleteWhere(children, (_) => const Constant(true));
+        b.deleteWhere(reminders, (_) => const Constant(true));
+        b.deleteWhere(memories, (_) => const Constant(true));
+        b.deleteWhere(glucoseReadings, (_) => const Constant(true));
+        b.deleteWhere(appointments, (_) => const Constant(true));
+        b.deleteWhere(contractions, (_) => const Constant(true));
+        b.deleteWhere(kickSessions, (_) => const Constant(true));
+        b.deleteWhere(pregnancies, (_) => const Constant(true));
+        b.deleteWhere(dailyLogs, (_) => const Constant(true));
+        b.deleteWhere(appSettings, (_) => const Constant(true));
+      });
+
+      // Insert parents before their children. Ids are preserved from the backup,
+      // so existing photos keep pointing at the right pregnancy.
+      for (final j in rows('appSettings')) {
+        await into(appSettings).insert(AppSetting.fromJson(j));
+      }
       for (final j in rows('dailyLogs')) {
         await into(dailyLogs).insert(DailyLog.fromJson(j));
       }
@@ -319,8 +354,14 @@ class AppDatabase extends _$AppDatabase {
       for (final j in rows('memories')) {
         await into(memories).insert(MemoryRow.fromJson(j));
       }
-      for (final j in rows('appSettings')) {
-        await into(appSettings).insert(AppSetting.fromJson(j));
+      for (final j in rows('reminders')) {
+        await into(reminders).insert(ReminderRow.fromJson(j));
+      }
+      for (final j in rows('children')) {
+        await into(children).insert(ChildRow.fromJson(j));
+      }
+      for (final j in rows('babyEvents')) {
+        await into(babyEvents).insert(BabyEventRow.fromJson(j));
       }
     });
   }

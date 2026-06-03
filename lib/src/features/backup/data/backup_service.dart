@@ -24,7 +24,11 @@ class BackupService {
   final AppDatabase _db;
   final BackupCrypto _crypto;
 
-  static const _formatVersion = 1;
+  // v1: original 8-table payload.
+  // v2: adds reminders, children and babyEvents; import no longer wipes photos.
+  // Older payloads (v1, or missing) still import cleanly — their absent keys
+  // simply restore nothing for those tables.
+  static const _formatVersion = 2;
 
   Future<ExportResult> export(String passphrase, {List<int>? backupKey}) async {
     final data = await _db.exportAll();
@@ -68,6 +72,12 @@ class BackupService {
   Future<void> _restore(List<int> plaintext) async {
     final decoded = (jsonDecode(utf8.decode(plaintext)) as Map)
         .cast<String, dynamic>();
+    // Refuse a backup written by a newer app than this one: we can't know which
+    // tables it carries, and a partial restore is worse than a clear failure.
+    final version = decoded['linnet'];
+    if (version is int && version > _formatVersion) {
+      throw const BackupAuthException();
+    }
     final data = (decoded['data'] as Map).cast<String, dynamic>();
     await _db.importAll(data);
   }
