@@ -9,17 +9,30 @@ import '../domain/baby_event.dart';
 import '../domain/child.dart';
 import 'add_child_screen.dart';
 
-/// The baby daily logger: a "time since last" home with one-tap logging of
-/// feeds, diapers and sleep, plus ongoing feed/nap timers. Built for tired,
-/// one-handed, 3 a.m. use.
-class BabyHomeScreen extends ConsumerStatefulWidget {
+/// A pushable full-screen host for [BabyHomeBody] (used from the cycle/pregnancy
+/// "track your baby" tiles). The Today shell renders [BabyHomeBody] directly as
+/// the baby track.
+class BabyHomeScreen extends StatelessWidget {
   const BabyHomeScreen({super.key});
 
   @override
-  ConsumerState<BabyHomeScreen> createState() => _BabyHomeScreenState();
+  Widget build(BuildContext context) {
+    return const Scaffold(body: SafeArea(child: BabyHomeBody()));
+  }
 }
 
-class _BabyHomeScreenState extends ConsumerState<BabyHomeScreen> {
+/// The baby daily logger: a "time since last" home with one-tap logging of
+/// feeds, diapers and sleep, plus ongoing feed/nap timers. Built for tired,
+/// one-handed, 3 a.m. use. Child name + switch/add controls are inline (so it
+/// can live inside the multi-track Today shell without its own app bar).
+class BabyHomeBody extends ConsumerStatefulWidget {
+  const BabyHomeBody({super.key});
+
+  @override
+  ConsumerState<BabyHomeBody> createState() => _BabyHomeBodyState();
+}
+
+class _BabyHomeBodyState extends ConsumerState<BabyHomeBody> {
   Timer? _ticker;
 
   @override
@@ -43,65 +56,67 @@ class _BabyHomeScreenState extends ConsumerState<BabyHomeScreen> {
     final child = ref.watch(selectedChildProvider);
 
     if (child == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Baby')),
-        body: _EmptyBaby(onAdd: () => _addChild(context)),
-      );
+      return _EmptyBaby(onAdd: () => _addChild(context));
     }
 
     final events = ref.watch(babyEventsProvider(child.id!)).value ?? const [];
     final ongoing = events.where((e) => e.isOngoing).toList();
     final now = DateTime.now();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(child.name),
-        actions: [
-          if (children.length > 1)
-            PopupMenuButton<int>(
-              icon: const Icon(Icons.switch_account_outlined),
-              onSelected: (id) =>
-                  ref.read(selectedChildIdProvider.notifier).select(id),
-              itemBuilder: (_) => [
-                for (final c in children)
-                  PopupMenuItem(value: c.id, child: Text(c.name)),
-              ],
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                child.name,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
-          IconButton(
-            icon: const Icon(Icons.person_add_alt),
-            tooltip: 'Add a child',
-            onPressed: () => _addChild(context),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-        children: [
-          _AgeHeader(child: child, now: now),
-          const SizedBox(height: 16),
-          if (ongoing.isNotEmpty)
-            for (final e in ongoing)
-              _OngoingCard(event: e, now: now, onStop: () => _stop(e))
-          else
-            _SinceRow(events: events, now: now),
-          const SizedBox(height: 16),
-          Text('Log', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          _QuickLog(
-            ongoing: ongoing.isNotEmpty,
-            lastBreastSide: _lastBreastSide(events),
-            onBreast: (side) =>
-                _add(child.id!, BabyEventType.breastfeed, side: side),
-            onBottle: () => _logBottle(child.id!),
-            onSleep: () => _add(child.id!, BabyEventType.sleep),
-            onDiaper: (t) => _add(child.id!, t),
-          ),
-          const Divider(height: 32),
-          Text('Recent', style: Theme.of(context).textTheme.titleMedium),
-          for (final e in events.take(25))
-            _EventTile(event: e, onDelete: () => _delete(e.id!)),
-        ],
-      ),
+            if (children.length > 1)
+              PopupMenuButton<int>(
+                icon: const Icon(Icons.switch_account_outlined),
+                tooltip: 'Switch child',
+                onSelected: (id) =>
+                    ref.read(selectedChildIdProvider.notifier).select(id),
+                itemBuilder: (_) => [
+                  for (final c in children)
+                    PopupMenuItem(value: c.id, child: Text(c.name)),
+                ],
+              ),
+            IconButton(
+              icon: const Icon(Icons.person_add_alt),
+              tooltip: 'Add a child',
+              onPressed: () => _addChild(context),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        _AgeHeader(child: child, now: now),
+        const SizedBox(height: 16),
+        if (ongoing.isNotEmpty)
+          for (final e in ongoing)
+            _OngoingCard(event: e, now: now, onStop: () => _stop(e))
+        else
+          _SinceRow(events: events, now: now),
+        const SizedBox(height: 16),
+        Text('Log', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        _QuickLog(
+          ongoing: ongoing.isNotEmpty,
+          lastBreastSide: _lastBreastSide(events),
+          onBreast: (side) =>
+              _add(child.id!, BabyEventType.breastfeed, side: side),
+          onBottle: () => _logBottle(child.id!),
+          onSleep: () => _add(child.id!, BabyEventType.sleep),
+          onDiaper: (t) => _add(child.id!, t),
+        ),
+        const Divider(height: 32),
+        Text('Recent', style: Theme.of(context).textTheme.titleMedium),
+        for (final e in events.take(25))
+          _EventTile(event: e, onDelete: () => _delete(e.id!)),
+      ],
     );
   }
 

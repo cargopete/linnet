@@ -1,52 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../cycle_logging/presentation/day_log_screen.dart';
+import '../../home/presentation/add_track_tiles.dart';
 import '../application/insights_providers.dart';
 import '../domain/symptom_insights.dart';
 
-/// A symptom-focused home for perimenopause tracking. Cycles may be irregular or
+/// A symptom-focused body for perimenopause tracking. Cycles may be irregular or
 /// absent, so this de-emphasises predictions entirely and centres the symptom
-/// log and gentle on-device patterns.
-class PerimenopauseHome extends ConsumerWidget {
-  const PerimenopauseHome({super.key});
+/// log and gentle on-device patterns. Hosted by the Today shell (which supplies
+/// the scaffold and the "Log today" button).
+class PerimenopauseBody extends ConsumerWidget {
+  const PerimenopauseBody({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final insights = ref.watch(symptomInsightsProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Linnet')),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => DayLogScreen(date: DateTime.now()),
-          ),
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+      children: [
+        Text('How you’ve been', style: theme.textTheme.headlineSmall),
+        const SizedBox(height: 4),
+        Text(
+          _sinceLabel(insights.daysSinceLastBleeding),
+          style: theme.textTheme.bodyMedium,
         ),
-        icon: const Icon(Icons.edit_calendar_outlined),
-        label: const Text('Log today'),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
-        children: [
-          Text('How you’ve been', style: theme.textTheme.headlineSmall),
-          const SizedBox(height: 4),
-          Text(
-            _sinceLabel(insights.daysSinceLastBleeding),
-            style: theme.textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 16),
-          _InsightsCard(insights: insights),
-          const SizedBox(height: 12),
-          Text(
-            'In perimenopause, cycles are often irregular — so Linnet focuses on '
-            'your symptoms over time rather than predicting. Patterns here are a '
-            'gentle guide, not a diagnosis.',
-            style: theme.textTheme.bodySmall,
-          ),
-        ],
-      ),
+        const SizedBox(height: 16),
+        _InsightsCard(insights: insights),
+        const SizedBox(height: 12),
+        Text(
+          'In perimenopause, cycles are often irregular — so Linnet focuses on '
+          'your symptoms over time rather than predicting. Patterns here are a '
+          'gentle guide, not a diagnosis.',
+          style: theme.textTheme.bodySmall,
+        ),
+        const SizedBox(height: 16),
+        const AddTrackTiles(),
+      ],
     );
   }
 
