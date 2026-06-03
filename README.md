@@ -41,7 +41,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **HealthKit sync** (menstrual flow import/export, manual, on-device) | ✅ |
 | **Pregnancy tools** (kick counter, contraction timer, appointments, edit dating) | ✅ |
 | **Loss reflection mode** (no wipe, no auto-switch, memorialise, leave only when ready) | ✅ |
-| **Themed week-by-week sizes** (real cm/g dataset, switchable themes incl. a bird set) | ✅ |
+| **Week-by-week journey** (swipe back/forth through weeks: a code-drawn fetal silhouette that morphs by stage + bundled offline OpenMoji "as big as" illustrations, real cm/g dataset, switchable themes incl. a bird set) | ✅ |
 | **Glucose log** (gestational diabetes: meal-tagged, typical targets, mg/dL ↔ mmol/L, OB export) | ✅ |
 | **Bonding & memories** (firsts + letters timeline, copyable keepsake, **PDF export**, **encrypted photo gallery**) | ✅ |
 | **Encrypted backup** (opt-in, zero-knowledge: Argon2id + AES-GCM, forced recovery key — a file you own **or** auto-backup to your own iCloud, recover on a new phone via Apple ID) | ✅ |
@@ -99,7 +99,7 @@ installed (`xcodebuild -downloadPlatform iOS` if Xcode reports
 ```bash
 flutter pub get
 dart run build_runner build      # generate Drift code (*.g.dart)
-flutter test                     # 100 tests, all green
+flutter test                     # 103 tests, all green
 flutter run                      # on a simulator or device
 ```
 

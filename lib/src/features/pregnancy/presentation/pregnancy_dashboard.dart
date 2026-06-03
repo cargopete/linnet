@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import '../../../common/preferences.dart';
 import '../../glucose/presentation/glucose_screen.dart';
 import '../application/pregnancy_providers.dart';
-import '../domain/fetal_development.dart';
 import '../domain/pregnancy.dart';
 import '../domain/pregnancy_outcome.dart';
 import 'appointments_screen.dart';
@@ -14,7 +13,7 @@ import 'edit_dating_screen.dart';
 import 'kick_counter_screen.dart';
 import 'memories_screen.dart';
 import 'photo_gallery_screen.dart';
-import 'size_comparison_card.dart';
+import 'week_journey_card.dart';
 
 /// The pregnancy-mode home view: gestational age, due date, progress and a
 /// week-by-week milestone, with the explicit "gave birth" / "record a loss"
@@ -32,7 +31,6 @@ class PregnancyDashboard extends ConsumerWidget {
     }
 
     final dateFmt = DateFormat.yMMMMd();
-    final milestone = FetalDevelopment.forWeek(progress.gestationalWeeks);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
@@ -63,14 +61,7 @@ class PregnancyDashboard extends ConsumerWidget {
             isThreeLine: true,
           ),
         ),
-        SizeComparisonCard(gestationalWeek: progress.gestationalWeeks),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.eco_outlined),
-            title: const Text('Development'),
-            subtitle: Text(milestone.note),
-          ),
-        ),
+        WeekJourneyCard(currentWeek: progress.gestationalWeeks),
         const SizedBox(height: 8),
         Text(
           'Estimates only. Around 1 in 20 babies arrive on the due date itself; '

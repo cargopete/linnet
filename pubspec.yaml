@@ -95,8 +95,13 @@ flutter:
 
   # The font is also exposed as a plain asset so it can be embedded in generated
   # PDFs (keepsake export) for full Unicode support.
+  #
+  # assets/sizes/ holds the bundled OpenMoji illustrations (CC BY-SA 4.0) used for
+  # the week-by-week "as big as" size comparisons — offline, no CDN. See
+  # docs/CREDITS.md for attribution.
   assets:
     - assets/fonts/PlusJakartaSans.ttf
+    - assets/sizes/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
