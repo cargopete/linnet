@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../common/util/secure_clipboard.dart';
 import '../data/backup_service.dart';
 import '../data/cloud_backup_service.dart';
 
@@ -256,8 +256,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () =>
-                Clipboard.setData(ClipboardData(text: result.recoveryKey)),
+            onPressed: () => SecureClipboard.copy(result.recoveryKey),
             child: const Text('Copy key'),
           ),
           FilledButton(

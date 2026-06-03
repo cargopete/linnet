@@ -22,25 +22,48 @@ import UIKit
         name: "com.linnet.app/backup",
         binaryMessenger: controller.binaryMessenger)
       channel.setMethodCallHandler { call, reply in
-        guard call.method == "excludeFromBackup",
-          let args = call.arguments as? [String: Any],
-          let path = args["path"] as? String
-        else {
-          reply(FlutterMethodNotImplemented)
-          return
-        }
-        var url = URL(fileURLWithPath: path)
-        do {
-          var values = URLResourceValues()
-          values.isExcludedFromBackup = true
-          try url.setResourceValues(values)
+        switch call.method {
+        case "excludeFromBackup":
+          guard let args = call.arguments as? [String: Any],
+            let path = args["path"] as? String
+          else {
+            reply(FlutterError(code: "bad_args", message: "path required", details: nil))
+            return
+          }
+          var url = URL(fileURLWithPath: path)
+          do {
+            var values = URLResourceValues()
+            values.isExcludedFromBackup = true
+            try url.setResourceValues(values)
+            reply(nil)
+          } catch {
+            reply(
+              FlutterError(
+                code: "exclude_failed",
+                message: error.localizedDescription,
+                details: nil))
+          }
+
+        case "secureClipboard":
+          // Copy sensitive text (the recovery key) so it stays on this device
+          // (no Universal Clipboard sync) and auto-expires.
+          guard let args = call.arguments as? [String: Any],
+            let text = args["text"] as? String
+          else {
+            reply(FlutterError(code: "bad_args", message: "text required", details: nil))
+            return
+          }
+          let seconds = (args["seconds"] as? Double) ?? 60
+          UIPasteboard.general.setItems(
+            [["public.utf8-plain-text": text]],
+            options: [
+              .localOnly: true,
+              .expirationDate: Date().addingTimeInterval(seconds),
+            ])
           reply(nil)
-        } catch {
-          reply(
-            FlutterError(
-              code: "exclude_failed",
-              message: error.localizedDescription,
-              details: nil))
+
+        default:
+          reply(FlutterMethodNotImplemented)
         }
       }
     }
