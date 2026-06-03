@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/preferences.dart';
-import '../../../common/providers.dart';
 import '../../app_lock/application/app_lock_controller.dart';
 import '../../backup/presentation/backup_screen.dart';
 import '../../health_sync/presentation/health_settings_section.dart';
 import '../../onboarding/domain/tracking_goal.dart';
 import '../../reminders/presentation/reminders_screen.dart';
+import '../application/wipe_service.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -132,7 +134,13 @@ class SettingsScreen extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         title: const Text('Delete all data?'),
         content: const Text(
-          'This permanently erases every logged day and cannot be undone.',
+          'This permanently erases everything Linnet holds, leaving nothing to '
+          'restore:\n\n'
+          '•  every logged day, on this device\n'
+          '•  the encryption key in your Keychain\n'
+          '•  any encrypted backup in your iCloud\n'
+          '•  scheduled reminders\n\n'
+          'It cannot be undone.',
         ),
         actions: [
           TextButton(
@@ -140,14 +148,37 @@ class SettingsScreen extends ConsumerWidget {
             child: const Text('Cancel'),
           ),
           FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(ctx).colorScheme.error,
+            ),
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete'),
+            child: const Text('Delete everything'),
           ),
         ],
       ),
     );
-    if (confirmed ?? false) {
-      await ref.read(appDatabaseProvider).wipeAll();
+    if (!(confirmed ?? false) || !context.mounted) return;
+
+    // Block with a spinner: deleting the iCloud copy can take a moment, and we
+    // never want a half-finished wipe to look "done".
+    unawaited(
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const PopScope(
+          canPop: false,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      ),
+    );
+    try {
+      await ref.read(wipeServiceProvider).wipeEverything();
+    } finally {
+      // The live onboarding stream may already have torn this subtree down once
+      // the database cleared; dismissing the spinner is best-effort.
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
     }
   }
 }
