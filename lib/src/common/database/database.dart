@@ -20,6 +20,7 @@ part 'database.g.dart';
     Reminders,
     Children,
     BabyEvents,
+    Medications,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -32,7 +33,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -63,6 +64,8 @@ class AppDatabase extends _$AppDatabase {
       }
       // v10 added child sex (blue/pink theming).
       if (from < 10) await m.addColumn(children, children.sex);
+      // v11 added medication/supplement reminders.
+      if (from < 11) await m.createTable(medications);
     },
   );
 
@@ -223,6 +226,25 @@ class AppDatabase extends _$AppDatabase {
   Future<void> upsertReminder(RemindersCompanion entry) =>
       into(reminders).insertOnConflictUpdate(entry);
 
+  // --- Medications --------------------------------------------------------
+
+  Stream<List<MedicationRow>> watchMedications() => (select(
+    medications,
+  )..orderBy([(t) => OrderingTerm.asc(t.createdAt)])).watch();
+
+  Future<List<MedicationRow>> getMedications() => (select(
+    medications,
+  )..orderBy([(t) => OrderingTerm.asc(t.createdAt)])).get();
+
+  Future<int> insertMedication(MedicationsCompanion entry) =>
+      into(medications).insert(entry);
+
+  Future<void> updateMedication(int id, MedicationsCompanion entry) =>
+      (update(medications)..where((t) => t.id.equals(id))).write(entry);
+
+  Future<void> deleteMedication(int id) =>
+      (delete(medications)..where((t) => t.id.equals(id))).go();
+
   // --- Baby mode ----------------------------------------------------------
 
   Stream<List<ChildRow>> watchChildren() => (select(
@@ -291,6 +313,9 @@ class AppDatabase extends _$AppDatabase {
       'babyEvents': (await select(
         babyEvents,
       ).get()).map((r) => r.toJson()).toList(),
+      'medications': (await select(
+        medications,
+      ).get()).map((r) => r.toJson()).toList(),
       'appSettings': (await select(
         appSettings,
       ).get()).map((r) => r.toJson()).toList(),
@@ -318,6 +343,7 @@ class AppDatabase extends _$AppDatabase {
         b.deleteWhere(babyEvents, (_) => const Constant(true));
         b.deleteWhere(children, (_) => const Constant(true));
         b.deleteWhere(reminders, (_) => const Constant(true));
+        b.deleteWhere(medications, (_) => const Constant(true));
         b.deleteWhere(memories, (_) => const Constant(true));
         b.deleteWhere(glucoseReadings, (_) => const Constant(true));
         b.deleteWhere(appointments, (_) => const Constant(true));
@@ -363,6 +389,9 @@ class AppDatabase extends _$AppDatabase {
       for (final j in rows('babyEvents')) {
         await into(babyEvents).insert(BabyEventRow.fromJson(j));
       }
+      for (final j in rows('medications')) {
+        await into(medications).insert(MedicationRow.fromJson(j));
+      }
     });
   }
 
@@ -382,6 +411,7 @@ class AppDatabase extends _$AppDatabase {
       b.deleteWhere(reminders, (_) => const Constant(true));
       b.deleteWhere(children, (_) => const Constant(true));
       b.deleteWhere(babyEvents, (_) => const Constant(true));
+      b.deleteWhere(medications, (_) => const Constant(true));
     });
   }
 }

@@ -173,9 +173,9 @@ class _ChildrenTile extends ConsumerWidget {
               : 'Track an older child alongside this pregnancy',
         ),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const BabyHomeScreen()),
-        ),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => const BabyHomeScreen())),
       ),
     );
   }

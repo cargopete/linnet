@@ -5,6 +5,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../medications/domain/medication.dart';
 import '../domain/reminder.dart';
 
 /// Schedules opt-in daily local reminders. Entirely defensive: every call is
@@ -58,18 +59,52 @@ class NotificationService {
     }
   }
 
-  /// Cancels everything and reschedules the enabled reminders. Call after any
-  /// change so the OS schedule mirrors the stored reminders.
-  Future<void> sync(List<Reminder> reminders) async {
+  /// Cancels everything and reschedules every enabled reminder and medication.
+  /// Both share the OS schedule, so callers must pass the *current* state of
+  /// both — otherwise a change to one would silently cancel the other.
+  Future<void> sync(
+    List<Reminder> reminders,
+    List<Medication> medications,
+  ) async {
     if (!_ready) return;
     try {
       await _plugin.cancelAll();
       for (final r in reminders.where((r) => r.enabled)) {
         await _schedule(r);
       }
+      for (final m in medications.where((m) => m.enabled)) {
+        await _scheduleMedication(m);
+      }
     } on Object {
       // Best-effort; never throw into the UI.
     }
+  }
+
+  Future<void> _scheduleMedication(Medication m) async {
+    final now = tz.TZDateTime.now(tz.local);
+    var when = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      m.hour,
+      m.minute,
+    );
+    if (!when.isAfter(now)) when = when.add(const Duration(days: 1));
+
+    await _plugin.zonedSchedule(
+      id: m.notificationId,
+      title: 'Linnet',
+      // Deliberately non-descriptive — the medication name never appears on the
+      // lock screen.
+      body: 'Time for your medication',
+      scheduledDate: when,
+      notificationDetails: const NotificationDetails(
+        iOS: DarwinNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time, // repeat daily
+    );
   }
 
   Future<void> _schedule(Reminder r) async {

@@ -42,8 +42,14 @@ void main() {
         startTime: DateTime(2025, 2, 2, 8),
       ),
     );
-    await source.upsertReminder(
-      RemindersCompanion.insert(hour: 9, minute: 0),
+    await source.upsertReminder(RemindersCompanion.insert(hour: 9, minute: 0));
+    await source.insertMedication(
+      MedicationsCompanion.insert(
+        name: 'Prenatal',
+        hour: 9,
+        minute: 0,
+        createdAt: DateTime(2025, 2, 1),
+      ),
     );
   });
 
@@ -73,6 +79,7 @@ void main() {
       expect(await target.select(target.children).get(), hasLength(1));
       expect(await target.select(target.babyEvents).get(), hasLength(1));
       expect(await target.select(target.reminders).get(), hasLength(1));
+      expect(await target.select(target.medications).get(), hasLength(1));
     },
   );
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../medications/application/medication_providers.dart';
 import '../application/reminder_providers.dart';
 import '../domain/reminder.dart';
 
@@ -76,7 +77,8 @@ class RemindersScreen extends ConsumerWidget {
   }
 
   Future<void> _resync(WidgetRef ref) async {
-    final all = await ref.read(reminderRepositoryProvider).getAll();
-    await ref.read(notificationServiceProvider).sync(all);
+    final reminders = await ref.read(reminderRepositoryProvider).getAll();
+    final medications = await ref.read(medicationRepositoryProvider).getAll();
+    await ref.read(notificationServiceProvider).sync(reminders, medications);
   }
 }

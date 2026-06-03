@@ -76,7 +76,10 @@ class _WeekJourneyCardState extends ConsumerState<WeekJourneyCard> {
                 Expanded(
                   child: Column(
                     children: [
-                      Text('Week $_selected', style: theme.textTheme.titleMedium),
+                      Text(
+                        'Week $_selected',
+                        style: theme.textTheme.titleMedium,
+                      ),
                       Text(
                         _relativeLabel(),
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -116,7 +119,9 @@ class _WeekJourneyCardState extends ConsumerState<WeekJourneyCard> {
                   : TextButton.icon(
                       onPressed: () => _goTo(widget.currentWeek),
                       icon: const Icon(Icons.today_outlined, size: 18),
-                      label: Text('Back to this week (week ${widget.currentWeek})'),
+                      label: Text(
+                        'Back to this week (week ${widget.currentWeek})',
+                      ),
                     ),
             ),
             const Divider(height: 1),

@@ -61,7 +61,7 @@ class WipeService {
 
     // 3. Scheduled reminders persist in the OS independently of the DB.
     try {
-      await _notifications.sync(const []);
+      await _notifications.sync(const [], const []);
     } on Object {
       // Best-effort.
     }

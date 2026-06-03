@@ -149,6 +149,21 @@ class Reminders extends Table {
   Set<Column<Object>> get primaryKey => {kind};
 }
 
+/// A user-added medication or supplement reminder, firing daily at
+/// [hour]:[minute] when [enabled]. [dosage] is free text shown in-app only —
+/// never in the notification, which stays non-descriptive. Named MedicationRow
+/// to avoid clashing with the domain `Medication`.
+@DataClassName('MedicationRow')
+class Medications extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  TextColumn get dosage => text().nullable()();
+  IntColumn get hour => integer()();
+  IntColumn get minute => integer()();
+  BoolColumn get enabled => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
 /// Generic key/value store for app settings (onboarding goal, app-lock toggle,
 /// disclaimer acceptance, etc.). Kept opaque so adding a setting needs no schema
 /// migration.

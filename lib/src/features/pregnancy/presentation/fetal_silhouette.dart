@@ -79,7 +79,11 @@ class _SilhouettePainter extends CustomPainter {
     final limbs = ((week - 8) / 12).clamp(0.0, 1.0);
 
     // A faint womb halo behind the figure.
-    canvas.drawCircle(centre, s * 0.46, Paint()..color = color.withValues(alpha: 0.06));
+    canvas.drawCircle(
+      centre,
+      s * 0.46,
+      Paint()..color = color.withValues(alpha: 0.06),
+    );
 
     // Build the curled figure as a union of soft ovals drawn in one pass, so the
     // overlaps melt together instead of showing seams.

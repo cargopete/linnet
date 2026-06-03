@@ -7,6 +7,7 @@ import '../../../common/preferences.dart';
 import '../../app_lock/application/app_lock_controller.dart';
 import '../../backup/presentation/backup_screen.dart';
 import '../../health_sync/presentation/health_settings_section.dart';
+import '../../medications/presentation/medications_screen.dart';
 import '../../onboarding/domain/tracking_goal.dart';
 import '../../reminders/presentation/reminders_screen.dart';
 import '../application/wipe_service.dart';
@@ -42,6 +43,19 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (_) => const RemindersScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.medication_outlined),
+            title: const Text('Medications'),
+            subtitle: const Text(
+              'Pills & supplements with quiet daily reminders',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const MedicationsScreen(),
+              ),
             ),
           ),
           const Divider(),

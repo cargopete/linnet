@@ -25,7 +25,11 @@ void main() {
       DailyLog(date: DateTime(2026, 5, 2), flow: FlowIntensity.medium),
     );
 
-    expect(await logs.getAll(), isNotEmpty, reason: 'precondition: data exists');
+    expect(
+      await logs.getAll(),
+      isNotEmpty,
+      reason: 'precondition: data exists',
+    );
     expect(await db.getSetting('hasCompletedOnboarding'), 'true');
 
     await db.wipeAll();

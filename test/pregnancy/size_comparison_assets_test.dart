@@ -31,8 +31,9 @@ void main() {
     });
 
     test('assetPath is derived from the codepoint', () {
-      final banana = SizeComparisons.catalogue[SizeTheme.classic]!
-          .firstWhere((o) => o.name == 'a banana');
+      final banana = SizeComparisons.catalogue[SizeTheme.classic]!.firstWhere(
+        (o) => o.name == 'a banana',
+      );
       expect(banana.assetPath, 'assets/sizes/1F34C.png');
     });
   });

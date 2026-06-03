@@ -13,6 +13,7 @@ import 'src/features/backup/data/backup_secret_store.dart';
 import 'src/features/backup/data/backup_service.dart';
 import 'src/features/backup/data/cloud_backup_service.dart';
 import 'src/features/backup/domain/backup_crypto.dart';
+import 'src/features/medications/data/medication_repository.dart';
 import 'src/features/reminders/application/reminder_providers.dart';
 import 'src/features/reminders/data/notification_service.dart';
 import 'src/features/reminders/data/reminder_repository.dart';
@@ -40,10 +41,14 @@ Future<void> main() async {
       ? null
       : int.tryParse(reflectionRaw);
 
-  // Local reminders: initialise and (re)schedule any the user previously enabled.
+  // Local reminders + medications: initialise and (re)schedule any the user
+  // previously enabled.
   final notifications = NotificationService();
   await notifications.init();
-  await notifications.sync(await ReminderRepository(database).getAll());
+  await notifications.sync(
+    await ReminderRepository(database).getAll(),
+    await MedicationRepository(database).getAll(),
+  );
 
   // If iCloud backup is on, refresh it in the background (best-effort).
   final backupSecrets = BackupSecretStore();
