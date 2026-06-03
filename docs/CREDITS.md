@@ -17,6 +17,19 @@ The colourful "as big as…" illustrations in the pregnancy week-by-week journey
 All other imagery in the app (e.g. the week-by-week fetal silhouette) is drawn
 in code and is original to Linnet.
 
+## WHO Child Growth Standards — baby growth percentiles
+
+The baby growth charts plot weight and height against the **WHO Child Growth
+Standards** (weight-for-age and length/height-for-age), computed on-device from
+the published LMS parameters.
+
+- Source: World Health Organization — https://www.who.int/tools/child-growth-standards
+- The LMS tables (boys & girls, 0–60 months) are bundled in
+  `lib/src/features/growth/domain/who_growth_data.dart`, generated from the WHO
+  data as redistributed by the open-source nutriverse/zscorer dataset.
+- WHO growth-standard data is freely available for use. These charts are a
+  health reference, not a medical assessment.
+
 ## Plus Jakarta Sans — typeface
 
 - Source: https://github.com/tokotype/PlusJakartaSans

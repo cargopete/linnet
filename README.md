@@ -49,6 +49,7 @@ biometric app-lock. See [`docs/PRIVACY.md`](docs/PRIVACY.md).)
 | **Reminders** (opt-in daily local notifications, non-descriptive text, pausable) | ✅ |
 | **Medications** (pills & supplements with opt-in daily reminders; names stay on-device, lock-screen text stays vague) | ✅ |
 | **Baby mode** (Stage 1: child profiles — boy/girl with blue/pink theming across the whole app — + corrected age; frictionless feed/diaper/sleep logger; "time since last" home) | ✅ |
+| **Baby growth charts** (weight & height vs **WHO percentile curves**, computed on-device via the LMS method; corrected age for preemies) | ✅ |
 | **Coexisting tracks** (cycle, pregnancy and baby are not mutually exclusive — a Today switcher appears when more than one is active, so you track whatever fits your life at once) | ✅ |
 | **Security hardening for 1.0** (thorough "delete everything" incl. key/iCloud; complete, non-destructive backups; exports via the share sheet — no browsable Documents; blurred app-switcher snapshot; local-only, expiring recovery-key copy) | ✅ |
 | Tests + CI (generate, format, analyze, test) | ✅ |
@@ -74,6 +75,7 @@ lib/src/
     calendar/         presentation
     cycle_logging/    domain + data + application + presentation
     glucose/          domain + data + application + presentation
+    growth/           domain (WHO LMS percentiles) + data + application + presentation
     health_sync/      domain + data + application + presentation (HealthKit)
     home/             presentation
     insights/         domain + application + presentation (perimenopause/symptoms)
@@ -103,7 +105,7 @@ installed (`xcodebuild -downloadPlatform iOS` if Xcode reports
 ```bash
 flutter pub get
 dart run build_runner build      # generate Drift code (*.g.dart)
-flutter test                     # 107 tests, all green
+flutter test                     # 115 tests, all green
 flutter run                      # on a simulator or device
 ```
 

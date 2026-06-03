@@ -51,6 +51,13 @@ void main() {
         createdAt: DateTime(2025, 2, 1),
       ),
     );
+    await source.insertGrowthMeasurement(
+      GrowthMeasurementsCompanion.insert(
+        childId: childId,
+        takenAt: DateTime(2025, 2, 1),
+        weightKg: const Value(4.2),
+      ),
+    );
   });
 
   tearDown(() async => source.close());
@@ -80,6 +87,10 @@ void main() {
       expect(await target.select(target.babyEvents).get(), hasLength(1));
       expect(await target.select(target.reminders).get(), hasLength(1));
       expect(await target.select(target.medications).get(), hasLength(1));
+      expect(
+        await target.select(target.growthMeasurements).get(),
+        hasLength(1),
+      );
     },
   );
 

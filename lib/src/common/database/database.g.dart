@@ -5244,6 +5244,362 @@ class MedicationsCompanion extends UpdateCompanion<MedicationRow> {
   }
 }
 
+class $GrowthMeasurementsTable extends GrowthMeasurements
+    with TableInfo<$GrowthMeasurementsTable, GrowthMeasurementRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GrowthMeasurementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _childIdMeta = const VerificationMeta(
+    'childId',
+  );
+  @override
+  late final GeneratedColumn<int> childId = GeneratedColumn<int>(
+    'child_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _takenAtMeta = const VerificationMeta(
+    'takenAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> takenAt = GeneratedColumn<DateTime>(
+    'taken_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weightKgMeta = const VerificationMeta(
+    'weightKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightKg = GeneratedColumn<double>(
+    'weight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightCmMeta = const VerificationMeta(
+    'heightCm',
+  );
+  @override
+  late final GeneratedColumn<double> heightCm = GeneratedColumn<double>(
+    'height_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    childId,
+    takenAt,
+    weightKg,
+    heightCm,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'growth_measurements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GrowthMeasurementRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('child_id')) {
+      context.handle(
+        _childIdMeta,
+        childId.isAcceptableOrUnknown(data['child_id']!, _childIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_childIdMeta);
+    }
+    if (data.containsKey('taken_at')) {
+      context.handle(
+        _takenAtMeta,
+        takenAt.isAcceptableOrUnknown(data['taken_at']!, _takenAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_takenAtMeta);
+    }
+    if (data.containsKey('weight_kg')) {
+      context.handle(
+        _weightKgMeta,
+        weightKg.isAcceptableOrUnknown(data['weight_kg']!, _weightKgMeta),
+      );
+    }
+    if (data.containsKey('height_cm')) {
+      context.handle(
+        _heightCmMeta,
+        heightCm.isAcceptableOrUnknown(data['height_cm']!, _heightCmMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GrowthMeasurementRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GrowthMeasurementRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      childId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}child_id'],
+      )!,
+      takenAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}taken_at'],
+      )!,
+      weightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_kg'],
+      ),
+      heightCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}height_cm'],
+      ),
+    );
+  }
+
+  @override
+  $GrowthMeasurementsTable createAlias(String alias) {
+    return $GrowthMeasurementsTable(attachedDatabase, alias);
+  }
+}
+
+class GrowthMeasurementRow extends DataClass
+    implements Insertable<GrowthMeasurementRow> {
+  final int id;
+  final int childId;
+  final DateTime takenAt;
+  final double? weightKg;
+  final double? heightCm;
+  const GrowthMeasurementRow({
+    required this.id,
+    required this.childId,
+    required this.takenAt,
+    this.weightKg,
+    this.heightCm,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['child_id'] = Variable<int>(childId);
+    map['taken_at'] = Variable<DateTime>(takenAt);
+    if (!nullToAbsent || weightKg != null) {
+      map['weight_kg'] = Variable<double>(weightKg);
+    }
+    if (!nullToAbsent || heightCm != null) {
+      map['height_cm'] = Variable<double>(heightCm);
+    }
+    return map;
+  }
+
+  GrowthMeasurementsCompanion toCompanion(bool nullToAbsent) {
+    return GrowthMeasurementsCompanion(
+      id: Value(id),
+      childId: Value(childId),
+      takenAt: Value(takenAt),
+      weightKg: weightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightKg),
+      heightCm: heightCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heightCm),
+    );
+  }
+
+  factory GrowthMeasurementRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GrowthMeasurementRow(
+      id: serializer.fromJson<int>(json['id']),
+      childId: serializer.fromJson<int>(json['childId']),
+      takenAt: serializer.fromJson<DateTime>(json['takenAt']),
+      weightKg: serializer.fromJson<double?>(json['weightKg']),
+      heightCm: serializer.fromJson<double?>(json['heightCm']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'childId': serializer.toJson<int>(childId),
+      'takenAt': serializer.toJson<DateTime>(takenAt),
+      'weightKg': serializer.toJson<double?>(weightKg),
+      'heightCm': serializer.toJson<double?>(heightCm),
+    };
+  }
+
+  GrowthMeasurementRow copyWith({
+    int? id,
+    int? childId,
+    DateTime? takenAt,
+    Value<double?> weightKg = const Value.absent(),
+    Value<double?> heightCm = const Value.absent(),
+  }) => GrowthMeasurementRow(
+    id: id ?? this.id,
+    childId: childId ?? this.childId,
+    takenAt: takenAt ?? this.takenAt,
+    weightKg: weightKg.present ? weightKg.value : this.weightKg,
+    heightCm: heightCm.present ? heightCm.value : this.heightCm,
+  );
+  GrowthMeasurementRow copyWithCompanion(GrowthMeasurementsCompanion data) {
+    return GrowthMeasurementRow(
+      id: data.id.present ? data.id.value : this.id,
+      childId: data.childId.present ? data.childId.value : this.childId,
+      takenAt: data.takenAt.present ? data.takenAt.value : this.takenAt,
+      weightKg: data.weightKg.present ? data.weightKg.value : this.weightKg,
+      heightCm: data.heightCm.present ? data.heightCm.value : this.heightCm,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GrowthMeasurementRow(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('takenAt: $takenAt, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('heightCm: $heightCm')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, childId, takenAt, weightKg, heightCm);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GrowthMeasurementRow &&
+          other.id == this.id &&
+          other.childId == this.childId &&
+          other.takenAt == this.takenAt &&
+          other.weightKg == this.weightKg &&
+          other.heightCm == this.heightCm);
+}
+
+class GrowthMeasurementsCompanion
+    extends UpdateCompanion<GrowthMeasurementRow> {
+  final Value<int> id;
+  final Value<int> childId;
+  final Value<DateTime> takenAt;
+  final Value<double?> weightKg;
+  final Value<double?> heightCm;
+  const GrowthMeasurementsCompanion({
+    this.id = const Value.absent(),
+    this.childId = const Value.absent(),
+    this.takenAt = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.heightCm = const Value.absent(),
+  });
+  GrowthMeasurementsCompanion.insert({
+    this.id = const Value.absent(),
+    required int childId,
+    required DateTime takenAt,
+    this.weightKg = const Value.absent(),
+    this.heightCm = const Value.absent(),
+  }) : childId = Value(childId),
+       takenAt = Value(takenAt);
+  static Insertable<GrowthMeasurementRow> custom({
+    Expression<int>? id,
+    Expression<int>? childId,
+    Expression<DateTime>? takenAt,
+    Expression<double>? weightKg,
+    Expression<double>? heightCm,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (childId != null) 'child_id': childId,
+      if (takenAt != null) 'taken_at': takenAt,
+      if (weightKg != null) 'weight_kg': weightKg,
+      if (heightCm != null) 'height_cm': heightCm,
+    });
+  }
+
+  GrowthMeasurementsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? childId,
+    Value<DateTime>? takenAt,
+    Value<double?>? weightKg,
+    Value<double?>? heightCm,
+  }) {
+    return GrowthMeasurementsCompanion(
+      id: id ?? this.id,
+      childId: childId ?? this.childId,
+      takenAt: takenAt ?? this.takenAt,
+      weightKg: weightKg ?? this.weightKg,
+      heightCm: heightCm ?? this.heightCm,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (childId.present) {
+      map['child_id'] = Variable<int>(childId.value);
+    }
+    if (takenAt.present) {
+      map['taken_at'] = Variable<DateTime>(takenAt.value);
+    }
+    if (weightKg.present) {
+      map['weight_kg'] = Variable<double>(weightKg.value);
+    }
+    if (heightCm.present) {
+      map['height_cm'] = Variable<double>(heightCm.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GrowthMeasurementsCompanion(')
+          ..write('id: $id, ')
+          ..write('childId: $childId, ')
+          ..write('takenAt: $takenAt, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('heightCm: $heightCm')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5262,6 +5618,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ChildrenTable children = $ChildrenTable(this);
   late final $BabyEventsTable babyEvents = $BabyEventsTable(this);
   late final $MedicationsTable medications = $MedicationsTable(this);
+  late final $GrowthMeasurementsTable growthMeasurements =
+      $GrowthMeasurementsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5280,6 +5638,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     children,
     babyEvents,
     medications,
+    growthMeasurements,
   ];
 }
 
@@ -8052,6 +8411,213 @@ typedef $$MedicationsTableProcessedTableManager =
       MedicationRow,
       PrefetchHooks Function()
     >;
+typedef $$GrowthMeasurementsTableCreateCompanionBuilder =
+    GrowthMeasurementsCompanion Function({
+      Value<int> id,
+      required int childId,
+      required DateTime takenAt,
+      Value<double?> weightKg,
+      Value<double?> heightCm,
+    });
+typedef $$GrowthMeasurementsTableUpdateCompanionBuilder =
+    GrowthMeasurementsCompanion Function({
+      Value<int> id,
+      Value<int> childId,
+      Value<DateTime> takenAt,
+      Value<double?> weightKg,
+      Value<double?> heightCm,
+    });
+
+class $$GrowthMeasurementsTableFilterComposer
+    extends Composer<_$AppDatabase, $GrowthMeasurementsTable> {
+  $$GrowthMeasurementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get childId => $composableBuilder(
+    column: $table.childId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get takenAt => $composableBuilder(
+    column: $table.takenAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$GrowthMeasurementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $GrowthMeasurementsTable> {
+  $$GrowthMeasurementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get childId => $composableBuilder(
+    column: $table.childId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get takenAt => $composableBuilder(
+    column: $table.takenAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$GrowthMeasurementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $GrowthMeasurementsTable> {
+  $$GrowthMeasurementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get childId =>
+      $composableBuilder(column: $table.childId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get takenAt =>
+      $composableBuilder(column: $table.takenAt, builder: (column) => column);
+
+  GeneratedColumn<double> get weightKg =>
+      $composableBuilder(column: $table.weightKg, builder: (column) => column);
+
+  GeneratedColumn<double> get heightCm =>
+      $composableBuilder(column: $table.heightCm, builder: (column) => column);
+}
+
+class $$GrowthMeasurementsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $GrowthMeasurementsTable,
+          GrowthMeasurementRow,
+          $$GrowthMeasurementsTableFilterComposer,
+          $$GrowthMeasurementsTableOrderingComposer,
+          $$GrowthMeasurementsTableAnnotationComposer,
+          $$GrowthMeasurementsTableCreateCompanionBuilder,
+          $$GrowthMeasurementsTableUpdateCompanionBuilder,
+          (
+            GrowthMeasurementRow,
+            BaseReferences<
+              _$AppDatabase,
+              $GrowthMeasurementsTable,
+              GrowthMeasurementRow
+            >,
+          ),
+          GrowthMeasurementRow,
+          PrefetchHooks Function()
+        > {
+  $$GrowthMeasurementsTableTableManager(
+    _$AppDatabase db,
+    $GrowthMeasurementsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GrowthMeasurementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GrowthMeasurementsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GrowthMeasurementsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> childId = const Value.absent(),
+                Value<DateTime> takenAt = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+              }) => GrowthMeasurementsCompanion(
+                id: id,
+                childId: childId,
+                takenAt: takenAt,
+                weightKg: weightKg,
+                heightCm: heightCm,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int childId,
+                required DateTime takenAt,
+                Value<double?> weightKg = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+              }) => GrowthMeasurementsCompanion.insert(
+                id: id,
+                childId: childId,
+                takenAt: takenAt,
+                weightKg: weightKg,
+                heightCm: heightCm,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$GrowthMeasurementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $GrowthMeasurementsTable,
+      GrowthMeasurementRow,
+      $$GrowthMeasurementsTableFilterComposer,
+      $$GrowthMeasurementsTableOrderingComposer,
+      $$GrowthMeasurementsTableAnnotationComposer,
+      $$GrowthMeasurementsTableCreateCompanionBuilder,
+      $$GrowthMeasurementsTableUpdateCompanionBuilder,
+      (
+        GrowthMeasurementRow,
+        BaseReferences<
+          _$AppDatabase,
+          $GrowthMeasurementsTable,
+          GrowthMeasurementRow
+        >,
+      ),
+      GrowthMeasurementRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -8082,4 +8648,6 @@ class $AppDatabaseManager {
       $$BabyEventsTableTableManager(_db, _db.babyEvents);
   $$MedicationsTableTableManager get medications =>
       $$MedicationsTableTableManager(_db, _db.medications);
+  $$GrowthMeasurementsTableTableManager get growthMeasurements =>
+      $$GrowthMeasurementsTableTableManager(_db, _db.growthMeasurements);
 }

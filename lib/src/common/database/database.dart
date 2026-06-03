@@ -21,6 +21,7 @@ part 'database.g.dart';
     Children,
     BabyEvents,
     Medications,
+    GrowthMeasurements,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -33,7 +34,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -66,6 +67,8 @@ class AppDatabase extends _$AppDatabase {
       if (from < 10) await m.addColumn(children, children.sex);
       // v11 added medication/supplement reminders.
       if (from < 11) await m.createTable(medications);
+      // v12 added baby growth measurements (WHO percentile charts).
+      if (from < 12) await m.createTable(growthMeasurements);
     },
   );
 
@@ -259,8 +262,23 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteChild(int id) async {
     await (delete(babyEvents)..where((t) => t.childId.equals(id))).go();
+    await (delete(growthMeasurements)..where((t) => t.childId.equals(id))).go();
     await (delete(children)..where((t) => t.id.equals(id))).go();
   }
+
+  // --- Growth measurements ------------------------------------------------
+
+  Stream<List<GrowthMeasurementRow>> watchGrowth(int childId) =>
+      (select(growthMeasurements)
+            ..where((t) => t.childId.equals(childId))
+            ..orderBy([(t) => OrderingTerm.asc(t.takenAt)]))
+          .watch();
+
+  Future<int> insertGrowthMeasurement(GrowthMeasurementsCompanion entry) =>
+      into(growthMeasurements).insert(entry);
+
+  Future<void> deleteGrowthMeasurement(int id) =>
+      (delete(growthMeasurements)..where((t) => t.id.equals(id))).go();
 
   Future<int> insertBabyEvent(BabyEventsCompanion entry) =>
       into(babyEvents).insert(entry);
@@ -316,6 +334,9 @@ class AppDatabase extends _$AppDatabase {
       'medications': (await select(
         medications,
       ).get()).map((r) => r.toJson()).toList(),
+      'growthMeasurements': (await select(
+        growthMeasurements,
+      ).get()).map((r) => r.toJson()).toList(),
       'appSettings': (await select(
         appSettings,
       ).get()).map((r) => r.toJson()).toList(),
@@ -344,6 +365,7 @@ class AppDatabase extends _$AppDatabase {
         b.deleteWhere(children, (_) => const Constant(true));
         b.deleteWhere(reminders, (_) => const Constant(true));
         b.deleteWhere(medications, (_) => const Constant(true));
+        b.deleteWhere(growthMeasurements, (_) => const Constant(true));
         b.deleteWhere(memories, (_) => const Constant(true));
         b.deleteWhere(glucoseReadings, (_) => const Constant(true));
         b.deleteWhere(appointments, (_) => const Constant(true));
@@ -392,6 +414,9 @@ class AppDatabase extends _$AppDatabase {
       for (final j in rows('medications')) {
         await into(medications).insert(MedicationRow.fromJson(j));
       }
+      for (final j in rows('growthMeasurements')) {
+        await into(growthMeasurements).insert(GrowthMeasurementRow.fromJson(j));
+      }
     });
   }
 
@@ -412,6 +437,7 @@ class AppDatabase extends _$AppDatabase {
       b.deleteWhere(children, (_) => const Constant(true));
       b.deleteWhere(babyEvents, (_) => const Constant(true));
       b.deleteWhere(medications, (_) => const Constant(true));
+      b.deleteWhere(growthMeasurements, (_) => const Constant(true));
     });
   }
 }

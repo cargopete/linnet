@@ -27,9 +27,10 @@ class BackupService {
   // v1: original 8-table payload.
   // v2: adds reminders, children and babyEvents; import no longer wipes photos.
   // v3: adds medications.
+  // v4: adds growth measurements.
   // Older payloads still import cleanly (absent keys restore nothing); a payload
   // newer than this app is refused rather than partially restored.
-  static const _formatVersion = 3;
+  static const _formatVersion = 4;
 
   Future<ExportResult> export(String passphrase, {List<int>? backupKey}) async {
     final data = await _db.exportAll();

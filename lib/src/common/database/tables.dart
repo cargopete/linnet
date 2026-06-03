@@ -164,6 +164,18 @@ class Medications extends Table {
   DateTimeColumn get createdAt => dateTime()();
 }
 
+/// A dated growth measurement for a [childId] — weight (kg) and/or height (cm),
+/// either nullable. Plotted against the WHO growth standards. Named
+/// GrowthMeasurementRow to avoid clashing with the domain `GrowthMeasurement`.
+@DataClassName('GrowthMeasurementRow')
+class GrowthMeasurements extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get childId => integer()();
+  DateTimeColumn get takenAt => dateTime()();
+  RealColumn get weightKg => real().nullable()();
+  RealColumn get heightCm => real().nullable()();
+}
+
 /// Generic key/value store for app settings (onboarding goal, app-lock toggle,
 /// disclaimer acceptance, etc.). Kept opaque so adding a setting needs no schema
 /// migration.

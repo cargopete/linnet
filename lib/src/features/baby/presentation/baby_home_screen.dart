@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../growth/presentation/growth_screen.dart';
 import '../application/baby_providers.dart';
 import '../domain/baby_event.dart';
 import '../domain/child.dart';
@@ -94,6 +95,21 @@ class _BabyHomeBodyState extends ConsumerState<BabyHomeBody> {
         ),
         const SizedBox(height: 8),
         _AgeHeader(child: child, now: now),
+        const SizedBox(height: 16),
+        Card(
+          margin: EdgeInsets.zero,
+          child: ListTile(
+            leading: const Icon(Icons.monitor_weight_outlined),
+            title: const Text('Growth charts'),
+            subtitle: const Text('Weight & height vs WHO percentiles'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => GrowthScreen(child: child),
+              ),
+            ),
+          ),
+        ),
         const SizedBox(height: 16),
         if (ongoing.isNotEmpty)
           for (final e in ongoing)
