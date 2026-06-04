@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linnet — private cycle, pregnancy &amp; baby tracker</title>
+<style>
+  :root { --rose:#B0506A; --ink:#2b2326; --muted:#6b5b61; --bg:#fbf6f3; }
+  body { margin:0; background:var(--bg); color:var(--ink); text-align:center;
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width:640px; margin:0 auto; padding:64px 22px; }
+  h1 { color:var(--rose); font-size:34px; margin:18px 0 6px; }
+  p { color:var(--muted); font-size:18px; }
+  .links { margin-top:34px; }
+  .links a { display:inline-block; margin:0 10px; color:var(--rose); font-weight:600; }
+  .mark { width:108px; height:108px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="mark" viewBox="0 0 100 100" aria-label="Linnet">
+    <defs><linearGradient id="r" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C15E79"/><stop offset="1" stop-color="#9C4359"/>
+    </linearGradient></defs>
+    <rect width="100" height="100" rx="22" fill="url(#r)"/>
+    <circle cx="46" cy="57" r="20" fill="#FFF3E9"/>
+    <circle cx="62" cy="41" r="13" fill="#FFF3E9"/>
+    <polygon points="72,38 84,42 72,45" fill="#E9A94C"/>
+    <circle cx="64" cy="40" r="2.2" fill="#5A2233"/>
+    <path d="M58 64 a16 16 0 0 1 -23 -6 z" fill="#E07A5F"/>
+  </svg>
+  <h1>Linnet</h1>
+  <p>A private, on-device tracker for your cycle, pregnancy and baby.<br>
+     No account. No servers. Your data stays yours.</p>
+  <div class="links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="support.html">Support</a>
+  </div>
+</div>
+</body>
+</html>
