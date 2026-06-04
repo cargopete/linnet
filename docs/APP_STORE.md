@@ -86,10 +86,10 @@ developer data collection.)
 
 ## Assets needed before submission
 
-- **App icon** 🟡 — currently the default Flutter placeholder; needs a real
-  1024×1024 icon (+ the generated set). Plan: paint an on-brand mark (deep-rose
-  linnet / bird motif) in Flutter, capture at 1024, generate sizes with
-  `flutter_launcher_icons`. Design TBD with Chief.
+- **App icon** ✅ — a deep-rose linnet mark, painted in code
+  (`lib/src/common/branding/linnet_mark.dart`), rendered to 1024 via
+  `GEN_ICON=1 flutter test test/tools/generate_icon_test.dart`, and expanded to
+  the full opaque iOS icon set with `dart run flutter_launcher_icons`.
 - **Screenshots** 🟡 — required per device size (6.7"/6.9" iPhone, plus 13" iPad
   if we ship iPad). Capture from the simulator (we already do): onboarding,
   cycle home + phase, pregnancy week-journey, baby logger, encrypted-backup
