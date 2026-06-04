@@ -10,6 +10,14 @@
 	<string>Linnet can save the menstrual flow you log to Apple Health.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Linnet can add photos from your library to your private, encrypted keepsake gallery on this device.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Linnet can add a photo you take to your private, encrypted keepsake gallery on this device.</string>
+	<!-- Linnet uses only standard AES encryption to protect the user's own data
+	     at rest (and in optional E2E backups), which is exempt — so no annual
+	     export-compliance documentation is required, and App Store Connect won't
+	     ask the encryption question each upload. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
