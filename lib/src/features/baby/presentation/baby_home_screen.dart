@@ -9,6 +9,10 @@ import '../application/baby_providers.dart';
 import '../domain/baby_event.dart';
 import '../domain/child.dart';
 import 'add_child_screen.dart';
+import 'baby_appointments_screen.dart';
+import 'baby_memories_screen.dart';
+import 'baby_photo_gallery_screen.dart';
+import 'vaccinations_screen.dart';
 
 /// A pushable full-screen host for [BabyHomeBody] (used from the cycle/pregnancy
 /// "track your baby" tiles). The Today shell renders [BabyHomeBody] directly as
@@ -110,6 +114,33 @@ class _BabyHomeBodyState extends ConsumerState<BabyHomeBody> {
             ),
           ),
         ),
+        const SizedBox(height: 8),
+        _NavTile(
+          icon: Icons.favorite_border,
+          title: 'Memories',
+          subtitle: 'Firsts & letters to your little one',
+          onTap: () => _push(context, BabyMemoriesScreen(childId: child.id!)),
+        ),
+        _NavTile(
+          icon: Icons.photo_library_outlined,
+          title: 'Photos',
+          subtitle: 'An encrypted, on-device keepsake gallery',
+          onTap: () =>
+              _push(context, BabyPhotoGalleryScreen(childId: child.id!)),
+        ),
+        _NavTile(
+          icon: Icons.event_outlined,
+          title: 'Appointments',
+          subtitle: 'Checkups, dentist & specialist visits',
+          onTap: () =>
+              _push(context, BabyAppointmentsScreen(childId: child.id!)),
+        ),
+        _NavTile(
+          icon: Icons.vaccines_outlined,
+          title: 'Vaccinations',
+          subtitle: 'A log of your baby’s jabs',
+          onTap: () => _push(context, VaccinationsScreen(childId: child.id!)),
+        ),
         const SizedBox(height: 16),
         if (ongoing.isNotEmpty)
           for (final e in ongoing)
@@ -125,6 +156,8 @@ class _BabyHomeBodyState extends ConsumerState<BabyHomeBody> {
           onBreast: (side) =>
               _add(child.id!, BabyEventType.breastfeed, side: side),
           onBottle: () => _logBottle(child.id!),
+          onFormula: () => _logFormula(child.id!),
+          onSolids: () => _logSolids(child.id!),
           onSleep: () => _add(child.id!, BabyEventType.sleep),
           onDiaper: (t) => _add(child.id!, t),
         ),
@@ -146,6 +179,10 @@ class _BabyHomeBodyState extends ConsumerState<BabyHomeBody> {
   Future<void> _addChild(BuildContext context) => Navigator.of(
     context,
   ).push(MaterialPageRoute<void>(builder: (_) => const AddChildScreen()));
+
+  void _push(BuildContext context, Widget screen) => Navigator.of(
+    context,
+  ).push(MaterialPageRoute<void>(builder: (_) => screen));
 
   Future<void> _add(int childId, BabyEventType type, {String? side}) {
     return ref
@@ -180,12 +217,20 @@ class _BabyHomeBodyState extends ConsumerState<BabyHomeBody> {
   Future<void> _delete(int id) =>
       ref.read(babyEventRepositoryProvider).delete(id);
 
-  Future<void> _logBottle(int childId) async {
+  Future<void> _logBottle(int childId) =>
+      _logMlFeed(childId, BabyEventType.bottle, 'Bottle');
+
+  Future<void> _logFormula(int childId) =>
+      _logMlFeed(childId, BabyEventType.formula, 'Formula');
+
+  /// Logs an amount-based feed (expressed bottle or formula) after prompting for
+  /// the volume in millilitres.
+  Future<void> _logMlFeed(int childId, BabyEventType type, String title) async {
     final controller = TextEditingController();
     final ml = await showDialog<double>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Bottle'),
+        title: Text(title),
         content: TextField(
           controller: controller,
           autofocus: true,
@@ -212,11 +257,82 @@ class _BabyHomeBodyState extends ConsumerState<BabyHomeBody> {
         .add(
           BabyEvent(
             childId: childId,
-            type: BabyEventType.bottle,
+            type: type,
             startTime: DateTime.now(),
             amountMl: ml,
           ),
         );
+  }
+
+  /// Logs a solids ("hard food") feed with an optional note for what they ate.
+  Future<void> _logSolids(int childId) async {
+    final controller = TextEditingController();
+    final food = await showDialog<String?>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Solids'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textCapitalization: TextCapitalization.sentences,
+          decoration: const InputDecoration(
+            labelText: 'What did they eat? (optional)',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            // Empty string still logs the solids event (note stays null).
+            onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
+            child: const Text('Log'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (food == null) return;
+    await ref
+        .read(babyEventRepositoryProvider)
+        .add(
+          BabyEvent(
+            childId: childId,
+            type: BabyEventType.solids,
+            startTime: DateTime.now(),
+            note: food.isEmpty ? null : food,
+          ),
+        );
+  }
+}
+
+/// A navigation card linking to a baby sub-section (memories, photos, etc.).
+class _NavTile extends StatelessWidget {
+  const _NavTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(top: 8),
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(title),
+        subtitle: Text(subtitle),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: onTap,
+      ),
+    );
   }
 }
 
@@ -381,6 +497,8 @@ class _QuickLog extends StatelessWidget {
     required this.lastBreastSide,
     required this.onBreast,
     required this.onBottle,
+    required this.onFormula,
+    required this.onSolids,
     required this.onSleep,
     required this.onDiaper,
   });
@@ -389,6 +507,8 @@ class _QuickLog extends StatelessWidget {
   final String? lastBreastSide;
   final void Function(String side) onBreast;
   final VoidCallback onBottle;
+  final VoidCallback onFormula;
+  final VoidCallback onSolids;
   final VoidCallback onSleep;
   final void Function(BabyEventType) onDiaper;
 
@@ -417,6 +537,16 @@ class _QuickLog extends StatelessWidget {
               onPressed: ongoing ? null : onBottle,
               icon: const Icon(Icons.local_drink_outlined),
               label: const Text('Bottle'),
+            ),
+            OutlinedButton.icon(
+              onPressed: ongoing ? null : onFormula,
+              icon: const Icon(Icons.baby_changing_station_outlined),
+              label: const Text('Formula'),
+            ),
+            OutlinedButton.icon(
+              onPressed: ongoing ? null : onSolids,
+              icon: const Icon(Icons.restaurant_outlined),
+              label: const Text('Solids'),
             ),
             OutlinedButton.icon(
               onPressed: ongoing ? null : onSleep,
@@ -464,6 +594,9 @@ class _EventTile extends StatelessWidget {
     if (event.duration != null) {
       detail.write(' · ${_clock(event.duration!)}');
     }
+    if (event.note != null && event.note!.isNotEmpty) {
+      detail.write(' · ${event.note}');
+    }
     return Dismissible(
       key: ValueKey(event.id),
       direction: DismissDirection.endToStart,
@@ -485,7 +618,10 @@ class _EventTile extends StatelessWidget {
   IconData _iconFor(BabyEventType t) {
     if (t.isDiaper) return Icons.baby_changing_station;
     if (t == BabyEventType.sleep) return Icons.bedtime_outlined;
-    if (t == BabyEventType.bottle) return Icons.local_drink_outlined;
+    if (t == BabyEventType.solids) return Icons.restaurant_outlined;
+    if (t == BabyEventType.bottle || t == BabyEventType.formula) {
+      return Icons.local_drink_outlined;
+    }
     return Icons.water_drop_outlined;
   }
 }

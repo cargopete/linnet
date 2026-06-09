@@ -7,14 +7,26 @@ enum BabyEventType {
   diaperWet('Wet'),
   diaperDirty('Dirty'),
   diaperMixed('Mixed'),
-  sleep('Sleep');
+  sleep('Sleep'),
+  // Appended (v13) — feeding isn't only breast: formula (bottle, ml) and solids
+  // ("hard food", with an optional food note). New ordinals only, never reorder.
+  formula('Formula'),
+  solids('Solids');
 
   const BabyEventType(this.label);
   final String label;
 
-  bool get isFeed => this == breastfeed || this == bottle;
+  bool get isFeed =>
+      this == breastfeed ||
+      this == bottle ||
+      this == formula ||
+      this == solids;
   bool get isDiaper =>
       this == diaperWet || this == diaperDirty || this == diaperMixed;
+
+  /// Whether this event carries an amount in millilitres (a bottle of expressed
+  /// milk or formula).
+  bool get hasAmount => this == bottle || this == formula;
 
   /// Whether this event has a duration (timer): a feed-at-breast or a sleep.
   bool get isTimed => this == breastfeed || this == sleep;

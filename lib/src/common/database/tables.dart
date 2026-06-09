@@ -176,6 +176,55 @@ class GrowthMeasurements extends Table {
   RealColumn get heightCm => real().nullable()();
 }
 
+/// A baby keepsake photo (childId-scoped). Like [Photos], the image bytes live
+/// in the encrypted database, so they are encrypted at rest and never touch an
+/// unencrypted file. Named BabyPhotoRow to avoid clashing with the domain type.
+@DataClassName('BabyPhotoRow')
+class BabyPhotos extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get childId => integer()();
+  TextColumn get caption => text().nullable()();
+  DateTimeColumn get addedAt => dateTime()();
+  BlobColumn get bytes => blob()();
+}
+
+/// A baby bonding/memory entry: a "first" milestone (first smile, first steps…)
+/// or a letter to the child. [kind] is the MemoryKind ordinal (shared with the
+/// pregnancy memories). Named BabyMemoryRow to avoid clashing with the domain.
+@DataClassName('BabyMemoryRow')
+class BabyMemories extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get childId => integer()();
+  IntColumn get kind => integer().withDefault(const Constant(0))();
+  TextColumn get title => text()();
+  DateTimeColumn get occurredOn => dateTime()();
+  TextColumn get body => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+/// A baby appointment (checkup, dentist, specialist, health-visitor…). Mirrors
+/// the prenatal [Appointments] but keyed by child.
+@DataClassName('BabyAppointmentRow')
+class BabyAppointments extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get childId => integer()();
+  DateTimeColumn get scheduledFor => dateTime()();
+  TextColumn get title => text()();
+  TextColumn get notes => text().nullable()();
+}
+
+/// A logged vaccination dose for a child. [givenOn] is the date administered;
+/// [note] holds optional detail (dose, brand, clinic). Named VaccinationRow to
+/// avoid clashing with the domain `Vaccination`.
+@DataClassName('VaccinationRow')
+class Vaccinations extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get childId => integer()();
+  TextColumn get name => text()();
+  DateTimeColumn get givenOn => dateTime()();
+  TextColumn get note => text().nullable()();
+}
+
 /// Generic key/value store for app settings (onboarding goal, app-lock toggle,
 /// disclaimer acceptance, etc.). Kept opaque so adding a setting needs no schema
 /// migration.

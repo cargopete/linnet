@@ -22,6 +22,10 @@ part 'database.g.dart';
     BabyEvents,
     Medications,
     GrowthMeasurements,
+    BabyPhotos,
+    BabyMemories,
+    BabyAppointments,
+    Vaccinations,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -34,7 +38,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -69,6 +73,14 @@ class AppDatabase extends _$AppDatabase {
       if (from < 11) await m.createTable(medications);
       // v12 added baby growth measurements (WHO percentile charts).
       if (from < 12) await m.createTable(growthMeasurements);
+      // v13 added the baby keepsakes & health log: photos, memories,
+      // appointments and vaccinations (all child-scoped).
+      if (from < 13) {
+        await m.createTable(babyPhotos);
+        await m.createTable(babyMemories);
+        await m.createTable(babyAppointments);
+        await m.createTable(vaccinations);
+      }
     },
   );
 
@@ -220,6 +232,62 @@ class AppDatabase extends _$AppDatabase {
             ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
           .watch();
 
+  // --- Baby photos --------------------------------------------------------
+
+  Future<int> insertBabyPhoto(BabyPhotosCompanion entry) =>
+      into(babyPhotos).insert(entry);
+
+  Future<void> deleteBabyPhoto(int id) =>
+      (delete(babyPhotos)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<BabyPhotoRow>> watchBabyPhotos(int childId) =>
+      (select(babyPhotos)
+            ..where((t) => t.childId.equals(childId))
+            ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
+          .watch();
+
+  // --- Baby memories ------------------------------------------------------
+
+  Future<int> insertBabyMemory(BabyMemoriesCompanion entry) =>
+      into(babyMemories).insert(entry);
+
+  Future<void> deleteBabyMemory(int id) =>
+      (delete(babyMemories)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<BabyMemoryRow>> watchBabyMemories(int childId) =>
+      (select(babyMemories)
+            ..where((t) => t.childId.equals(childId))
+            ..orderBy([(t) => OrderingTerm.asc(t.occurredOn)]))
+          .watch();
+
+  // --- Baby appointments --------------------------------------------------
+
+  Future<int> insertBabyAppointment(BabyAppointmentsCompanion entry) =>
+      into(babyAppointments).insert(entry);
+
+  Future<void> deleteBabyAppointment(int id) =>
+      (delete(babyAppointments)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<BabyAppointmentRow>> watchBabyAppointments(int childId) =>
+      (select(babyAppointments)
+            ..where((t) => t.childId.equals(childId))
+            ..orderBy([(t) => OrderingTerm.asc(t.scheduledFor)]))
+          .watch();
+
+  // --- Vaccinations -------------------------------------------------------
+
+  Future<int> insertVaccination(VaccinationsCompanion entry) =>
+      into(vaccinations).insert(entry);
+
+  Future<void> deleteVaccination(int id) =>
+      (delete(vaccinations)..where((t) => t.id.equals(id))).go();
+
+  Stream<List<VaccinationRow>> watchVaccinations(int childId) =>
+      (select(vaccinations)
+            ..where((t) => t.childId.equals(childId))
+            ..orderBy([(t) => OrderingTerm.desc(t.givenOn)]))
+          .watch();
+
   // --- Reminders ----------------------------------------------------------
 
   Future<List<ReminderRow>> getReminders() => select(reminders).get();
@@ -337,13 +405,22 @@ class AppDatabase extends _$AppDatabase {
       'growthMeasurements': (await select(
         growthMeasurements,
       ).get()).map((r) => r.toJson()).toList(),
+      'babyMemories': (await select(
+        babyMemories,
+      ).get()).map((r) => r.toJson()).toList(),
+      'babyAppointments': (await select(
+        babyAppointments,
+      ).get()).map((r) => r.toJson()).toList(),
+      'vaccinations': (await select(
+        vaccinations,
+      ).get()).map((r) => r.toJson()).toList(),
       'appSettings': (await select(
         appSettings,
       ).get()).map((r) => r.toJson()).toList(),
-      // NOTE: `photos` are deliberately omitted — they are large BLOBs that
-      // would bloat the (encrypted) backup. Because they are not carried in the
-      // backup, importAll must NOT wipe them either, or a restore would destroy
-      // keepsake photos that live only on this device.
+      // NOTE: `photos` and `babyPhotos` are deliberately omitted — they are
+      // large BLOBs that would bloat the (encrypted) backup. Because they are
+      // not carried in the backup, importAll must NOT wipe them either, or a
+      // restore would destroy keepsake photos that live only on this device.
     };
   }
 
@@ -362,6 +439,9 @@ class AppDatabase extends _$AppDatabase {
       // before their parents.
       await batch((b) {
         b.deleteWhere(babyEvents, (_) => const Constant(true));
+        b.deleteWhere(babyMemories, (_) => const Constant(true));
+        b.deleteWhere(babyAppointments, (_) => const Constant(true));
+        b.deleteWhere(vaccinations, (_) => const Constant(true));
         b.deleteWhere(children, (_) => const Constant(true));
         b.deleteWhere(reminders, (_) => const Constant(true));
         b.deleteWhere(medications, (_) => const Constant(true));
@@ -417,6 +497,15 @@ class AppDatabase extends _$AppDatabase {
       for (final j in rows('growthMeasurements')) {
         await into(growthMeasurements).insert(GrowthMeasurementRow.fromJson(j));
       }
+      for (final j in rows('babyMemories')) {
+        await into(babyMemories).insert(BabyMemoryRow.fromJson(j));
+      }
+      for (final j in rows('babyAppointments')) {
+        await into(babyAppointments).insert(BabyAppointmentRow.fromJson(j));
+      }
+      for (final j in rows('vaccinations')) {
+        await into(vaccinations).insert(VaccinationRow.fromJson(j));
+      }
     });
   }
 
@@ -438,6 +527,10 @@ class AppDatabase extends _$AppDatabase {
       b.deleteWhere(babyEvents, (_) => const Constant(true));
       b.deleteWhere(medications, (_) => const Constant(true));
       b.deleteWhere(growthMeasurements, (_) => const Constant(true));
+      b.deleteWhere(babyPhotos, (_) => const Constant(true));
+      b.deleteWhere(babyMemories, (_) => const Constant(true));
+      b.deleteWhere(babyAppointments, (_) => const Constant(true));
+      b.deleteWhere(vaccinations, (_) => const Constant(true));
     });
   }
 }
