@@ -6,11 +6,14 @@ import '../../../common/util/date_only.dart';
 import '../application/baby_providers.dart';
 import '../domain/child.dart';
 
-/// Inclusive "add a child" form: a name, a birth date, an optional due date (for
-/// corrected age if they arrived early), and an optional "joined our family" date
-/// for adoption/fostering. No gendered assumptions.
+/// Inclusive add/edit form for a child: a name, a birth date, an optional due
+/// date (for corrected age if they arrived early), and an optional "joined our
+/// family" date for adoption/fostering. Pass [existing] to edit instead of add.
 class AddChildScreen extends ConsumerStatefulWidget {
-  const AddChildScreen({super.key});
+  const AddChildScreen({super.key, this.existing});
+
+  /// The child being edited, or null to add a new one.
+  final Child? existing;
 
   @override
   ConsumerState<AddChildScreen> createState() => _AddChildScreenState();
@@ -18,12 +21,26 @@ class AddChildScreen extends ConsumerStatefulWidget {
 
 class _AddChildScreenState extends ConsumerState<AddChildScreen> {
   final _name = TextEditingController();
-  DateTime _birthDate = DateTime.now();
-  ChildSex _sex = ChildSex.boy;
-  bool _bornEarly = false;
+  late DateTime _birthDate;
+  late ChildSex _sex;
+  late bool _bornEarly;
   DateTime? _dueDate;
   DateTime? _joinedFamilyDate;
   bool _saving = false;
+
+  bool get _isEditing => widget.existing != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final c = widget.existing;
+    _name.text = c?.name ?? '';
+    _birthDate = c?.birthDate ?? DateTime.now();
+    _sex = c?.sex ?? ChildSex.boy;
+    _bornEarly = c?.dueDate != null;
+    _dueDate = c?.dueDate;
+    _joinedFamilyDate = c?.joinedFamilyDate;
+  }
 
   @override
   void dispose() {
@@ -44,18 +61,54 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
   Future<void> _save() async {
     if (_name.text.trim().isEmpty) return;
     setState(() => _saving = true);
-    final id = await ref
-        .read(childRepositoryProvider)
-        .add(
-          Child(
-            name: _name.text.trim(),
-            birthDate: _birthDate,
-            sex: _sex,
-            dueDate: _bornEarly ? _dueDate : null,
-            joinedFamilyDate: _joinedFamilyDate,
+    final child = Child(
+      id: widget.existing?.id,
+      name: _name.text.trim(),
+      birthDate: _birthDate,
+      sex: _sex,
+      dueDate: _bornEarly ? _dueDate : null,
+      joinedFamilyDate: _joinedFamilyDate,
+      createdAt: widget.existing?.createdAt,
+    );
+    final repo = ref.read(childRepositoryProvider);
+    if (_isEditing) {
+      await repo.update(child);
+    } else {
+      final id = await repo.add(child);
+      ref.read(selectedChildIdProvider.notifier).select(id);
+    }
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  Future<void> _delete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Delete ${widget.existing!.name}?'),
+        content: const Text(
+          'This permanently removes this child and all their logged feeds, '
+          'sleep, growth, memories, photos, appointments and vaccinations. '
+          'This cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
           ),
-        );
-    ref.read(selectedChildIdProvider.notifier).select(id);
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(ctx).colorScheme.error,
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await ref.read(childRepositoryProvider).delete(widget.existing!.id!);
+    // Clear the selection so the home screen falls back to another child.
+    ref.read(selectedChildIdProvider.notifier).select(null);
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -64,8 +117,14 @@ class _AddChildScreenState extends ConsumerState<AddChildScreen> {
     final fmt = DateFormat.yMMMMd();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add your baby'),
+        title: Text(_isEditing ? 'Edit details' : 'Add your baby'),
         actions: [
+          if (_isEditing)
+            IconButton(
+              tooltip: 'Delete',
+              icon: const Icon(Icons.delete_outline),
+              onPressed: _saving ? null : _delete,
+            ),
           TextButton(
             onPressed: (_name.text.trim().isEmpty || _saving) ? null : _save,
             child: const Text('Save'),

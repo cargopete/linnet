@@ -25,6 +25,17 @@ class ChildRepository {
     ),
   );
 
+  Future<void> update(Child child) => _db.updateChild(
+    child.id!,
+    ChildrenCompanion(
+      name: Value(child.name),
+      birthDate: Value(child.birthDate),
+      sex: Value(child.sex.index),
+      dueDate: Value(child.dueDate),
+      joinedFamilyDate: Value(child.joinedFamilyDate),
+    ),
+  );
+
   Future<void> delete(int id) => _db.deleteChild(id);
 
   Child _fromRow(ChildRow r) => Child(

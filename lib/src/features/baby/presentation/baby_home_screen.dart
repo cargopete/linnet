@@ -91,6 +91,11 @@ class _BabyHomeBodyState extends ConsumerState<BabyHomeBody> {
                 ],
               ),
             IconButton(
+              icon: const Icon(Icons.edit_outlined),
+              tooltip: 'Edit details',
+              onPressed: () => _editChild(context, child),
+            ),
+            IconButton(
               icon: const Icon(Icons.person_add_alt),
               tooltip: 'Add a child',
               onPressed: () => _addChild(context),
@@ -179,6 +184,13 @@ class _BabyHomeBodyState extends ConsumerState<BabyHomeBody> {
   Future<void> _addChild(BuildContext context) => Navigator.of(
     context,
   ).push(MaterialPageRoute<void>(builder: (_) => const AddChildScreen()));
+
+  Future<void> _editChild(BuildContext context, Child child) =>
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => AddChildScreen(existing: child),
+        ),
+      );
 
   void _push(BuildContext context, Widget screen) => Navigator.of(
     context,

@@ -328,9 +328,18 @@ class AppDatabase extends _$AppDatabase {
   Future<int> insertChild(ChildrenCompanion entry) =>
       into(children).insert(entry);
 
+  /// Edits an existing child's details (name, dates, sex). Leaves createdAt and
+  /// all logged data untouched.
+  Future<void> updateChild(int id, ChildrenCompanion entry) =>
+      (update(children)..where((t) => t.id.equals(id))).write(entry);
+
   Future<void> deleteChild(int id) async {
     await (delete(babyEvents)..where((t) => t.childId.equals(id))).go();
     await (delete(growthMeasurements)..where((t) => t.childId.equals(id))).go();
+    await (delete(babyMemories)..where((t) => t.childId.equals(id))).go();
+    await (delete(babyPhotos)..where((t) => t.childId.equals(id))).go();
+    await (delete(babyAppointments)..where((t) => t.childId.equals(id))).go();
+    await (delete(vaccinations)..where((t) => t.childId.equals(id))).go();
     await (delete(children)..where((t) => t.id.equals(id))).go();
   }
 
