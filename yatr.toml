@@ -1,0 +1,64 @@
+# yatr - https://github.com/cargopete/yatr
+#
+# CI calls these tasks by name, so `yatr ci` locally is the same gate.
+
+[settings]
+cache = true
+
+# Not cached: .dart_tool points into the pub cache, which yatr cannot see.
+[tasks.deps]
+desc = "Resolve packages (flutter pub get)"
+run = ["flutter pub get"]
+no_cache = true
+
+[tasks.gen]
+desc = "Generate the Drift code (database.g.dart)"
+depends = ["deps"]
+run = ["dart run build_runner build"]
+sources = ["lib/src/common/database/**", "pubspec.yaml", "pubspec.lock"]
+outputs = ["lib/src/common/database/database.g.dart"]
+
+[tasks.fmt]
+desc = "Format lib and test"
+run = ["dart format lib test"]
+no_cache = true
+
+[tasks.fmt-check]
+desc = "Fail if lib or test is unformatted (CI)"
+depends = ["gen"]
+run = ["dart format --output=none --set-exit-if-changed lib test"]
+sources = ["lib/**/*.dart", "test/**/*.dart"]
+
+[tasks.analyze]
+desc = "flutter analyze (CI)"
+depends = ["gen"]
+run = ["flutter analyze"]
+sources = ["lib/**", "test/**", "pubspec.yaml", "pubspec.lock", "analysis_options.yaml"]
+
+[tasks.test]
+desc = "The test suite with coverage (CI)"
+depends = ["gen"]
+run = ["flutter test --coverage"]
+sources = ["lib/**", "test/**", "assets/**", "pubspec.yaml", "pubspec.lock"]
+outputs = ["coverage/lcov.info"]
+
+# Hangs on Flutter 3.47: toImage() is awaited outside tester.runAsync.
+[tasks.icon]
+desc = "Render assets/icon/linnet.png from the painted mark"
+depends = ["deps"]
+timeout = 120
+env = { GEN_ICON = "1" }
+run = ["flutter test test/tools/generate_icon_test.dart"]
+sources = ["lib/src/common/branding/**", "test/tools/generate_icon_test.dart"]
+outputs = ["assets/icon/linnet.png"]
+
+[tasks.dev]
+desc = "Run on a simulator or device"
+depends = ["gen"]
+foreground = true
+run = ["flutter run"]
+
+[tasks.ci]
+desc = "What CI runs: fmt-check, analyze, test"
+depends = ["fmt-check", "analyze", "test"]
+run = []
