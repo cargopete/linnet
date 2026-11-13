@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
 
+env:
+  # The commands CI runs live in yatr.toml, so `yatr ci` locally is the same gate.
+  YATR_VERSION: "1.2.0"
+
 jobs:
   analyze-and-test:
     name: Analyze & test
@@ -17,20 +21,30 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Cache yatr
+        id: cache-yatr
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/yatr
+          key: yatr-${{ runner.os }}-${{ env.YATR_VERSION }}
 
-      - name: Generate code (drift)
-        run: dart run build_runner build
+      - name: Install yatr
+        if: steps.cache-yatr.outputs.cache-hit != 'true'
+        run: cargo install yatr --version ${{ env.YATR_VERSION }} --locked
+        env:
+          RUSTFLAGS: ""
+
+      - name: Install dependencies and generate code (drift)
+        run: yatr gen
 
       - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed lib test
+        run: yatr fmt-check
 
       - name: Analyze
-        run: flutter analyze
+        run: yatr analyze
 
       - name: Run tests
-        run: flutter test --coverage
+        run: yatr test
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4
